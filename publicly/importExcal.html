@@ -291,7 +291,11 @@
                     </form>
                 </div>
             </div>
-            <button type="button" class="btn btn-lg btn-warning" style="margin:6px 0;"  onclick="allpush()">推送</button>
+            <p>
+                <button type="button" class="btn btn-lg btn-warning" style="margin:6px 0;"  onclick="allpush()">推送</button>
+                <button type="button" class="btn btn-lg btn-primary" style="margin:6px 0;"  onclick="allpersonalpush()">推送所有人</button>
+            </p>
+
             <div class="table-responsive">
                 <table class="table table-bordered" id="olddata">
 
@@ -321,6 +325,9 @@
         </th>
         <th>
             姓名
+        </th>
+        <th>
+            认证码
         </th>
         <th>
             联系方式
@@ -376,6 +383,7 @@
         <td>
             {{item.name}}
         </td>
+        <td>{{item.invite_code}}</td>
         <td>
             {{item.phone}}
         </td>
@@ -704,7 +712,24 @@
             pushcompmsg(push_arr_id.toString())
         }
     }
-
+    /*-- 推给所有用户 --*/
+    function allpersonalpush() {
+        layer.confirm('确定推送消息给所有人？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.ajax({
+                type: "get",
+                url: "/publish/sendInviteCodeAll.json",
+                success: function(data) {
+                    if(data.success){
+                        layer.msg('请求成功,短信正在发送中...请稍后查看');
+                    }else{
+                        layer.msg(data.message);
+                    }
+                }
+            })
+        })
+    }
     /*-- 设置开关 --*/
     function managebtn(id,admin) {
         $.ajax({
