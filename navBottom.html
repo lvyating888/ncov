@@ -1,0 +1,57 @@
+<div class="main_nav_bottom">
+    <nav class="navbar navbar-default navbar-fixed-bottom">
+        <div class="container" align="center">
+            <style>
+                .main_nav_bottom{
+                    width: 100%;
+                    overflow-x: hidden;
+                }
+                .nav-tabs
+                {
+                    text-align: center;
+                    height: 40px;
+                    line-height: 40px;
+                }
+            </style>
+            <ul class="nav nav-tabs nav-tabs-justified">
+                <div class="row" align="center">
+                    <div class="col-md-4 col-sm-4 col-xs-4" align="center">
+                        <li>
+                            <a href="javascript:;" id="mymsg">个人信息</a>
+                        </li>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4" align="center">
+                        <li>
+                            <a href="javascript:;" id="jilumsg">健康考勤</a>
+                        </li>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4" align="center">
+                        <li>
+                            <a href="javascript:;" id="permsg">个人中心</a>
+                        </li>
+                    </div>
+                    <!--<div class="col-md-3 col-sm-3 col-xs-3" align="center">
+                        <li>
+                            <a href="#">公告</a>
+                        </li>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-3" align="center">
+                        <li>
+                            <a href="#">设置</a>
+                        </li>
+                    </div>-->
+                </div>
+            </ul>
+        </div>
+    </nav>
+</div>
+<script>
+    $(function () {
+        if (GetQueryValue('openId')){
+            $('#mymsg').attr('href','indexfillIn.html?openId='+GetQueryValue('openId'))
+            $('#jilumsg').attr('href','bodyMsg.html?openId='+GetQueryValue('openId'));
+            $('#permsg').attr('href','personalCenter.html?openId='+GetQueryValue('openId'));
+        }
+
+    })
+</script>

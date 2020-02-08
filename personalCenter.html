@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>个人中心</title>
+    <link rel="stylesheet" href="css/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/personalCenter.css">
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/layer/layer.js"></script>
+</head>
+<body class="hasbotout">
+<!-- 头部 -->
+<div class="myselfbox clearfix">
+    <div class="myselfleft">
+        <p class="username"></p>
+        <p class="compname">
+
+        </p>
+    </div>
+    <div class="myselfright">
+        <a href="./sign/index.html" class="signbtn">
+            签到
+        </a>
+        <!--<a href="javascript:;" class="signtext" style="display: none;">-->
+        <!--已签到-->
+        <!--</a>-->
+    </div>
+</div>
+<!-- 底部 -->
+<div class="innerout">
+    <ul class="mycontul">
+        <li class="mycontlis is-admin" style="width: 33.3%">
+            <a href="healthWarning.html" class="per_smicon" id="per_body">
+                    <span class="glyphicon glyphicon-warning-sign red" aria-hidden="true">
+                    </span>
+                <p>
+                    健康预警
+                </p>
+                <i class="per_smiconpop" id="onetips" style="display: none;">1</i>
+            </a>
+        </li>
+        <li class="mycontlis">
+            <a href="./staffTravel.html" id="usergo">
+                <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
+                <p>
+                    人员出行
+                </p>
+            </a>
+        </li>
+        <li class="mycontlis" style="min-width: 33.3%">
+            <a href="./noticeReminderList.html" id="publishgo">
+                <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+                <p>
+                    公告列表
+                </p>
+            </a>
+        </li>
+    </ul>
+    <ul class="mycontul">
+        <li class="mycontlis is-admin" style="display:none;">
+            <a href="./publicly/releaseNotice.html" id="publishnew">
+                <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+                <p>
+                    发布公告
+                </p>
+            </a>
+        </li>
+        <li class="mycontlis is-admin" style="display:none;">
+            <a href="./datastatiStics.html" id="dataStatistics">
+                <span class="glyphicon glyphicon-signal" aria-hidden="true"></span>
+                <p>
+                    人员数据
+                </p>
+            </a>
+        </li>
+        <li class="mycontlis is-admin" style="display:none;">
+            <a href="strators/tripRecord.html" id="tripRecord">
+                <span class="glyphicon glyphicon-leaf" aria-hidden="true"></span>
+                <p>
+                    出行记录
+                </p>
+            </a>
+        </li>
+    </ul>
+    <ul class="mycontul">
+        <li class="mycontlis is-admin" style="display:none;">
+            <a href="./sign/personalSignIn.html" id="signin">
+                <span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>
+                <p>
+                    打卡记录
+                </p>
+            </a>
+        </li>
+        <li class="mycontlis is-admin" style="display:none;">
+            <a href="./publicly/importExcal.html">
+                <span class="glyphicon glyphicon-th" aria-hidden="true"></span>
+                <p>
+                    员工添加
+                </p>
+            </a>
+        </li>
+    </ul>
+</div>
+<!--#include file="/ncov/navBottom.html"-->
+</body>
+</html>
+<script>
+    /*-- 获取openid 是否注册过 假设openId=001--*/
+    var openId = GetQueryValue('openId');
+    /*-- 获取用户填写的信息 --*/
+    $.ajax({
+        type: "get",
+        url: '/ncov/isExist.json',
+        data: {openId: openId},
+        success: function (data) {
+            if (data.success) {
+                /*-- 获取注册的用户信息 --*/
+                $.ajax({
+                    type: "get",
+                    url: '/member/info.json',
+                    data: {openId: openId},
+                    success: function (data) {
+                        if (data.data) {
+                            $('.username').html(data.data.name);
+                            $('.compname').html(data.data.company);
+                            if (data.data.admin == 1) {
+                                $('.is-admin').show();
+                            } else if (data.data.admin == 0) {
+                                $('.is-admin').hide();
+                            }
+                        }
+                    }
+                })
+            } else {
+                layer.msg("请先输入个人信息", function () {
+                    window.location.href = 'index.html?openId=' + openId;
+                });
+            }
+        }
+    });
+    // whetherSign();
+
+    /*--判断用户是否签到--*/
+    function whetherSign() {
+        $.ajax({
+            type: "get",
+            url: '/member/isSign.json',
+            data: {
+                openId: openId
+            },
+            success: function (data) {
+                console.log(data);
+                if (data.data) {
+                    $('.signbtn').hide();
+                    $('.signtext').show();
+                } else {
+                    $('.signbtn').show();
+                    $('.signtext').hide();
+                }
+            }
+        })
+    }
+
+    /*-- 用户签到 --*/
+    function signInfo() {
+        $.ajax({
+            type: "get",
+            url: "/member/sign.json",
+            data: {openId: openId},
+            success: function (data) {
+
+                if (data.success) {
+                    whetherSign();
+                    layer.msg('签到成功')
+                } else {
+                    layer.msg('签到失败，联系管理员')
+                }
+            }
+        })
+    }
+
+    /*-- 获取红色人员信息 onetips --*/
+    $(function () {
+        $.ajax({
+            type: 'get',
+            url: '/member/early.json',
+            success: function (data) {
+                console.log(data)
+                if (data.data !== 0) {
+                    $.ajax({
+                        type: 'get',
+                        url: '/member/early/list.json',
+                        success: function (data) {
+                            if (data.data.length > 0) {
+                                $('#onetips').show();
+                                $('#onetips').html(data.data.length)
+                            } else {
+                                $('#onetips').hide();
+                            }
+                        }
+                    })
+                } else {
+                    $('#onetips').hide();
+                }
+            }
+        })
+    })
+</script>

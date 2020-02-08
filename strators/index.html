@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>新增公司</title>
+    <link rel="stylesheet" href="../css/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.js"></script>
+    <script src="../js/common.js"></script>
+    <script src="../js/layer/layer.js"></script>
+    <script src="../js/template.js"></script>
+</head>
+<body>
+
+<div class="innerout" style="padding:20px 0;">
+
+    <div class="input-group">
+        <input id="company" class="form-control" placeholder="请填写公司名称"/>
+        <input id="address" class="form-control" placeholder="请输入公司地址"/>
+        <span class="input-group-addon btn btn-primary" onclick="addCompany()">新增</span>
+    </div>
+    <div>
+        <p class="linetitle">已存在公司</p>
+        <!--跳转后台统计-->
+        <a href="datastatiSticsAdmin.html" id="dataStateBtn" class="dataState" style="padding-bottom:10px;display: block;">
+            查看所有人员统计 >
+        </a>
+        <!--<ul  class="list-group">-->
+        <!--</ul>-->
+        <div class="table-responsive">
+            <table class="table table-bordered" id="companyList">
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/html" id="v_dataComp">
+    <tbody>
+    <tr>
+        <th>
+            操作
+        </th>
+        <th>
+            公司名称
+        </th>
+        <th>
+            公司地址
+        </th>
+    </tr>
+    {{each data as item index}}
+    <tr>
+        <td>
+            <a href="../datastatiStics.html?name={{item.company}}&id={{item.id}}" class="btn btn-danger">
+                查看统计
+            </a>
+        </td>
+        <td>
+            <a href="staffList.html?name={{item.company}}&id={{item.id}}" >
+                {{item.company}}
+            </a>
+        </td>
+        <td>
+            {{item.address}}
+        </td>
+    </tr>
+    {{/each}}
+    </tbody>
+</script>
+<script>
+    $(function () {
+        init();
+    });
+    function init() {
+        $.ajax({
+            url: '/admin/company/list.json',
+            success: function (res) {
+                var dataComp = template('v_dataComp', res);
+                $("#companyList").empty().append(dataComp);
+            }
+        })
+    }
+    function addCompany() {
+        var company = $('#company').val();
+        var address = $('#address').val();
+        if (!$.trim(company)) {
+            layer.msg('请输入添加的公司名称')
+            return;
+        }
+        if (!confirm("确定要新增吗?")) {
+            return;
+        }
+        $.ajax({
+            url: '/admin/company.json',
+            type: 'post',
+            headers: {'Content-Type': 'application/json;charset=UTF-8'},
+            data: JSON.stringify({company: company,address:address}),
+            success: function (res) {
+                if (res.success) {
+                    $('#company').val('');
+                    $('#adress').val('');
+                    init();
+                    layer.msg('保存成功');
+                } else {
+                    layer.msg(res.message);
+                }
+            }
+        })
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>健康预警</title>
+    <link rel="stylesheet" href="css/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/personalCenter.css">
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/layer/layer.js"></script>
+    <script src="js/template.js"></script>
+</head>
+<body class="hastopout">
+    <!--#include file="/ncov/headerback.html"-->
+    <div class="innerout">
+        <div class="staticbox">
+            <div class="tjout">
+                <p class="linetitle">统计危险人员列表</p>
+                <p class="red" style="line-height:20px;margin:6px 0;">
+                   人员数量:<span id="zjnumber">0</span>
+                </p>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="earlydata">
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/html" id="v_earlydata">
+    <tbody>
+        <tr>
+            <th>
+                姓名
+            </th>
+            <th>
+                情况
+            </th>
+            <th>
+                体温
+            </th>
+            <th>
+                联系电话
+            </th>
+            <th>
+                登记地址
+            </th>
+            <th>
+                是否接触湖北人员
+            </th>
+        </tr>
+        {{each data as item index}}
+        <tr>
+            <th>
+                {{item.name}}
+            </th>
+            <th>
+                {{if item.state==1}}
+                健康
+                {{else if item.state==2}}
+                咳嗽打喷嚏
+                {{else if item.state==3}}
+                发热（未就诊或医生诊断为普通发热）
+                {{else if item.state==4}}
+                已就诊，被要求回家自行隔离观察
+                {{else if item.state==5}}
+                已就医，被判定为【疑似】新型肺炎，留在医院隔离观察
+                {{else if item.state==6}}
+                已就医，确诊为新型肺炎
+                {{/if}}
+            </th>
+            <th>
+                {{item.temperature}}℃
+            </th>
+            <th>
+                {{item.phone}}
+            </th>
+            <th>
+                {{item.province}}{{item.city}}{{item.district}}{{item.recommend}}
+            </th>
+            <th>
+                {{if item.huibei==1}}
+                是
+                {{else}}
+                否
+                {{/if}}
+            </th>
+        </tr>
+        {{/each}}
+    </tbody>
+</script>
+</html>
+<script>
+    /*-- 获取危险列表 /memner/early.json--*/
+   $.ajax({
+       type:'get',
+       url:'/member/early.json',
+       success:function (data) {
+           console.log(data)
+           if(data.data!==0){
+               $.ajax({
+                   type:'get',
+                   url:'/member/early/list.json',
+                   success:function (data) {
+                       if(data.data.length>0){
+                           $('#zjnumber').html(data.data.length)
+                       }
+                       var earlydata = template('v_earlydata', data);
+                       $("#earlydata").empty().append(earlydata);
+                   }
+               })
+           }else{
+               $("#earlydata").empty().html('<tr><td class="red">暂无危险人员</td></tr>')
+           }
+       }
+   })
+</script>

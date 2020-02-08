@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>打卡</title>
+    <link rel="stylesheet" href="../css/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/diseaseRegister.css">
+    <script src="../js/jquery.js"></script>
+    <!-- 获取位置 -->
+    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.3.2.js"></script>
+
+    <script src="../js/bootstrap.js"></script>
+    <script src="../js/common.js"></script>
+    <script src="../js/layer/layer.js"></script>
+    <script src="../js/template.js"></script>
+    <script src="../js/moment.js"></script>
+</head>
+<body class="hastopout">
+<!--#include file="/ncov/headerback.html"-->
+<div class="innerout">
+    <div class="padtb10">
+        <div class="form-group clearfix">
+            <label class="col-sm-3 col-xs-3 leftlabel">地理位置<span class="red">*</span></label>
+            <div class="col-sm-9 col-xs-9 ">
+                <span style="color: #5e5e5e;line-height:34px;" id="address">
+                </span>
+            </div>
+        </div>
+        <div class="form-group padlr0 clearfix">
+            <label class="col-sm-12 col-xs-12 clearfix padlr0">备注</label>
+            <div class="col-sm-12 col-xs-12 clearfix padlr0">
+                <textarea id="content" class="form-control" style="height:100px;"></textarea>
+            </div>
+        </div>
+        <div class="botbtn row">
+            <div class="col-md-12 col-sm-12 col-xs-12" align="center">
+                <button type="button" class="btn btn-lg btn-success" style="width:80%" onclick="sign()">打卡</button>
+            </div>
+        </div>
+    </div>
+    <p class="linetitle">打卡记录</p>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <td>时间</td>
+                <td>地址</td>
+                <td>备注</td>
+            </tr>
+            </thead>
+            <tbody id="dataList">
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    var title='打卡签到'
+</script>
+<script>
+    /* 公众号数据 纬度经度 */
+    var dataInfo = {};
+    /* 上报数据 */
+    var reportInfo = {};
+    var href = window.location.href;
+    href = href.split("#");
+    console.log(href);
+    console.log(href[0])
+
+    $.ajax({
+        type: "post",
+        url: "/member/location.json",
+        headers: {'Content-Type': 'application/json;charset=UTF-8'},
+        data: JSON.stringify({
+            url: href[0],
+        }),
+        async: false,
+        success: function (data) {
+            console.log(data);
+            if (data.success) {
+                dataInfo.appId = data.data.appId;
+                dataInfo.timestamp = data.data.timeStamp;
+                dataInfo.nonceStr = data.data.nonceStr;
+                dataInfo.signature = data.data.signature;
+            }
+
+        }
+    })
+    getlocationfun();
+   function getlocationfun() {
+       // 微信配置
+       wx.config({
+           debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+           appId: dataInfo.appId, // 必填，公众号的唯一标识
+           timestamp: dataInfo.timestamp, // 必填，生成签名的时间戳
+           nonceStr: dataInfo.nonceStr, // 必填，生成签名的随机串
+           signature: dataInfo.signature,// 必填，签名
+           jsApiList: ['getLocation'] // 必填，需要使用的JS接口列表
+       });
+
+       wx.ready(function () {
+           console.log('wx.ready-----------')
+           /* --获取经纬度-- */
+           wx.getLocation({
+               type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+               success: function (res) {
+                   console.log(res);
+                   console.log('地图经纬度==========')
+                   dataInfo.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                   dataInfo.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                   /*dataInfo.speed = res.speed; // 速度，以米/每秒计
+                   dataInfo.accuracy = res.accuracy; // 位置精度*/
+
+                   /*-- 根据经纬度获取地理位置 --*/
+                   /*--dataInfo.latitude,dataInfo.longitude 39.916263,116.49683--*/
+                   /*  */
+
+                   $.ajax({
+                       url: 'https://apis.map.qq.com/ws/geocoder/v1/?',
+                       dataType: 'jsonp',
+                       data: {
+                           location: dataInfo.latitude + ',' + dataInfo.longitude,
+                           key: '3U4BZ-UCDKF-F2ZJZ-NEMK7-XK5B7-7XFHN',
+                           output: 'jsonp',
+                       },
+
+                       success: function (data) {
+                           console.log(data);
+                           console.log('weizhi +++++++');
+                           if (data.result) {
+                               reportInfo.province = data.result.address_component.province;
+                               reportInfo.city = data.result.address_component.city;
+                               reportInfo.district = data.result.address_component.district;
+                               reportInfo.street = data.result.address_component.street_number;
+                               reportInfo.recommend = data.result.formatted_addresses.recommend;
+                               $('#address').html(reportInfo.recommend)
+                           }
+                       },
+                       error: function (data) {
+                           console.log(data);
+                           console.log('=================')
+                       }
+                   });
+               },
+               cancel: function (res) {
+                   console.log(JSON.stringify(res))
+                   console.log('用户拒绝授权获取地理位置');
+               },
+               fail: function (res) {
+                   /* alert(JSON.stringify(res))*/
+               }
+           })
+
+
+       });
+       wx.error(function (res) {
+           /*alert(JSON.stringify(res));*/
+           console.log(res);
+           console.log('error--------------')
+       })
+   }
+</script>
+<script>
+    init();
+
+    function init() {
+        $.ajax({
+            url: '/member/sign/list.json',
+            type: 'get',
+            data: {},
+            success: function (res) {
+                $('#dataList').empty();
+
+                for (var i = 0; i < res.data.length; i++) {
+                    var d = res.data[i];
+                    $('#dataList').append(
+                        `
+                            <tr>
+                                <td>${d.c_date}</td>
+                                <td>${d.province}${d.city}${d.district}${d.street}${d.recommend}</td>
+                                <td>${d.content}</td>
+                            </tr>
+                        `
+                    )
+                }
+            }
+        })
+    }
+
+    function sign() {
+        if($('#address').html().trim()==''){
+            layer.msg('请同意获取地理位置')
+            getlocationfun();
+        }else{
+            reportInfo.content = $('#content').val();
+            $.ajax({
+                url: '/member/sign.json',
+                type: 'post',
+                headers: {'Content-Type': 'application/json'},
+                data: JSON.stringify(reportInfo),
+                success: function (res) {
+                    if (res.success) {
+                        layer.msg('打卡成功');
+                        $('#content').val('');
+                        init();
+                    } else {
+                        layer.msg(res.message);
+                    }
+                }
+            })
+        }
+    }
+</script>
+</body>
+</html>

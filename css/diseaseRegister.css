@@ -1,0 +1,13 @@
+
+.innerlisout{
+    margin-bottom: 20px;
+}
+input.rightradio{
+    margin:0 0 4px 0;
+    vertical-align: middle;
+}
+.botbtn{
+    padding:12px 0;
+    margin-top:10px;
+    border-top: 1px solid #e5e5e5;
+}

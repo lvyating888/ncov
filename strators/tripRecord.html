@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>人员出行列表</title>
+    <link rel="stylesheet" href="../css/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../js/bootstrapSwitch/bootstrap-switch.min.css">
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.js"></script>
+    <script src="../js/common.js"></script>
+    <script src="../js/layer/layer.js"></script>
+    <script src="../js/template.js"></script>
+    <script src="../js/moment.js"></script>
+    <script src="../js/bootstrapSwitch/bootstrap-switch.min.js"></script>
+</head>
+<style>
+    #importbtn_out{
+        position: relative;
+    }
+    #file{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left:0;
+        top:0;
+        opacity: 0;
+    }
+</style>
+<body class="hastopout">
+<!--#include file="/ncov/headerback.html"-->
+<div class="innerout ">
+    <div class="padtb10">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="olddata">
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/html" id="v_olddata">
+    <tbody>
+    <tr>
+        <th>
+            人员姓名
+        </th>
+        <th>
+            手机号
+        </th>
+        <th>
+            发布时间
+        </th>
+        <th>
+            出行内容
+        </th>
+        <th>
+            出行时间
+        </th>
+        <th>
+            结束时间
+        </th>
+        <th>
+            附件
+        </th>
+
+    </tr>
+    {{each data as item index}}
+    <tr>
+        <td>
+            {{item.name}}
+        </td>
+        <td>
+            {{item.phone}}
+        </td>
+        <td>
+            {{item.cdatenow}}
+        </td>
+        <td>
+            {{item.content}}
+        </td>
+        <td>
+            {{item.begin_date}}
+        </td>
+        <td>
+            {{item.end_date}}
+        </td>
+        <td>
+            <a href="http://webimg.mp12345.com{{item.file_path}}">
+                {{item.file_path}}
+            </a>
+        </td>
+    </tr>
+    {{/each}}
+    </tbody>
+</script>
+</html>
+<script>
+    /*-- 获取出行记录 --*/
+    gohistory();
+    function gohistory(){
+        $.ajax({
+            type:'get',
+            url:"/publish/schedule/list.json",
+            success:function (data) {
+                console.log(data)
+                if(data.data!==0){
+                    if(data.data.length>0){
+                        $('#zjnumber').html(data.data.length);
+                        for(var i=0;i<data.data.length;i++){
+                            if(data.data[i].cdate){
+                                data.data[i].cdatenow=moment(data.data[i].cdate).format('YYYY-MM-DD HH:mm:ss')
+                            }
+                        }
+                    }
+                    var olddata = template('v_olddata', data);
+                    $("#olddata").empty().append(olddata);
+                }else{
+                    $("#olddata").empty().html('<tr><td class="red">暂无数据</td></tr>')
+                }
+            }
+        })
+    }
+</script>

@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>申报身体状况</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/diseaseRegister.css">
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/layer/layer.js"></script>
+    <script src="js/laydate/laydate.js"></script>
+    <script src="js/template.js"></script>
+    <script src="js/moment.js"></script>
+    <!-- 获取位置 -->
+    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.3.2.js"> </script>
+</head>
+<style>
+    .reminderTips{
+        color: #8D8D8D;
+        font-size:12px;
+    }
+</style>
+<body class="hasbotout">
+<div class="innerout" style="padding-top: 10px;">
+    <p class="reminderTips">
+        疫情当前，如有任何不适或需要帮助，我们将二十四小时守望相助！
+    </p>
+    <div class="innerlisout">
+        <p class="linetitle">个人信息</p>
+        <ul class="list-group">
+            <li class="list-group-item padlr0 clearfix ">
+                <div class="col-sm-6 col-xs-6" >
+                    姓名：<span id="username"></span>
+                </div>
+                <div class="col-sm-6 col-xs-6" >
+                    性别：<span id="usersex"></span>
+                </div>
+            </li>
+            <li class="list-group-item padlr0 clearfix ">
+                <div class="col-sm-6 col-xs-6" >
+                    公司：<span id="usercompany"></span>
+                </div>
+                <div class="col-sm-6 col-xs-6" >
+                    科室：<span id="userdivd"></span>
+                </div>
+            </li>
+            <li class="list-group-item padlr0 clearfix ">
+                <div class="col-sm-12 col-xs-12" >
+                    公司地址：<span id="usercompanyaddress"></span>
+                </div>
+            </li>
+            <li class="list-group-item padlr0 clearfix ">
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <button type="button" class="btn btn-danger" style="width:80%"
+                            id="modifybtn">修改</button>
+                </div>
+            </li>
+        </ul>
+
+    </div>
+</div>
+<form class="innerout" id="bodyInfo">
+    <div class="innerlisout">
+        <p class="linetitle">健康考勤</p>
+        <label class="col-sm-12 col-xs-12 padlr0" style="line-height: 32px;">健康状况<span class="red">*</span></label>
+        <div class="form-group clearfix">
+            <div  class="col-sm-12 col-xs-12 padlr0">
+                <div class="col-sm-4 col-xs-4 padlr0">
+                    <label>
+                        <input type="checkbox" name="status"  value="1" class="rightradio">
+                        健康
+                    </label>
+                </div>
+                <div class="col-sm-8 col-xs-8">
+                    <label>
+                        <input type="checkbox" name="status"  value="2" class="rightradio">
+                        咳嗽打喷嚏
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <div  class="col-sm-12 col-xs-12 padlr0">
+                <div class="col-sm-4 col-xs-4 padlr0">
+                    <label>
+                        <input type="checkbox" name="status"  value="3" class="rightradio">
+                        发热（未就诊或医生诊断为普通发热）
+                    </label>
+                </div>
+                <div class="col-sm-8 col-xs-8">
+                    <label>
+                        <input type="checkbox" name="status"  value="4" class="rightradio">
+                        已就诊，被要求回家自行隔离观察
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <div  class="col-sm-12 col-xs-12 padlr0">
+                <label>
+                    <input type="checkbox" name="status"  value="5" class="rightradio">
+                    已就医，被判定为【疑似】新型肺炎，留在医院隔离观察
+                </label>
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <div  class="col-sm-12 col-xs-12 padlr0">
+                <label>
+                    <input type="checkbox" name="status"  value="6" class="rightradio">
+                    已就医，确诊为新型肺炎
+                </label>
+            </div>
+        </div>
+        <div class="form-group clearfix" id="redcontent" style="display:none;">
+            <label class="col-sm-3 col-xs-3 leftlabel" >入院情况</label>
+            <div  class="col-sm-9 col-xs-9">
+                <input class="form-control"
+                       name="content" type="text" placeholder="请输入入院时间及所在医院"
+                />
+            </div>
+        </div>
+        <div>
+            <label class="col-sm-12 col-xs-12 padlr0" style="line-height: 32px;">是否接触过疫区人员、疑似病例或确诊病例?<span class="red">*</span></label>
+            <div class="form-group clearfix">
+                <div  class="col-sm-12 col-xs-12 padlr0">
+                    <div class="col-sm-6 col-xs-6 padlr0">
+                        <label>
+                            <input type="radio" name="hubei"  value="1" class="rightradio">
+                            是
+                        </label>
+                    </div>
+                    <div class="col-sm-6 col-xs-6">
+                        <label>
+                            <input type="radio" name="hubei"  value="2" class="rightradio">
+                            否
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-sm-3 col-xs-3 leftlabel" >体温<span class="red">*</span></label>
+            <div  class="col-sm-9 col-xs-9 clearfix">
+                <input class="form-control"
+                       style="float: left;width:70%"
+                       name="temperature" type="number" placeholder="请输入个人体温"
+                /><span class="red" style="line-height:34px;font-size:20px;padding-left: 6px">℃</span>
+            </div>
+        </div>
+
+        <div class="form-group clearfix">
+            <label class="col-sm-3 col-xs-3 leftlabel" >地理位置<span class="red">*</span></label>
+            <div  class="col-sm-9 col-xs-9 ">
+                <span style="color: #5e5e5e;line-height:34px;" id="address">
+                </span>
+            </div>
+        </div>
+    </div>
+
+</form>
+<div class="botbtn row">
+    <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+        <button type="button" class="btn btn-lg btn-success" style="width:80%"
+        onclick="addMsg()">打卡</button>
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+        <button type="button" class="btn btn-lg btn-danger" style="width:80%"
+        onclick="clearfrom('#bodyInfo')">重置</button>
+    </div>
+</div>
+<div class="innerout">
+    <div class="innerlisout">
+        <p class="linetitle">历史记录</p>
+        <ul class="list-group" id="historydata">
+
+        </ul>
+    </div>
+</div>
+<!--#include file="/ncov/navBottom.html"-->
+<!-- 历史记录 -->
+<script type="text/html" id="v_bodyhtml">
+    {{if data.length<0}}
+    <li class="list-group-item red">
+        暂无数据
+    </li>
+    {{else}}
+    {{each data as list index}}
+    <li class="list-group-item ">
+        <div class="clearfix">
+            <div class=" col-md-12 col-sm-12 col-xs-12 padlr0">
+                {{if list.state==1}}
+                健康
+                {{else if list.state==2}}
+                咳嗽打喷嚏
+                {{else if list.state==3}}
+                发热（未就诊或医生诊断为普通发热）
+                {{else if list.state==4}}
+                已就诊，被要求回家自行隔离观察
+                {{else if list.state==5}}
+                已就医，被判定为【疑似】新型肺炎，留在医院隔离观察
+                {{else if list.state==6}}
+                已就医，确诊为新型肺炎
+                {{/if}}
+            </div>
+        </div>
+        <div class="clearfix padlr0" style="margin-top:6px;margin-bottom:6px;">
+            <div class="col-md-6 col-sm-6 col-xs-6 padlr0 " style="color:#8D8D8D;">
+                是否接触湖北：
+                {{if list.hubei==1}}
+                是
+                {{else}}
+                否
+                {{/if}}
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6 padlr0 red" style="text-align: right;">
+                体温：{{list.temperature}}℃
+            </div>
+        </div>
+        <div class="clearfix">
+            <div class="col-md-8 col-sm-8 col-xs-8 padlr0" style="float: left;">
+                <p style="color: #333;font-size:16px;">
+                    {{list.recommend}}
+                </p>
+                <p style="color: #8D8D8D;font-size:14px;">
+                    {{list.cdatenow}}
+                </p>
+            </div>
+            <div style="float: right;">
+                <button type="button" class="btn btn-danger"
+                        onclick="deletefrom('{{list.id}}')">删除</button>
+            </div>
+        </div>
+
+    </li>
+    {{/each}}
+    {{/if}}
+</script>
+
+</body>
+</html>
+<script>
+    /*-- 获取openid 是否注册过 假设openId=001--*/
+    var openId=GetQueryValue('openId');
+    var contArry=[];
+    $(function () {
+        $('#modifybtn').click(function () {
+            window.location.href='indexfillIn.html?type="edit"&openId='+openId;
+        })
+
+        /*-- 监听选择健康情况显示 content --*/
+        var checkboxlis=$('#bodyInfo input[type="checkbox"][name="status"]');
+
+        checkboxlis.change(function() {
+            for(var i=0;i<checkboxlis.length;i++){
+                if(checkboxlis.eq(i).prop('checked')){
+                    var nowchangeVal=checkboxlis.eq(i).val();
+                    var index = $.inArray(nowchangeVal, contArry);   //结果：index=1
+                    if (index >= 0) {
+                    } else {
+                        contArry.push(nowchangeVal);
+                    }
+                }else if(!checkboxlis.eq(i).prop('checked')){
+                    var nowchangeVal=checkboxlis.eq(i).val();
+                    var index = $.inArray(nowchangeVal, contArry);
+                    if (index >= 0) {
+                        contArry.splice(index,1);
+                    }
+                }
+            }
+            if(contArry.length>0){
+                if($.inArray("5", contArry)!=-1 || $.inArray("6", contArry)!=-1){
+                    $('#redcontent').show();
+                }else{
+                    $('#redcontent').hide();
+                }
+
+            }else{
+                $('#redcontent').hide();
+            }
+
+        });
+    })
+    $.ajax({
+        type: "get",
+        url:'/ncov/isExist.json',
+        data:{openId:openId},
+        success: function (data) {
+            console.log(data);
+            console.log('=============')
+            if(data.success){
+                /*-- 获取注册的用户信息 --*/
+                $.ajax({
+                    type: "get",
+                    url:'/member/info.json',
+                    data:{openId:openId},
+                    success: function (data) {
+                        console.log(data);
+                        if(data.data){
+                            $('#username').html(data.data.name);
+                            if(data.data.sex==2){
+                                $('#usersex').html('女');
+                            }else if(data.data.sex==1){
+                                $('#usersex').html('男');
+                            }
+                            $('#usercompany').html(data.data.company);
+                            $('#userdivd').html(data.data.divi);
+                            $('#usercompanyaddress').html(data.data.company_address)
+                        }
+                    }
+                })
+            }else{
+                layer.msg("请先输入个人信息",function(){
+                    window.location.href='indexfillIn.html?openId='+openId;
+                });
+            }
+        }
+    })
+
+    /*-- 获取该用户所上报的所有数据 --*/
+    $.ajax({
+        type: "get",
+        url:'/member/report/list.json',
+        data:{
+            openId:openId,
+        },
+        success: function (data) {
+            console.log(data);
+            console.log('++++++++++++++++');
+            if(data.data.length>0){
+                for(var i=0;i<data.data.length;i++){
+                    if(data.data[i].cdate){
+                        data.data[i].cdatenow=moment(data.data[i].cdate).format('YYYY-MM-DD HH:mm:ss')
+                    }
+                }
+            }
+            var dynamic = template('v_bodyhtml', data);
+            $("#historydata").empty().append(dynamic);
+
+        }
+    })
+</script>
+<script>
+    /* 公众号数据 纬度经度 */
+    var dataInfo={};
+    /* 上报数据 */
+    var reportInfo={};
+    var href=window.location.href;
+    href = href.split("#");
+    console.log(href);
+    console.log(href[0])
+
+    $.ajax({
+        type: "post",
+        url: "/member/location.json",
+        headers:{'Content-Type':'application/json;charset=UTF-8'},
+        data:JSON.stringify({
+            url:href[0],
+        }),
+        async: false,
+        success: function (data) {
+            console.log(data);
+            if (data.success){
+                dataInfo.appId=data.data.appId;
+                dataInfo.timestamp=data.data.timeStamp;
+                dataInfo.nonceStr=data.data.nonceStr;
+                dataInfo.signature=data.data.signature;
+            }
+
+        }
+    })
+    getloaction();
+    function getloaction(){
+        // 微信配置
+        wx.config({
+            debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+            appId: dataInfo.appId, // 必填，公众号的唯一标识
+            timestamp:dataInfo.timestamp , // 必填，生成签名的时间戳
+            nonceStr: dataInfo.nonceStr, // 必填，生成签名的随机串
+            signature: dataInfo.signature,// 必填，签名
+            jsApiList: ['getLocation'] // 必填，需要使用的JS接口列表
+        });
+
+        wx.ready(function(){
+            console.log('wx.ready-----------')
+            /* --获取经纬度-- */
+            wx.getLocation({
+                type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+                success: function (res) {
+                    console.log(res);
+                    console.log('地图经纬度==========')
+                    dataInfo.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                    dataInfo.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                    /*dataInfo.speed = res.speed; // 速度，以米/每秒计
+                    dataInfo.accuracy = res.accuracy; // 位置精度*/
+
+                    /*-- 根据经纬度获取地理位置 --*/
+                    /*--dataInfo.latitude,dataInfo.longitude 39.916263,116.49683--*/
+                    /*  */
+                    console.log('https://apis.map.qq.com/ws/geocoder/v1/?location='+dataInfo.latitude+','+dataInfo.longitude+'&key=3U4BZ-UCDKF-F2ZJZ-NEMK7-XK5B7-7XFHN')
+                    console.log('+DA+DA+D+AD+D+D+SA+')
+
+                    $.ajax({
+                        url: 'https://apis.map.qq.com/ws/geocoder/v1/?',
+                        dataType: 'jsonp',
+                        data:{
+                            location:dataInfo.latitude+','+dataInfo.longitude,
+                            key:'3U4BZ-UCDKF-F2ZJZ-NEMK7-XK5B7-7XFHN',
+                            output:'jsonp',
+                        },
+
+                        success: function(data) {
+                            console.log(data);
+                            console.log('weizhi +++++++');
+                            if(data.result){
+                                reportInfo.province=data.result.address_component.province;
+                                reportInfo.city=data.result.address_component.city;
+                                reportInfo.district=data.result.address_component.district;
+                                reportInfo.street=data.result.address_component.street_number;
+                                reportInfo.recommend=data.result.formatted_addresses.recommend;
+                                $('#address').html(reportInfo.recommend)
+                            }
+                        },
+                        error : function(data) {
+                            console.log(data);
+                            console.log('=================')
+                        }
+                    });
+                },
+                cancel: function (res) {
+                    console.log(JSON.stringify(res))
+                    console.log('用户拒绝授权获取地理位置');
+                },
+                fail: function (res) {
+                    /* alert(JSON.stringify(res))*/
+                }
+            })
+
+
+        });
+        wx.error(function(res){
+            /*alert(JSON.stringify(res));*/
+            console.log(res);
+            console.log('error--------------')
+        })
+    }
+
+</script>
+<script>
+    function addMsg(){
+        function addinnerfun(newstate){
+            if(newstate==3 || newstate==4 ||  newstate==5  || newstate==6 ){
+                reportInfo.early=1
+            }else{
+                reportInfo.early=0
+            }
+            /*reportInfo.province='山西';
+            reportInfo.city='山西';
+            reportInfo.district='山西';
+            reportInfo.street='山西';
+            reportInfo.recommend='山西';*/
+            reportInfo.state=newstate;
+            reportInfo.content=$('#bodyInfo').find('input[name="content"]').val();
+            reportInfo.hubei=$('#bodyInfo').find('input[name="hubei"]:checked').val();
+            reportInfo.temperature=$('#bodyInfo').find('input[name="temperature"]').val();
+            reportInfo.openId=openId;
+            if(!reportInfo.hubei || reportInfo.hubei==''){
+                layer.msg('请选择是否接触');
+            }else if(!reportInfo.temperature || reportInfo.temperature==''){
+                layer.msg('请填写个人体温');
+                $('#bodyInfo').find('input[name="temperature"]').focus();
+            }else if(!reportInfo.province || reportInfo.province==''){
+                layer.msg('未获取到位置，请打开定位权限');
+                getloaction();
+            }else{
+                console.log(reportInfo);
+                $.ajax({
+                    type: "post",
+                    headers:{'Content-Type':'application/json;charset=UTF-8'},
+                    url: "/member/report.json",
+                    data:JSON.stringify(reportInfo),
+                    success: function(data) {
+                        if(data.success){
+                            layer.msg('申报成功',function () {
+                                window.location.reload();
+                            })
+                        }else{
+                            layer.msg('申报失败联系管理员')
+                        }
+                    }
+                });
+            }
+        }
+        if(contArry.length>0){
+            for(var i=0;i<contArry.length;i++){
+                addinnerfun(contArry[i]);
+            }
+        }else{
+            layer.msg('请选择健康状况');
+        }
+
+
+    }
+
+    /*-- 删除申报信息 --*/
+
+    function deletefrom(id){
+        layer.confirm('确定要删除吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.ajax({
+                type: "delete",
+                url: "/member/report.json",
+                data:{
+                    id:id,
+                    openId:openId,
+                },
+                success: function(data) {
+
+                    if(data.success){
+                        layer.msg('删除成功',function () {
+                            window.location.reload();
+                        })
+                    }else{
+                        layer.msg('删除失败联系管理员')
+                    }
+                    console.log(data);
+                }
+            });
+        });
+
+    }
+</script>

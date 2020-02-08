@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>打卡列表</title>
+    <link rel="stylesheet" href="../css/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/diseaseRegister.css">
+    <link rel="stylesheet" href="../js/paging/paging.css"/>
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.js"></script>
+    <script src="../js/common.js"></script>
+    <script src="../js/layer/layer.js"></script>
+    <script src="../js/template.js"></script>
+    <script src="../js/moment.js"></script>
+    <script src="../js/paging/paging.js"></script>
+    <script src="../js/ajaxDom.js"></script>
+</head>
+<body class="hastopout">
+<!--#include file="/ncov/headerback.html"-->
+<div class="innerout">
+    <div class="padtb10">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataList">
+
+            </table>
+        </div>
+        <div id="pageTool" class="newpages"></div>
+    </div>
+</div>
+<script type="text/html" id="v_todystate">
+    <thead>
+        <tr>
+            <td>人员</td>
+            <td>时间</td>
+            <td>地址</td>
+            <td>备注</td>
+        </tr>
+    </thead>
+    <tbody>
+        {{each data as item index }}
+        <tr>
+            <td>{{item.name}}/{{item.phone}}</td>
+            <td>{{item.c_date}}</td>
+            <td>{{item.province}}{{item.city}}{{item.district}}{{item.street}}{{item.recommend}}</td>
+            <td>{{item.content}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+
+</script>
+<script>
+    var title='打卡列表'
+</script>
+<script>
+    /*-- 获取统计详细数据 --*/
+    datacount(1);
+    var pageindexnow=1;
+    var pagesizeout=10;
+    function datacount(pageindex,pagesize){
+        pagesize=pagesize?pagesize:pagesizeout;
+        if (pageindex == undefined || pageindex == null) {
+            pageindex = pageindexnow;
+        } else {
+            pageindexnow = pageindex;
+        }
+        var page = new Paging();
+        $.ajaxDom('#dataList',{
+            url: '/publish/signIn/Log.json',
+            type: 'get',
+            data:{
+                pageNumber: pageindexnow,
+                pageSize:pagesize,
+            },
+            success: function (data) {
+                var dataInfo=data.data;
+                var todystate = template('v_todystate', data.data);
+                $("#dataList").empty().append(todystate);
+                if(dataInfo.data.length<1){
+                    $('#pageTool').hide();
+                }
+                pageSize(pageindexnow,pagesize)
+                function pageSize(pagenumber, pagesize) {
+                    page.init({
+                        target: $('#pageTool').empty(),
+                        pagesize: pagesize,
+                        count: data.data.totalCount,
+                        toolbar: true,
+                        current: pagenumber,
+                        //hash: true ,
+                        changePagesize: function (_psize, _pnumber) {
+                            pagesizeout=_psize;
+                            datacount(1,_psize)
+                        },
+                        callback: function (_pnumber, _psize, count) {
+                            pagesizeout=_psize;
+                            datacount(_pnumber,_psize)
+                        }
+                    });
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

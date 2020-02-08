@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>后台统计</title>
+    <link rel="stylesheet" href="../css/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/statiStics.css">
+    <link rel="stylesheet" href="../js/paging/paging.css"/>
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.js"></script>
+    <script src="../js/common.js"></script>
+    <script src="../js/template.js"></script>
+    <script src="../js/echarts.min.js"></script>
+    <script src="../js/paging/paging.js"></script>
+    <script src="../js/ajaxDom.js"></script>
+    <script src="../js/moment.js"></script>
+</head>
+<body class="hastopout">
+    <!--#include file="/ncov/headerback.html"-->
+    <div class="innerout">
+        <div class="staticbox">
+            <div class="tjout">
+                <p class="linetitle">统计总人数 今日上报</p>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="todynumber">
+
+                    </table>
+                </div>
+            </div>
+            <div class="tjout">
+                <p class="linetitle">统计状态 今日上报状态</p>
+                <table class="table table-bordered" id="todystate">
+                </table>
+            </div>
+            <div class="tjout">
+                <p class="linetitle">统计状态 健康考勤记录</p>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="msgdata">
+                    </table>
+                </div>
+                <div id="pageTool" class="newpages"></div>
+            </div>
+        </div>
+    </div>
+<script type="text/html" id="v_todydata">
+    <tr>
+        <th>
+            总人数
+        </th>
+        <th>
+            今日上报次数
+        </th>
+        <th>
+            今日上报总人数
+        </th>
+    </tr>
+    <tr>
+        <td>
+            {{data.memberCount}}
+        </td>
+        <td>
+            {{data.reportCount}}
+        </td>
+        <td>
+            {{data.groupReportCount}}
+        </td>
+    </tr>
+</script>
+<script type="text/html" id="v_todystate">
+    <tbody>
+        {{each info as item index }}
+        <tr>
+            <td>
+                {{item.text}}
+            </td>
+            <td>
+                {{item.number}}
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</script>
+    <script type="text/html" id="v_msgdata">
+
+        {{if data.length>0}}
+        <thead>
+        <tr>
+            <th>
+                姓名
+            </th>
+            <th>
+                体温
+            </th>
+            <th>
+                提交时间
+            </th>
+            <th>
+                联系方式
+            </th>
+            <th>
+                状态
+            </th>
+            <th>
+                是否接触湖北
+            </th>
+            <th>
+                申报地址
+            </th>
+            <th>
+                入院情况
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {{each data as data index}}
+        <tr>
+            <td>
+                {{data.name}}
+            </td>
+            <td>
+                {{data.temperature}}
+            </td>
+            <td>
+                {{data.cdatenow}}
+            </td>
+            <td>
+                {{data.phone}}
+            </td>
+            <td>
+                {{if data.state==1}}
+                健康
+                {{else if data.state==2}}
+                咳嗽打喷嚏
+                {{else if data.state==3}}
+                发热（未就诊或医生诊断为普通发热）
+                {{else if data.state==4}}
+                已就诊，被要求回家自行隔离观察
+                {{else if data.state==5}}
+                已就医，被判定为【疑似】新型肺炎，留在医院隔离观察
+                {{else if data.state==5}}
+                已就医，确诊为新型肺炎
+                {{/if}}
+            </td>
+            <td>
+                {{if data.hubei== 1}}
+                是
+                {{else if data.hubei== 2}}
+                否
+                {{/if}}
+            </td>
+            <td>
+                {{data.province}}{{data.city}}{{data.district}}{{data.recommend}}
+            </td>
+            <td>
+                {{data.content}}
+            </td>
+        </tr>
+        {{/each}}
+        </tbody>
+        {{else}}
+        <tr>
+            <td class="text-danger">
+                暂无数据
+            </td>
+        </tr>
+        {{/if}}
+    </script>
+</body>
+</html>
+<script>
+    var compname=GetQueryValue('name')?GetQueryValue('name'):'';
+    var admin=GetQueryValue('admin')?GetQueryValue('admin'):'';
+    var urlone='',urltwo='',urlthree='';
+    urlone='/statis/member.json';
+    urltwo='/statis/memberState.json';
+    urlthree='/statis/memberInfo.json';
+    /*-- 获取统计数 --*/
+    $.ajax({
+        type: "get",
+        url:urlone,
+        data:{company:compname},
+        success:function (data) {
+            console.log(data);
+            console.log('================')
+            var todydata = template('v_todydata', data);
+            $("#todynumber").empty().append(todydata);
+        }
+    })
+    $.ajax({
+        type: "get",
+        url:urltwo,
+        data:{company:compname},
+        success:function (data) {
+            console.log(data);
+            console.log('================');
+            data.info=[
+                {text:'健康',state:1,number:0},
+                {text:'咳嗽打喷嚏',state:2,number:0},
+                {text:'发热（未就诊或医生诊断为普通发热）',state:3,number:0},
+                {text:'已就诊，被要求回家自行隔离观察',state:4,number:0},
+                {text:'已就医，被判定为【疑似】新型肺炎，留在医院隔离观察',state:5,number:0},
+                {text:'已就医，确诊为新型肺炎',state:6,number:0},
+            ]
+            for(var i=0;i<data.data.length;i++){
+                for(var j=0;j<data.info.length;j++){
+                    if(data.data[i].state==data.info[j].state){
+                        data.info[j].number=data.data[i].c
+                    }
+                }
+            }
+            var todystate = template('v_todystate', data);
+            $("#todystate").empty().append(todystate);
+        }
+    })
+    var pageindexnow=1;
+    var pagesizeout=10;
+    datalist(1);
+    /*-- 获取统计详细数据 --*/
+    function datalist(pageindex,pagesize){
+        pagesize=pagesize?pagesize:pagesizeout;
+        if (pageindex == undefined || pageindex == null) {
+            pageindex = pageindexnow;
+        } else {
+            pageindexnow = pageindex;
+        }
+        var page = new Paging();
+        $.ajaxDom('#msgdata',{
+            type: "get",
+            url:urlthree,
+            data:{
+                company:compname,
+                pageNumber: pageindexnow,
+                pageSize:pagesize,
+            },
+            success:function (data) {
+                var dataInfo=data.data;
+                if(dataInfo.data.length>0){
+                    for(var i=0;i<dataInfo.data.length;i++){
+                        if(dataInfo.data[i].cdate){
+                            dataInfo.data[i].cdatenow=moment(dataInfo.data[i].cdate).format('YYYY-MM-DD HH:mm:ss')
+                        }
+                    }
+                }
+                var msgdata = template('v_msgdata', data.data);
+                $("#msgdata").empty().append(msgdata);
+                if(dataInfo.data.length<1){
+                    $('#pageTool').hide();
+                }
+                pageSize(pageindexnow,pagesize)
+                function pageSize(pagenumber, pagesize) {
+                    page.init({
+                        target: $('#pageTool').empty(),
+                        pagesize: pagesize,
+                        count: data.data.totalCount,
+                        toolbar: true,
+                        current: pagenumber,
+                        //hash: true ,
+                        changePagesize: function (_psize, _pnumber) {
+                            pagesizeout=_psize;
+                            datalist(1,_psize)
+                        },
+                        callback: function (_pnumber, _psize, count) {
+                            pagesizeout=_psize;
+                            datalist(_pnumber,_psize)
+                        }
+                    });
+                }
+            }
+        })
+    }
+
+</script>

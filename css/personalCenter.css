@@ -1,0 +1,86 @@
+.myselfout{
+    width:100%;
+}
+.myselfbox{
+    background-color: #235572;
+    padding:23px 20px ;
+    display: table;
+    width: 100%;
+}
+.myselfleft{
+    display: table-cell;
+    color: #ffffff;
+    vertical-align: middle;
+}
+.myselfright{
+    display: table-cell;
+    color: #ffffff;
+    vertical-align: middle;
+    white-space:nowrap;
+    text-align: right;
+}
+.username{
+    font-size:22px;
+    line-height:30px;
+    margin-bottom:6px;
+}
+.compname{
+    font-size:16px;
+    line-height:26px;
+}
+.signbtn{
+    border-radius: 10px;
+    line-height: 30px;
+    background-color: #f29400;
+    padding:6px 12px;
+    color: #fff;
+    margin-left:23px;
+    font-size:16px;
+}
+.signtext{
+    line-height: 30px;
+    font-size:18px;
+    color: #fff;
+}
+.mycontul{
+    display:table;
+    width:100%;
+}
+.mycontul:first-child{
+    padding-top:6px;
+    border-bottom: 1px solid #ddd;
+}
+.mycontlis{
+    display:table-cell;
+    text-align: center;
+    padding:8px;
+    cursor: pointer;
+}
+
+.mycontlis a{
+    text-decoration: none;
+}
+.mycontlis span{
+    color: #f29400;
+    font-size:30px;
+    margin-bottom:10px;
+}
+.mycontlis p{
+    font-size:12px;
+    color: #8D8D8D;
+}
+.per_smicon{
+    display: block;
+    position: relative;
+}
+.per_smiconpop{
+    position: absolute;
+    font-style: normal;
+    background-color:red;
+    color: #fff;
+    top:-16px;
+    border-radius:12px;
+    padding:3px 8px;
+    left:55%;
+    font-size:12px;
+}

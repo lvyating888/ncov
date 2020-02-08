@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>申报</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/diseaseRegister.css">
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/layer/layer.js"></script>
+    <script src="js/laydate/laydate.js"></script>
+</head>
+<body class="hasbotout">
+<form class="innerout" id="addInfo">
+    <div class="innerlisout">
+        <p class="linetitle">个人信息</p>
+        <div class="form-group clearfix">
+            <input type="hidden" name="id">
+            <label class="col-sm-3 col-xs-3 leftlabel" >姓名<span class="red">*</span></label>
+            <div  class="col-sm-9 col-xs-9 ">
+                <input class="form-control" name="name" type="text" placeholder="请输入姓名"/>
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-sm-3 col-xs-3 leftlabel" >性别<span class="red">*</span></label>
+            <div  class="col-sm-9 col-xs-9 radioout">
+                <div class="col-sm-6 col-xs-6">
+                    <label>
+                        <input type="radio" name="sex"  value="1" class="rightradio" >
+                        男
+                    </label>
+                </div>
+                <div class="col-sm-6 col-xs-6">
+                    <label>
+                        <input type="radio" name="sex"  value="2" class="rightradio">
+                        女
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-sm-3 col-xs-3 leftlabel" >出生日期<span class="red">*</span></label>
+            <div  class="col-sm-9 col-xs-9 ">
+                <!--<input class="form-control" style="width:36%;float: left;background-color: #fff" id="birthyear" readonly="readonly" type="text" placeholder="年"
+                />
+                <input class="form-control"  style="width:32%;float: left;background-color: #fff" id="birthmonth" readonly="readonly" type="text" placeholder="月"
+                />
+                <input class="form-control"  style="width:32%;float: left;background-color: #fff" id="birthday" readonly="readonly" type="text" placeholder="日"
+                />-->
+                <input class="form-control" style="background-color: #fff" id="birthday" name="birthday" readonly="readonly" type="text" placeholder="选择出生日期"
+                />
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-sm-3 col-xs-3 leftlabel" >手机号<span class="red">*</span></label>
+            <div  class="col-sm-9 col-xs-9 ">
+                <input class="form-control" name="phone" type="text" placeholder="请输入手机号" maxlength="11"
+                       readonly style="background-color: #fff;"
+                />
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-sm-3 col-xs-3 leftlabel" >家庭地址<span class="red">*</span></label>
+            <div  class="col-sm-9 col-xs-9 ">
+                <input class="form-control" name="address" type="text" placeholder="请填写家庭地址"
+                />
+            </div>
+        </div>
+    </div>
+
+    <div class="innerlisout">
+        <p class="linetitle">公司信息</p>
+        <div class="form-group clearfix">
+            <label class="col-sm-3 col-xs-3 leftlabel" >公司地址<span class="red">*</span></label>
+            <div  class="col-sm-9 col-xs-9 ">
+                <input class="form-control" name="company_address" type="text" placeholder="请输入公司地址"
+                       style="background-color: #fff;"
+                       readonly
+                />
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-sm-3 col-xs-3 leftlabel" >公司名称<span class="red">*</span></label>
+            <div  class="col-sm-9 col-xs-9 ">
+                <input class="form-control" name="company" type="text" placeholder="请输入公司地址"
+                       style="background-color: #fff;"
+                       readonly
+                />
+                <!--<select class="form-control" name="company" id="company">
+                    <option value="">
+                        请选择所属公司
+                    </option>
+                </select>-->
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-sm-3 col-xs-3 leftlabel" >科室<span class="red">*</span></label>
+            <div  class="col-sm-9 col-xs-9 ">
+                <input class="form-control" name="divi" type="text" placeholder="请输入科室名称"
+                />
+            </div>
+        </div>
+    </div>
+</form>
+<div class="botbtn row">
+    <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+        <button type="button" class="btn btn-lg btn-success" style="width:80%"
+                onclick="addMsg()" id="savebtn">保存</button>
+        <button type="button" class="btn btn-lg btn-success" style="width:80%;display: none;"
+                onclick="modifyMsg()" id="modifybtn">
+            修改
+        </button>
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+        <button type="button" class="btn btn-lg btn-danger" style="width:80%"
+                onclick="clearfrom('#addInfo')">重置</button>
+    </div>
+</div>
+<!--#include file="/ncov/navBottom.html"-->
+</body>
+</html>
+<script>
+    /*-- 获取openid 是否注册过 假设openId=001--*/
+    var openId=GetQueryValue('openId');
+    var type=GetQueryValue('type')?GetQueryValue('type'):'';
+    console.log(openId);
+
+    $.ajax({
+        type: "get",
+        url:'/ncov/isExist.json',
+        data:{openId:openId},
+        success: function (data) {
+            console.log(data);
+            console.log('=============')
+            if(data.success && type!==''){
+                if(type!==''){
+                    /*-- 获取注册的用户信息 --*/
+                    $.ajax({
+                        type: "get",
+                        url:'/member/info.json',
+                        data:{openId:openId},
+                        success: function (data) {
+                            console.log(data);
+                            if(data.data){
+                                $('#modifybtn').show();
+                                $('#savebtn').hide();
+                                $('#addInfo').find('input[name="name"]').val(data.data.name);
+                                $('#addInfo').find('input[name="address"]').val(data.data.address);
+                                $('#addInfo').find('input[name="birthday"]').val(data.data.birthday);
+                                $('#addInfo').find('input[name="company"]').val(data.data.company);
+                                /*$('#addInfo').find('select[name="company"]').val(data.data.company);*/
+                                $('#addInfo').find('input[name="company_address"]').val(data.data.company_address);
+                                $('#addInfo').find('input[name="divi"]').val(data.data.divi);
+                                $('#addInfo').find('input[name="phone"]').val(data.data.phone);
+                                if(data.data.sex && data.data.sex!==0){
+                                    for(k in $('#addInfo').find('input[name="sex"]')){
+                                        if($('#addInfo').find('input[name="sex"]').eq(k).val()==data.data.sex){
+                                            $('#addInfo').find('input[name="sex"]').eq(k).prop("checked",true);
+                                        }
+                                    }
+
+                                }
+                                $('#addInfo').find('input[name="id"]').val(data.data.id);
+                            }else{
+                                $('#modifybtn').hide();
+                                $('#savebtn').show();
+                            }
+                        }
+                    })
+                }
+            }else if(data.success && type===''){
+                window.location.href='bodyMsg.html?openId='+openId;
+            }else{
+                $('#modifybtn').hide();
+                $('#savebtn').show();
+            }
+        }
+    })
+</script>
+<script>
+    $(function () {
+        laydate.render({
+            elem: '#birthday',
+            format: 'yyyyMMdd',
+        });
+        // laydate.render({
+        //     elem: '#birthmonth',
+        //     format: 'MM',
+        //     type:'month',
+        // });
+        // laydate.render({
+        //     elem: '#birthday',
+        //     format: 'dd',
+        // });
+        /*-- 动态获取公司列表 --*/
+
+        $.ajax({
+            type: "get",
+            url:'/ncov/company/list.json',
+            success: function (data) {
+                /*  */
+                console.log(data,data.data.length);
+                console.log('=+++++')
+                for (var i = 0; i < data.data.length; i++) {
+                    var datainfo = data.data[i];
+                    $("#company").append(`
+                        <option value='${datainfo.company}'>${datainfo.company}</option>
+                    `);
+                }
+            }
+        })
+    })
+</script>
+<script>
+    <!-- 新增 -->
+    function addMsg(){
+        var dataInfo=getFormJson('#addInfo');
+        console.log(dataInfo)
+        dataInfo.wxOpenid=openId;
+        if(!dataInfo.name || dataInfo.name==''){
+            layer.msg('请输入姓名');
+            $('#addInfo').find('input[name="name"]').focus();
+        }else if(!dataInfo.sex || dataInfo.sex==''){
+            layer.msg('请选择性别');
+        }else if($('#birthday').val().trim()=='') {
+            layer.msg('请选择出生年份');
+            $('#birthday').focus();
+        }else if(!dataInfo.phone || dataInfo.phone==''){
+            layer.msg('请输入手机号');
+            $('#addInfo').find('input[name="phone"]').focus();
+        }else if(!dataInfo.address || dataInfo.address==''){
+            layer.msg('请输入家庭住址');
+            $('#addInfo').find('input[name="address"]').focus();
+        }else if(!dataInfo.company_address || dataInfo.company_address==''){
+            layer.msg('请输入公司地址');
+            $('#addInfo').find('input[name="company_address"]').focus();
+        }else if(!dataInfo.company || dataInfo.company==''){
+            layer.msg('请输入公司名称');
+            $('#addInfo').find('input[name="company"]').focus();
+        }else if(!dataInfo.divi || dataInfo.divi==''){
+            layer.msg('请输入科室');
+            $('#addInfo').find('input[name="divi"]').focus();
+        }else{
+            /* dataInfo.birthday=$('#birthyear').val()+$('#birthmonth').val()+$('#birthday').val()*/
+            // var birthystr=$('#birthyear').val().split("-");
+            //dataInfo.birthday=birthystr[0]+birthystr[1]+birthystr[2];
+            /*console.log(dataInfo); */
+            $.ajax({
+                type: "post",
+                headers:{'Content-Type':'application/json;charset=UTF-8'},
+                url: "/ncov/info.json",
+                data:JSON.stringify(dataInfo),
+                success: function(data) {
+                    if(data.success){
+                        layer.msg('保存成功',function () {
+                            window.location.href='bodyMsg.html?openId='+openId;
+                        });
+
+                    }else{
+                        layer.msg('保存失败联系管理员')
+                    }
+                    console.log(data);
+                }
+            });
+        }
+
+    }
+    /*-- 修改 --*/
+    function modifyMsg(){
+        var dataInfo=getFormJson('#addInfo');
+        dataInfo.wxOpenid=openId;
+        if(!dataInfo.name || dataInfo.name==''){
+            layer.msg('请输入姓名');
+            $('#addInfo').find('input[name="name"]').focus();
+        }else if(!dataInfo.sex || dataInfo.sex==''){
+            layer.msg('请选择性别');
+        }else if($('#birthday').val().trim()=='') {
+            layer.msg('请选择出生年份');
+            $('#birthday').focus();
+        }else if(!dataInfo.phone || dataInfo.phone==''){
+            layer.msg('请输入手机号');
+            $('#addInfo').find('input[name="phone"]').focus();
+        }else if(!dataInfo.address || dataInfo.address==''){
+            layer.msg('请输入家庭住址');
+            $('#addInfo').find('input[name="address"]').focus();
+        }else if(!dataInfo.company_address || dataInfo.company_address==''){
+            layer.msg('请输入公司地址');
+            $('#addInfo').find('input[name="company_address"]').focus();
+        }else if(!dataInfo.company || dataInfo.company==''){
+            layer.msg('请输入公司名称');
+            $('#addInfo').find('input[name="company"]').focus();
+        }else if(!dataInfo.divi || dataInfo.divi==''){
+            layer.msg('请输入科室');
+            $('#addInfo').find('input[name="divi"]').focus();
+        }else {
+            /* dataInfo.birthday=$('#birthyear').val()+$('#birthmonth').val()+$('#birthday').val()*/
+            // var birthystr=$('#birthyear').val().split("-");
+            // dataInfo.birthday = birthystr[0] + birthystr[1] + birthystr[2];
+            console.log(dataInfo)
+            $.ajax({
+                type: "put",
+                headers:{'Content-Type':'application/json;charset=UTF-8'},
+                url: "/member/info.json",
+                data:JSON.stringify(dataInfo),
+                success: function(data) {
+                    console.log(data);
+                    if(data.success){
+                        layer.msg('修改成功',function () {
+                            window.location.href='bodyMsg.html?openId='+openId;
+                        });
+                    }else{
+                        layer.msg('修改失败联系管理员')
+                    }
+                }
+            })
+        }
+
+    }
+
+</script>

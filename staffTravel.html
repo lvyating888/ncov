@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>人员出行</title>
+    <link rel="stylesheet" href="css/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/personalCenter.css">
+    <link rel="stylesheet" href="js/webuploader/webuploader.css">
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/layer/layer.js"></script>
+    <script src="js/template.js"></script>
+    <script src="js/laydate/laydate.js"></script>
+    <script src="js/webuploader/webuploader.js"></script>
+    <script src="js/moment.js"></script>
+</head>
+<body class="hastopout">
+<!--#include file="/ncov/headerback.html"-->
+<div class="innerout">
+    <form id="addmsg">
+        <div class="innerlisout">
+            <p class="linetitle">个人信息</p>
+            <div class="form-group clearfix">
+                <label class="col-sm-3 col-xs-3 leftlabel" >行程详情<span class="red">*</span></label>
+                <div class=" col-sm-9 col-xs-9 ">
+                    <textarea class="form-control" name="content" type="text" style="height:100px;" placeholder="请输入行程详情"></textarea>
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <label class="col-sm-3 col-xs-3 leftlabel">开始时间<span class="red">*</span></label>
+                <div class="col-sm-9 col-xs-9 ">
+                    <input class="form-control" style="background-color: #fff" id="starttime" name="begin_date" readonly="readonly" type="text" placeholder="选择开始时间" >
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <label class="col-sm-3 col-xs-3 leftlabel">结束时间<span class="red">*</span></label>
+                <div class="col-sm-9 col-xs-9 ">
+                    <input class="form-control" style="background-color: #fff" id="endtime" name="end_date" readonly="readonly" type="text" placeholder="选择结束时间" >
+                </div>
+            </div>
+            <div class="form-group clearfix" id="uploader">
+                <label class="col-sm-3 col-xs-3 leftlabel">附件</label>
+                <div class="col-sm-9 col-xs-9 ">
+                    <div id="thelist" class="uploader-list"></div>
+                    <div id="picker">选择文件</div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="botbtn row">
+        <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+            <button type="button" class="btn btn-lg btn-success" style="width: 80%;" onclick="savemsg()" id="savebtn">保存</button>
+        </div>
+        <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+            <button type="button" class="btn btn-lg btn-danger" style="width:80%" onclick="clearfrom('#addmsg')">重置</button>
+        </div>
+    </div>
+    <div>
+        <p class="linetitle">出行记录</p>
+        <p class="red" style="line-height:20px;margin:6px 0;">
+            出行次数:<span id="zjnumber">0</span>
+        </p>
+        <div class="table-responsive">
+            <table class="table table-bordered" id="olddata">
+
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/html" id="v_olddata">
+    <tbody>
+    <tr>
+        <th>
+            发布时间
+        </th>
+        <th>
+            出行内容
+        </th>
+        <th>
+            出行时间
+        </th>
+        <th>
+            结束时间
+        </th>
+        <th>
+            附件
+        </th>
+        <th>
+            操作
+        </th>
+    </tr>
+    {{each data as item index}}
+    <tr>
+        <td>
+            {{item.cdatenow}}
+        </td>
+        <td>
+            {{item.content}}
+        </td>
+        <td>
+            {{item.begin_date}}
+        </td>
+        <td>
+            {{item.end_date}}
+        </td>
+        <td>
+            <a href="http://webimg.mp12345.com{{item.file_path}}">
+                {{item.file_path}}
+            </a>
+        </td>
+        <td>
+            <button type="button" class="btn btn-danger" onclick="deletemsg('{{item.id}}')">删除</button>
+        </td>
+    </tr>
+    {{/each}}
+    </tbody>
+</script>
+</html>
+<script>
+    title='人员出行'
+    /*-- 获取openid 是否注册过 假设openId=001--*/
+    var openId=GetQueryValue('openId');
+    $(function () {
+        laydate.render({
+            elem: '#starttime',
+            type: 'datetime',
+            format: 'yyyy-MM-dd HH:mm:ss',
+        });
+        laydate.render({
+            elem: '#endtime',
+            type: 'datetime',
+            format: 'yyyy-MM-dd HH:mm:ss',
+        });
+    })
+</script>
+<script>
+    /*-- 获取出行记录 --*/
+    gohistory();
+    function gohistory(){
+        $.ajax({
+            type:'get',
+            url:"/member/schedule/list.json",
+            success:function (data) {
+                console.log(data)
+                if(data.data!==0){
+                    if(data.data.length>0){
+                        $('#zjnumber').html(data.data.length);
+                        for(var i=0;i<data.data.length;i++){
+                            if(data.data[i].cdate){
+                                data.data[i].cdatenow=moment(data.data[i].cdate).format('YYYY-MM-DD HH:mm:ss')
+                            }
+                        }
+                    }
+                    var olddata = template('v_olddata', data);
+                    $("#olddata").empty().append(olddata);
+                }else{
+                    $("#olddata").empty().html('<tr><td class="red">暂无数据</td></tr>')
+                }
+            }
+        })
+    }
+</script>
+<script>
+    /*--- 上传附件 ---*/
+    var uploader = WebUploader.create({
+        // 选完文件后，是否自动上传。
+        auto: true,
+        // swf文件路径
+        swf: 'js/webuploader/Uploader.swf',
+
+        // 文件接收服务端。
+        server:'/member/file/upload.json',
+        // 选择文件的按钮。可选。
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+        pick: '#picker',
+        // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+        resize: false,
+        fileNumLimit: 1
+    });
+    // 当有文件被添加进队列的时候
+    uploader.on( 'fileQueued', function( file ) {
+        $('#thelist').append( '<div id="' + file.id + '" class="item">' +
+            '<h4 class="info">' + file.name + '</h4>' +
+            '<p class="state">等待上传...</p>' +
+            '</div>' );
+    });
+    // 文件上传过程中创建进度条实时显示。
+    uploader.on( 'uploadProgress', function( file, percentage ) {
+        var $li = $( '#'+file.id ),
+            $percent = $li.find('.progress .progress-bar');
+        // 避免重复创建
+        if ( !$percent.length ) {
+            $percent = $('<div class="progress progress-striped active">' +
+                '<div class="progress-bar" role="progressbar" style="width: 0%">' +
+                '</div>' +
+                '</div>').appendTo( $li ).find('.progress-bar');
+        }
+        $li.find('p.state').text('上传中');
+        $percent.css( 'width', percentage * 100 + '%' );
+    });
+    uploader.on( 'uploadSuccess', function( file,response ) {
+        console.log(file,response);
+        console.log(response.success)
+        if(response.success){
+            var htmllist=`
+            <p><a href="javascript:;" filePath="${response.data.path}">${file.name}</a>
+                <button class="btn btn-default" onclick="deletefile(this)">删除</button>
+            </p>
+        `
+            $('#thelist .item').remove();
+            $('#thelist').append(htmllist)
+        }
+    });
+    function deletefile(demo) {
+        $(demo).parent().remove();
+    }
+    /*-- 保存记录 --*/
+    function savemsg() {
+        var dataInfo=getFormJson('#addmsg');
+        dataInfo.wx_openid=openId;
+        dataInfo.file_path=$('#thelist').find('p a').attr('filepath') || '';
+        if(!dataInfo.content || dataInfo.content==''){
+            layer.msg('请输入行程详情');
+            $('#bodyInfo').find('textarea[name="content"]').focus();
+        }else if(!dataInfo.begin_date || dataInfo.begin_date==''){
+            layer.msg('选择开始时间');
+        }else if(!dataInfo.end_date || dataInfo.end_date==''){
+            layer.msg('选择结束时间');
+        }else{
+            console.log(dataInfo)
+            $.ajax({
+                type:'post',
+                url:"/member/schedule.json",
+                headers:{'Content-Type':'application/json;charset=UTF-8'},
+                data:JSON.stringify(dataInfo),
+                success:function (data) {
+                    console.log(data);
+                    console.log('--------------')
+                    if(data.success){
+                        layer.msg('保存成功');
+                        gohistory();
+                        clearfrom('#addmsg');
+                        $('#thelist').empty();
+                    }else{
+                        layer.msg('保存失败，联系管理员')
+                    }
+                }
+            })
+        }
+    }
+    /*-- 删除记录 --*/
+    function deletemsg(id) {
+        layer.confirm('确定要删除吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.ajax({
+                type:'delete',
+                url:"/member/schedule.json",
+                data:{
+                    id:id
+                },
+                success:function (data) {
+                    console.log(data)
+                    if(data.success){
+                        gohistory();
+                        layer.msg('删除成功')
+                    }else{
+                        layer.msg('删除失败，请联系管理员')
+                    }
+                }
+            })
+        })
+
+    }
+</script>

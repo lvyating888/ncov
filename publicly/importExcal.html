@@ -1,0 +1,729 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>导入</title>
+    <link rel="stylesheet" href="../css/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/diseaseRegister.css">
+    <link rel="stylesheet" href="../js/bootstrapSwitch/bootstrap-switch.min.css">
+    <link rel="stylesheet" href="../js/paging/paging.css"/>
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.js"></script>
+    <script src="../js/common.js?v=0.1"></script>
+    <script src="../js/layer/layer.js"></script>
+    <script src="../js/template.js"></script>
+    <script src="../js/moment.js"></script>
+    <script	type="text/javascript" src="https://webimg.mp12345.com/js/js-xlsx/xlsx.core.min.js"></script>
+    <script type="text/javascript" src="../js/importexcal/xlsxjson.js"></script>
+    <script type="text/javascript" src="../js/importexcal/checkin.js"></script>
+    <script src="../js/bootstrapSwitch/bootstrap-switch.min.js"></script>
+    <script src="../js/paging/paging.js"></script>
+    <script src="../js/ajaxDom.js"> </script>
+</head>
+<style>
+    #importbtn_out{
+        position: relative;
+    }
+    #file{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left:0;
+        top:0;
+        opacity: 0;
+    }
+    .jyb_pdel{
+        text-align: center;
+        background-color: red;
+        border-radius: 50%;
+        width:30px;
+        height: 30px;
+        color: #fff;
+        display: block;
+        font-size:20px;
+        line-height:30px;
+        font-weight: bold;
+    }
+    .jyb_pdel:active,.jyb_pdel:hover{
+        color: #fff;
+    }
+    .sexspan input[type='radio']{
+        vertical-align: text-top;
+    }
+    .checkbox:checked{
+        background-color:green;
+        color: #337ab7;
+        font-weight: bold;
+    }
+</style>
+<body class="hastopout">
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">人员信息</h4>
+            </div>
+            <div class="modal-body">
+                <form id="modalBody">
+                    <div class="form-group">
+                        <label for="txt_departmentname">公司名称</label>
+                        <input type="text" style="background-color: #fff;" name="company" class="form-control"  readonly placeholder="请输入公司名称">
+                    </div>
+                    <div class="form-group">
+                        <label for="txt_parentdepartment">公司地址</label>
+                        <input type="text" style="background-color: #fff;" name="address" class="form-control"  readonly placeholder="请输入公司地址">
+                    </div>
+                    <div class="form-group">
+                        <label for="txt_departmentlevel">姓名</label>
+                        <input type="text" name="name" class="form-control"  placeholder="请输入姓名" readonly style="background-color: #fff;">
+                    </div>
+                    <div class="form-group">
+                        <label for="txt_statu">性别</label>
+                        <select name="sex" class="form-control addinputs" disabled="disabled" style="background-color: #fff;">
+                            <option value="">选择是性别</option>
+                            <option value="1">男</option>
+                            <option value="2">女</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="txt_statu">手机号</label>
+                        <input type="text" name="phone" class="form-control"  placeholder="请输入手机号" readonly style="background-color: #fff;">
+                    </div>
+                    <div class="form-group">
+                        <label for="txt_departmentlevel">职位</label>
+                        <input type="text" name="obj" class="form-control" readonly style="background-color: #fff;">
+                    </div>
+                    <div class="form-group">
+                        <label for="txt_statu">部门</label>
+                        <input type="text" name="divi" class="form-control"  readonly style="background-color: #fff;">
+                    </div>
+                    <div class="form-group">
+                        <label for="txt_statu">出生日期</label>
+                        <input type="text" name="birthday" class="form-control"  readonly style="background-color: #fff;">
+                    </div>
+                    <div class="form-group">
+                        <label for="txt_statu">身份证号</label>
+                        <input type="text" name="idCard" class="form-control"  readonly style="background-color: #fff;">
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    关闭
+                </button>
+                <!--<button type="button" class="btn btn-primary" onclick="saveManage()">-->
+                    <!--保存-->
+                <!--</button>-->
+            </div>
+        </div>
+    </div>
+</div>
+<!--#include file="/ncov/headerback.html"-->
+<div class="innerout padtb10">
+    <!--导入用到不要删除-->
+    <div class="formout" id="floatmask" style="display:none;"><div class="formoutinner"></div></div>
+
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active">
+            <a href="#notice" data-toggle="tab">
+                新增用户
+            </a>
+        </li>
+        <li>
+            <a href="#noticelist" data-toggle="tab">
+                用户列表
+            </a>
+        </li>
+    </ul>
+    <div id="myTabContent" class="tab-content padtb10">
+        <div class="tab-pane fade in active" id="notice">
+            <div class="innerlisout">
+                <div class="padtb10">
+                    <a href="javascript:;" class="btn btn-primary btn-lg" id="importbtn_out">
+                        <input type="file" id="file" onchange="importf(this,'nowtable')" />
+                        批量导入
+                    </a>
+                    <!--id="downmoban"-->
+                    <a href="../excal/userModel.xlsx" >下载模板</a>
+                </div>
+                <p class="linetitle">添加人员</p>
+                <form id="addPerson">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" type="json" id="nowtable">
+                            <thead>
+                            <tr>
+                                <th>
+
+                                </th>
+                                <th>
+                                    姓名
+                                </th>
+                                <th>
+                                    手机号
+                                </th>
+                                <th>
+                                    性别
+                                </th>
+                                <th>
+                                    身份证号码
+                                </th>
+                                <th>
+                                    职务
+                                </th>
+                                <th>
+                                    部门
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody id="listdata">
+                            <tr>
+                                <td>
+                                    <a href="javascript:;" class="jyb_pdel" onclick="deltds(this)">
+                                        <span class="glyphicon glyphicon-minus"></span>
+                                    </a>
+                                </td>
+                                <td>
+                                    <input class="form-control addinputs" name="name" type="text" placeholder="姓名" style="min-width:80px;"/>
+                                </td>
+                                <td>
+                                    <input class="form-control addinputs" name="phone" type="number" placeholder="手机号" style="min-width:100px;" maxlength="11" oninput="if(value.length>11)value=value.slice(0,11)"  />
+                                </td>
+                                <td>
+                                    <select name="sex" class="form-control addinputs" style="min-width:100px;">
+                                        <option value="0">选择性别</option>
+                                        <option value="1">男</option>
+                                        <option value="2">女</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input class="form-control addinputs" name="idCard" type="text" placeholder="身份证号" style="min-width:100px;" />
+                                </td>
+                                <td>
+                                    <input class="form-control addinputs" name="job" type="text" placeholder="职务" style="min-width:100px;" />
+                                </td>
+                                <td>
+                                    <input class="form-control addinputs" name="divi" type="text" placeholder="部门" style="min-width:100px;" />
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+                <div>
+                    <button class="btn btn-warning btn-lg" onclick="addlis('#listdata')">
+                        +添加人员
+                    </button>
+                </div>
+                <div class="botbtn row">
+                    <div class="col-md-12 col-sm-12 col-xs-12" align="center">
+                        <button type="button" class="btn btn-lg btn-success" style="width:80%"
+                                onclick="addUser()">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade in active" id="noticelist">
+            <p class="linetitle">员工信息</p>
+            <div>
+                <div class="col-lg-12 padlr0">
+                    <form action="#" id="searchForm">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon">员工姓名</span>
+                            <input type="text" name="name" class="form-control" >
+                        </div>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon">联系方式</span>
+                            <input type="text" name="phone" class="form-control" >
+                        </div>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon">部门</span>
+                            <input type="text" name="divi" class="form-control" >
+                        </div>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon">职位</span>
+                            <input type="text" name="job" class="form-control" >
+                        </div>
+
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon">是否管理员</span>
+                            <select name="admin" class="form-control addinputs" style="min-width:100px;">
+                                <option value="">选择是否管理员</option>
+                                <option value="0">否</option>
+                                <option value="1">是</option>
+                            </select>
+                            <!--<span class="input-group-btn">-->
+                            <!--<button class="btn btn-success" type="button" onclick="showgetlist(1)">查询</button>-->
+                            <!--<button class="btn btn-info" type="button" onclick="clearfrom('#searchForm')">清空</button>-->
+                            <!--</span>-->
+                        </div>
+
+                        <!--<div class="input-group input-group-sm">
+                            <span class="input-group-addon">是否已推送验证码</span>
+                            <select name="isSend" class="form-control addinputs" style="min-width:100px;">
+                                <option value="">是否已推送验证码</option>
+                                <option value="0">否</option>
+                                <option value="1">是</option>
+                            </select>
+                        </div>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon">是否已注册</span>
+                            <select name="isRegist" class="form-control addinputs" style="min-width:100px;">
+                                <option value="">是否已注册</option>
+                                <option value="0">否</option>
+                                <option value="1">是</option>
+                            </select>
+                        </div>-->
+
+                        <div class="botbtn row">
+                            <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+                                <button type="button" class="btn btn-success" style="width:80%" onclick="showgetlist(1)">查询</button>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+                                <button type="button" class="btn btn-danger" style="width:80%" onclick="clearfrom('#searchForm')">清空</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <button type="button" class="btn btn-lg btn-warning" style="margin:6px 0;"  onclick="allpush()">推送</button>
+            <div class="table-responsive">
+                <table class="table table-bordered" id="olddata">
+
+                </table>
+            </div>
+            <!-- 分页 -->
+            <div id="pageTool" class="newpages"></div>
+        </div>
+    </div>
+
+</div>
+</body>
+<script type="text/html" id="v_olddata">
+    <thead>
+    <tr>
+        <th>
+            <label onclick="checkall('#checkboxInput','#olddata',[push_arr_id],['value'])" style="vertical-align: middle">
+                <input type="checkbox" id="checkboxInput" style="margin:0;">
+                <span>全选</span>
+            </label>
+        </th>
+        <th>
+            是否是管理员
+        </th>
+        <th>
+            操作
+        </th>
+        <th>
+            姓名
+        </th>
+        <th>
+            联系方式
+        </th>
+        <th>
+            性别
+        </th>
+        <th>
+            职位
+        </th>
+        <th>
+            部门
+        </th>
+        <th>
+            创建时间
+        </th>
+    </tr>
+    </thead>
+    {{if data.length>0}}
+    <tbody>
+
+    {{each data as item index}}
+    <tr class="{{item.checked?'active':''}}">
+        <td>
+            {{if item.checked}}
+            <input type="checkbox" checked="checked" name="checkData" value="{{item.phone}}">
+            {{else}}
+            <input type="checkbox" name="checkData" value="{{item.phone}}">
+            {{/if}}
+        </td>
+        <td>
+            {{if item.admin==0}}
+            否
+            {{else}}
+            是
+            {{/if}}
+            <br>
+            <input type="checkbox" checked class="changenlis" id="{{item.id}}"/>
+        </td>
+        <td>
+            <button type="button" class="btn btn-success" style="margin:6px 0;" onclick="lookcompmsg('{{item.id}}')" >查看</button>
+            <br>
+            {{if item.invite_code}}
+                {{if item.wx_openid}}
+                <span class="text-success">已验证</span>
+                {{else}}
+                <button type="button" class="btn btn-warning" style="margin:6px 0;" onclick="pushcompmsg('{{item.phone}}')" >再次推送</button>
+                {{/if}}
+            {{else}}
+            <button type="button" class="btn btn-warning" style="margin:6px 0;" onclick="pushcompmsg('{{item.phone}}')" >推送</button>
+            {{/if}}
+        </td>
+        <td>
+            {{item.name}}
+        </td>
+        <td>
+            {{item.phone}}
+        </td>
+        <td>
+            {{if item.sex==1}}
+            男
+            {{else if item.sex==2}}
+            女
+            {{/if}}
+        </td>
+        <td>
+            {{item.job}}
+        </td>
+        <td>
+            {{item.divi}}
+        </td>
+        <td>
+            {{item.cdatenow}}
+        </td>
+    </tr>
+    {{/each}}
+    </tbody>
+    {{else}}
+    <tr><td class="red">暂无数据</td></tr>
+    {{/if}}
+</script>
+</html>
+<script>
+    $(function () {
+        showgetlist(1);
+    })
+    var push_arr_id=[];
+    /*-- 推送的数组 --*/
+    var pageindexnow=1;
+    var pagesizeout=10;
+    function showgetlist(pageindex,pagesize){
+        pagesize=pagesize?pagesize:pagesizeout;
+        if (pageindex == undefined || pageindex == null) {
+            pageindex = pageindexnow;
+        } else {
+            pageindexnow = pageindex;
+        }
+        var page = new Paging();
+        $('#myTab a[href="#noticelist"]').tab('show');
+        $.ajaxDom('#noticelist',{
+            type: "get",
+            url: "/publish/importMember/list.json",
+            data:{
+                name: $('#searchForm input[name="name"]').val(),
+                phone : $('#searchForm input[name="phone"]').val(),
+                divi : $('#searchForm input[name="divi"]').val(),
+                admin : $('#searchForm select[name="admin"]').val(),
+                job: $('#searchForm input[name="job"]').val(),
+                pageNumber:pageindexnow,
+                pageSize:pagesize,
+            },
+            success: function(data) {
+                console.log(data);
+                console.log('=ddas=dad=asd=sad-a=')
+                if(data.data){
+                    if(data.data.data.length>0){
+                        $('#zjnumber').html(data.data.data.length);
+                        for(var i=0;i<data.data.data.length;i++){
+                            if(data.data.data[i].cdate){
+                                data.data.data[i].cdatenow=moment(data.data.data[i].cdate).format('YYYY-MM-DD HH:mm:ss')
+                            }
+                        }
+                    }
+                    if(push_arr_id.length>0){
+                        for(var i=0;i<push_arr_id.length;i++){
+                            for(var j=0;j<data.data.data.length;j++){
+                                if(push_arr_id[i]==data.data.data[j].phone){
+                                    data.data.data[j].checked=true;
+                                }
+                            }
+                        }
+                    };
+                    var olddata = template('v_olddata', data.data);
+                    $("#olddata").empty().append(olddata);
+                    initTablearr('#olddata',[push_arr_id],['value']);
+                    $(".changenlis").bootstrapSwitch({
+                        onText : "启动",      // 设置ON文本  
+                        offText : "关闭",    // 设置OFF文本  
+                        onColor : "success",// 设置ON文本颜色     (info/success/warning/danger/primary)  
+                        offColor : "info",  // 设置OFF文本颜色        (info/success/warning/danger/primary)  
+                        size : "normal",    // 设置控件大小,从小到大  (mini/small/normal/large)  
+                        // 当开关状态改变时触发  
+                        onSwitchChange : function(event, state) {
+                            var userid=$(this).attr('id');
+                            // console.log(state);
+                            if (state == true) {
+                                //停用
+                                var end=layer.confirm('确定取消管理员身份？', {
+                                    btn: ['确定','取消'] //按钮
+                                }, function(){
+                                    managebtn(userid,0)
+                                }, function(){
+                                    $(event.currentTarget).bootstrapSwitch('state',false,true);
+                                    layer.close(end);
+                                })
+                            } else if (state == false) {
+                                //启用
+                                var start=layer.confirm('确定开始管理员身份？', {
+                                    btn: ['确定','取消'] //按钮
+                                }, function(){
+                                    managebtn(userid,1)
+                                }, function(){
+                                    $(event.currentTarget).bootstrapSwitch('state',true,true);
+                                    layer.close(start);
+                                })
+
+                            }
+                        }
+                    });
+                    for(var i=0;i<data.data.data.length;i++){
+                        if(data.data.data[i].cdate){
+                            data.data.data[i].cdatenow=moment(data.data.data[i].cdate).format('YYYY-MM-DD HH:mm:ss')
+                        }
+                        if(data.data.data[i].admin == 0){
+                            // 关
+                            $('.changenlis').eq(i).bootstrapSwitch('state',true,true);
+                        }else if(data.data.data[i].admin == 1){
+                            // 开
+                            $(".changenlis").eq(i).bootstrapSwitch('state',false,true);
+                        };
+                    }
+                    pageSize(pageindexnow,pagesize)
+                    function pageSize(pagenumber, pagesize) {
+                        page.init({
+                            target: $('#pageTool').empty(),
+                            pagesize: pagesize,
+                            count: data.data.totalCount,
+                            toolbar: true,
+                            current: pagenumber,
+                            //hash: true ,
+                            changePagesize: function (_psize, _pnumber) {
+                                pagesizeout=_psize;
+                                showgetlist(1,_psize)
+                            },
+                            callback: function (_pnumber, _psize, count) {
+                                pagesizeout=_psize;
+                                showgetlist(_pnumber,_psize)
+                            }
+                        });
+                    }
+                }else{
+                    layer.msg(data.message)
+                }
+
+            }
+        })
+    }
+</script>
+<script>
+    function deltds(obj){
+        var _$this = $(obj);
+        if(_$this.parent().parent().parent().find('tr').length<=1){
+            return;
+        }
+        _$this.closest("tr").remove();
+    }
+    function addlis(obj){//添加产品行
+        var chapin_tr=`
+                    <tr>
+                                <td>
+                                    <a href="javascript:;" class="jyb_pdel" onclick="deltds(this)">
+                                        <span class="glyphicon glyphicon-minus"></span>
+                                    </a>
+                                </td>
+                                <td>
+                                    <input class="form-control addinputs" name="name" type="text" placeholder="姓名" style="min-width:80px;"/>
+                                </td>
+                                <td>
+                                    <input class="form-control addinputs" name="phone" type="number" placeholder="手机号" style="min-width:100px;" maxlength="11" oninput="if(value.length>11)value=value.slice(0,11)"/>
+                                </td>
+                                <td>
+                                    <select name="sex" class="form-control addinputs" style="min-width:100px;">
+                                        <option value="0">选择性别</option>
+                                        <option value="1">男</option>
+                                        <option value="2">女</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input class="form-control addinputs" name="idCard" type="text" placeholder="身份证号" style="min-width:100px;"/>
+                                </td>
+                                <td>
+                                    <input class="form-control addinputs" name="job" type="text" placeholder="职务" style="min-width:100px;" />
+                                </td>
+                                <td>
+                                    <input class="form-control addinputs" name="divi" type="text" placeholder="部门" style="min-width:100px;" />
+                                </td>
+                            </tr>
+        `
+        $(obj).append(chapin_tr);
+    }
+
+    /*-- 保存增加的人员 /publish/importMember.json--*/
+    function addUser() {
+        // var dataInfo=getFormJson('#addPerson');
+        // console.log(dataInfo);
+        var datanow=[];
+        $('#listdata tr').each(function (i) {
+            var trs=$('#listdata tr').eq(i);
+            var newobj={};
+            trs.find('td').each(function (j) {
+                var tds=trs.find('td').eq(j);
+                if(tds.find('.addinputs').length>0){
+                    var name=tds.find('.addinputs').attr('name');
+                    newobj[name]=tds.find('.addinputs').val();
+                }
+            })
+            datanow.push(newobj)
+        })
+        for(var i=0;i<datanow.length;i++){
+            if(datanow[i]['phone']==''){
+                layer.msg('请输入手机号');
+                $('#listdata tr').eq(i).find('input[name="phone"]').focus();
+                return;
+            }else if(datanow[i]['phone'].length>11 || datanow[i]['phone'].length<11){
+                layer.msg('请输入正确的手机号');
+                $('#listdata tr').eq(i).find('input[name="phone"]').focus();
+                return;
+            }
+        }
+
+        $.ajax({
+            type: "post",
+            headers:{'Content-Type':'application/json;charset=UTF-8'},
+            url: "/publish/importMember.json",
+            data:JSON.stringify({members:datanow}),
+            success: function(data) {
+                if(data.success){
+                    layer.msg('保存成功');
+                    showgetlist();
+                }else{
+                    layer.msg('保存失败联系管理员')
+                }
+                console.log(data);
+            }
+        });
+    }
+</script>
+<script>
+    /*-- 下载模板 --*/
+    /*json 导出*/
+    var aoa = [
+        ['姓名','手机号','性别', '身份证号', '职务', '部门'],
+        [null,null,null,null,null,null]
+    ];
+    // console.log(aoa)
+    var sheet = XLSX.utils.aoa_to_sheet(aoa);
+
+    // /*table 导出*/
+    // //var sheet  =  XLSX.utils.table_to_sheet(jsdemo[0]);
+    //var df = new Date().toLocaleString();
+    /*-- toLocaleString() 导致客户端自动关闭 --*/
+    var df=formatDateTime(new Date());
+    $(function () {
+        $('#downmoban').click(function () {
+            console.log('-------------')
+            openDownloadDialog(sheet2blob(sheet), '员工导入模板'+df+'.xls');
+        })
+    })
+
+</script>
+<script>
+    /*--查看--*/
+    function lookcompmsg(id){
+        $.ajax({
+            type: "get",
+            url: "/publish/importMember.json",
+            data:{
+                id:id
+            },
+            success: function(data) {
+                $('#myModal').modal('show');
+                console.log(data);
+                if(data.success){
+                    $('#modalBody').find('input[name="company"]').val(data.data.company);
+                    $('#modalBody').find('input[name="address"]').val(data.data.company_address);
+                    $('#modalBody').find('input[name="divi"]').val(data.data.divi);
+                    $('#modalBody').find('input[name="id_card"]').val(data.data.id_card);
+                    $('#modalBody').find('input[name="obj"]').val(data.data.job);
+                    $('#modalBody').find('input[name="phone"]').val(data.data.phone);
+                    $('#modalBody').find('input[name="name"]').val(data.data.name);
+                    $('#modalBody').find('input[name="birthday"]').val(data.data.birthday);
+                    $('#modalBody').find('input[name="idCard"]').val(data.data.id_card);
+                    $('#modalBody').find('select[name="sex"]').val(data.data.sex);
+
+                }else{
+                    layer.msg(data.message)
+                }
+
+            }
+        })
+    }
+
+    /*--推送--*/
+    function pushcompmsg(id){
+        layer.confirm('确定推送消息吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.ajax({
+                type: "get",
+                url: "/publish/sendInviteCode.json",
+                data:{
+                    phones:id
+                },
+                success: function(data) {
+                    if(data.success){
+                        layer.msg('推送成功');
+                        push_arr_id=[];
+                    }else{
+                        layer.msg(data.message);
+                    }
+                }
+            })
+        })
+
+    }
+
+    function allpush() {
+        if(push_arr_id.length<1){
+            layer.msg('请选择推送对象')
+        }else{
+            pushcompmsg(push_arr_id.toString())
+        }
+    }
+
+    /*-- 设置开关 --*/
+    function managebtn(id,admin) {
+        $.ajax({
+            type:'get',
+            url:'/publish/importMember/setAdmin.json',
+            data:{
+                id:id,
+                admin:admin
+            },
+            success:function (data) {
+                console.log(data);
+                console.log('--------------');
+                if(data.success){
+                    layer.msg('操作成功');
+                    showgetlist();
+                }else{
+                    layer.msg('操作失败，联系管理员');
+                }
+            }
+        })
+    }
+</script>

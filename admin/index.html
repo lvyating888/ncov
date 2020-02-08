@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>新增公司</title>
+    <link rel="stylesheet" href="../css/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.js"></script>
+    <script src="../js/common.js"></script>
+</head>
+<body>
+<div class="innerout" style="padding:20px 0;">
+    <div class="input-group">
+        <input id="company" class="form-control" placeholder="请填写公司名称"/>
+        <span class="input-group-addon btn btn-primary" onclick="addCompany()">新增</span>
+    </div>
+    <div>
+        <p class="linetitle">已存在公司</p>
+        <ul id="companyList" class="list-group">
+        </ul>
+    </div>
+</div>
+<script>
+    $(function () {
+        init();
+    });
+    function init() {
+        $.ajax({
+            url: '/admin/company/list.json',
+            success: function (res) {
+                $('#companyList').empty();
+                for (var i = 0; i < res.data.length; i++) {
+                    var data = res.data[i];
+                    $('#companyList').append(`
+                        <li class="list-group-item ">${data.company}</li>
+                    `);
+                }
+            }
+        })
+    }
+    function addCompany() {
+        var company = $('#company').val();
+        if (!$.trim(company)) {
+            return;
+        }
+        if (!confirm("确定要新增吗?")) {
+            return;
+        }
+        $.ajax({
+            url: '/admin/company.json',
+            type: 'post',
+            headers: {'Content-Type': 'application/json;charset=UTF-8'},
+            data: JSON.stringify({company: company}),
+            success: function (res) {
+                if (res.success) {
+                    $('#company').val('');
+                    init();
+                    alert('保存成功');
+                } else {
+                    alert(res.message);
+                }
+            }
+        })
+    }
+</script>
+</body>
+</html>

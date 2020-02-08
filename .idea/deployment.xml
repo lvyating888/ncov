@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" serverName="180.76.116.175">
+    <serverData>
+      <paths name="180.76.116.175">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/mnt/project/mp_nCoV/mp_nCoV/ncov" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="test">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/mnt/project/test_nCoV/mp_nCoV/ncov" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>
