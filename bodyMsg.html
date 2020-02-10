@@ -489,7 +489,8 @@
                                 window.location.reload();
                             })
                         }else{
-                            layer.msg('申报失败联系管理员')
+                           /* layer.msg('申报失败联系管理员')*/
+                            layer.msg(data.message);
                         }
                     }
                 });
@@ -526,9 +527,10 @@
                             window.location.reload();
                         })
                     }else{
-                        layer.msg('删除失败联系管理员')
+                        /*layer.msg('删除失败联系管理员')*/
+                        layer.msg(data.message);
                     }
-                    console.log(data);
+                    /*console.log(data);*/
                 }
             });
         });

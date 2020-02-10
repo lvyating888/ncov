@@ -619,7 +619,8 @@
                     layer.msg('保存成功');
                     showgetlist();
                 }else{
-                    layer.msg('保存失败联系管理员')
+                    /*layer.msg('保存失败联系管理员')*/
+                    layer.msg(data.message);
                 }
                 console.log(data);
             }
@@ -747,7 +748,8 @@
                     layer.msg('操作成功');
                     showgetlist();
                 }else{
-                    layer.msg('操作失败，联系管理员');
+                    /*layer.msg('操作失败，联系管理员');*/
+                    layer.msg(data.message);
                 }
             }
         })

@@ -174,12 +174,12 @@
             url: "/member/sign.json",
             data: {openId: openId},
             success: function (data) {
-
                 if (data.success) {
                     whetherSign();
                     layer.msg('签到成功')
                 } else {
-                    layer.msg('签到失败，联系管理员')
+                    /*layer.msg('签到失败，联系管理员')*/
+                    layer.msg(data.message)
                 }
             }
         })

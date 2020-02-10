@@ -378,7 +378,8 @@
                     layer.msg('操作成功');
                     personalinit(compname)
                 }else{
-                    layer.msg('操作失败，联系管理员');
+                    /*layer.msg('操作失败，联系管理员');*/
+                    layer.msg(data.message);
                 }
             }
         })
@@ -411,7 +412,8 @@
                         layer.msg('设置成功')
                     }else{
                         $("#myModal").modal("hide");
-                        layer.msg('设置失败，联系管理员')
+                        /*layer.msg('设置失败，联系管理员')*/
+                        layer.msg(data.message);
                     }
                 }
             })

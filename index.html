@@ -146,7 +146,8 @@
                         layer.msg('进入成功')
                         window.location.href='indexfillIn.html?openId='+openId;
                     }else{
-                        layer.msg('进入失败，联系管理员')
+                        layer.msg(data.message)
+                        /*layer.msg('进入失败，联系管理员')*/
                     }
                 }
             });

@@ -262,9 +262,10 @@
                         });
 
                     }else{
-                        layer.msg('保存失败联系管理员')
+                        layer.msg(data.message);
+                        /*layer.msg('保存失败联系管理员')*/
                     }
-                    console.log(data);
+                    /*console.log(data);*/
                 }
             });
         }
@@ -308,13 +309,12 @@
                 url: "/member/info.json",
                 data:JSON.stringify(dataInfo),
                 success: function(data) {
-                    console.log(data);
                     if(data.success){
                         layer.msg('修改成功',function () {
                             window.location.href='bodyMsg.html?openId='+openId;
                         });
                     }else{
-                        layer.msg('修改失败联系管理员')
+                        layer.msg(data.message)
                     }
                 }
             })

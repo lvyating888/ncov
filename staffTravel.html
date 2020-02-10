@@ -249,7 +249,8 @@
                         clearfrom('#addmsg');
                         $('#thelist').empty();
                     }else{
-                        layer.msg('保存失败，联系管理员')
+                       /* layer.msg('保存失败，联系管理员')*/
+                        layer.msg(data.message);
                     }
                 }
             })
@@ -272,7 +273,8 @@
                         gohistory();
                         layer.msg('删除成功')
                     }else{
-                        layer.msg('删除失败，请联系管理员')
+                        /*layer.msg('删除失败，请联系管理员')*/
+                        layer.msg(data.message)
                     }
                 }
             })
