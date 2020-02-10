@@ -11,10 +11,10 @@
     <link rel="stylesheet" href="css/diseaseRegister.css">
     <script src="js/jquery.js"></script>
     <script src="js/bootstrap.js"></script>
-    <script src="js/common.js"></script>
+    <script src="js/common.js?v=0.2"></script>
     <script src="js/layer/layer.js"></script>
     <script src="js/laydate/laydate.js"></script>
-    <script src="js/template.js"></script>
+    <script src="js/template.js?v=0.2"></script>
     <script src="js/moment.js"></script>
     <!-- 获取位置 -->
     <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.3.2.js"> </script>
@@ -68,54 +68,8 @@
     <div class="innerlisout">
         <p class="linetitle">健康考勤</p>
         <label class="col-sm-12 col-xs-12 padlr0" style="line-height: 32px;">健康状况<span class="red">*</span></label>
-        <div class="form-group clearfix">
-            <div  class="col-sm-12 col-xs-12 padlr0">
-                <div class="col-sm-4 col-xs-4 padlr0">
-                    <label>
-                        <input type="checkbox" name="status"  value="1" class="rightradio">
-                        健康
-                    </label>
-                </div>
-                <div class="col-sm-8 col-xs-8">
-                    <label>
-                        <input type="checkbox" name="status"  value="2" class="rightradio">
-                        咳嗽打喷嚏
-                    </label>
-                </div>
-            </div>
-        </div>
-        <div class="form-group clearfix">
-            <div  class="col-sm-12 col-xs-12 padlr0">
-                <div class="col-sm-4 col-xs-4 padlr0">
-                    <label>
-                        <input type="checkbox" name="status"  value="3" class="rightradio">
-                        发热（未就诊或医生诊断为普通发热）
-                    </label>
-                </div>
-                <div class="col-sm-8 col-xs-8">
-                    <label>
-                        <input type="checkbox" name="status"  value="4" class="rightradio">
-                        已就诊，被要求回家自行隔离观察
-                    </label>
-                </div>
-            </div>
-        </div>
-        <div class="form-group clearfix">
-            <div  class="col-sm-12 col-xs-12 padlr0">
-                <label>
-                    <input type="checkbox" name="status"  value="5" class="rightradio">
-                    已就医，被判定为【疑似】新型肺炎，留在医院隔离观察
-                </label>
-            </div>
-        </div>
-        <div class="form-group clearfix">
-            <div  class="col-sm-12 col-xs-12 padlr0">
-                <label>
-                    <input type="checkbox" name="status"  value="6" class="rightradio">
-                    已就医，确诊为新型肺炎
-                </label>
-            </div>
-        </div>
+        <div id="hearthout"></div>
+
         <div class="form-group clearfix" id="redcontent" style="display:none;">
             <label class="col-sm-3 col-xs-3 leftlabel" >入院情况</label>
             <div  class="col-sm-9 col-xs-9">
@@ -194,19 +148,7 @@
     <li class="list-group-item ">
         <div class="clearfix">
             <div class=" col-md-12 col-sm-12 col-xs-12 padlr0">
-                {{if list.state==1}}
-                健康
-                {{else if list.state==2}}
-                咳嗽打喷嚏
-                {{else if list.state==3}}
-                发热（未就诊或医生诊断为普通发热）
-                {{else if list.state==4}}
-                已就诊，被要求回家自行隔离观察
-                {{else if list.state==5}}
-                已就医，被判定为【疑似】新型肺炎，留在医院隔离观察
-                {{else if list.state==6}}
-                已就医，确诊为新型肺炎
-                {{/if}}
+                {{list.state | getType}}
             </div>
         </div>
         <div class="clearfix padlr0" style="margin-top:6px;margin-bottom:6px;">
@@ -241,7 +183,44 @@
     {{/each}}
     {{/if}}
 </script>
+<script type="text/html" id="v_hearth">
+    <div class="form-group clearfix">
 
+        <div class="col-sm-12 col-xs-12 padlr0">
+            {{each data as item index}}
+            {{if index==0 || index==1}}
+            <div class="{{index==0 ?'col-sm-4 col-xs-4 padlr0':'col-sm-8 col-xs-8'}}">
+                {{if index==0}}
+                <label>
+                    <input type="checkbox" name="status"  value="{{item.value}}" class="rightradio">
+                    {{item.name}}
+                </label>
+                {{/if}}
+                {{if index==1}}
+                <label>
+                    <input type="checkbox" name="status"  value="{{item.value}}" class="rightradio">
+                    {{item.name}}
+                </label>
+                {{/if}}
+            </div>
+            {{/if}}
+            {{/each}}
+        </div>
+
+    </div>
+    {{each data as item index}}
+    {{if index!=0 && index!=1}}
+    <div class="form-group clearfix">
+        <div  class="col-sm-12 col-xs-12 padlr0">
+            <label>
+                <input type="checkbox" name="status"  value="{{item.value}}" class="rightradio">
+                {{item.name}}
+            </label>
+        </div>
+    </div>
+    {{/if}}
+    {{/each}}
+</script>
 </body>
 </html>
 <script>
@@ -252,39 +231,6 @@
         $('#modifybtn').click(function () {
             window.location.href='indexfillIn.html?type="edit"&openId='+openId;
         })
-
-        /*-- 监听选择健康情况显示 content --*/
-        var checkboxlis=$('#bodyInfo input[type="checkbox"][name="status"]');
-
-        checkboxlis.change(function() {
-            for(var i=0;i<checkboxlis.length;i++){
-                if(checkboxlis.eq(i).prop('checked')){
-                    var nowchangeVal=checkboxlis.eq(i).val();
-                    var index = $.inArray(nowchangeVal, contArry);   //结果：index=1
-                    if (index >= 0) {
-                    } else {
-                        contArry.push(nowchangeVal);
-                    }
-                }else if(!checkboxlis.eq(i).prop('checked')){
-                    var nowchangeVal=checkboxlis.eq(i).val();
-                    var index = $.inArray(nowchangeVal, contArry);
-                    if (index >= 0) {
-                        contArry.splice(index,1);
-                    }
-                }
-            }
-            if(contArry.length>0){
-                if($.inArray("5", contArry)!=-1 || $.inArray("6", contArry)!=-1){
-                    $('#redcontent').show();
-                }else{
-                    $('#redcontent').hide();
-                }
-
-            }else{
-                $('#redcontent').hide();
-            }
-
-        });
     })
     $.ajax({
         type: "get",
@@ -572,4 +518,50 @@
         });
 
     }
+</script>
+<script>
+    /*-- 健康参数 --*/
+    var Healthyarr = []
+    for (let i in Healthyobj) {
+        var obj={};
+        obj.name=Healthyobj[i];
+        obj.value=i;
+        Healthyarr.push(obj);
+    }
+    var obj={data:Healthyarr}
+    $(function () {
+        console.log(obj)
+        var dynamic = template('v_hearth', obj);
+        $("#hearthout").empty().append(dynamic);
+        /*-- 监听选择健康情况显示 content --*/
+        var checkboxlis=$('#bodyInfo input[type="checkbox"][name="status"]');
+
+        checkboxlis.change(function() {
+            for(var i=0;i<checkboxlis.length;i++){
+                if(checkboxlis.eq(i).prop('checked')){
+                    var nowchangeVal=checkboxlis.eq(i).val();
+                    var index = $.inArray(nowchangeVal, contArry);   //结果：index=1
+                    if (index >= 0) {
+                    } else {
+                        contArry.push(nowchangeVal);
+                    }
+                }else if(!checkboxlis.eq(i).prop('checked')){
+                    var nowchangeVal=checkboxlis.eq(i).val();
+                    var index = $.inArray(nowchangeVal, contArry);
+                    if (index >= 0) {
+                        contArry.splice(index,1);
+                    }
+                }
+            }
+            if(contArry.length>0){
+                if($.inArray("5", contArry)!=-1 || $.inArray("6", contArry)!=-1){
+                    $('#redcontent').show();
+                }else{
+                    $('#redcontent').hide();
+                }
+            }else{
+                $('#redcontent').hide();
+            }
+        });
+    })
 </script>

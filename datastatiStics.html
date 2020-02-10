@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="js/paging/paging.css"/>
     <script src="js/jquery.js"></script>
     <script src="js/bootstrap.js"></script>
-    <script src="js/common.js?v=0.1"></script>
+    <script src="js/common.js?v=0.2"></script>
     <script src="js/template.js?v=0.1"></script>
     <script src="js/echarts.min.js"></script>
     <script src="js/paging/paging.js"></script>
@@ -113,9 +113,6 @@
         <th>
             未上报人数
         </th>
-        <th>
-            操作
-        </th>
     </tr>
     <tr>
         <td>
@@ -129,9 +126,7 @@
         </td>
         <td>
             {{data.memberCount-data.groupReportCount}}
-        </td>
-        <td>
-            <a href="notReport.html" class="btn btn-warning" >查看</a>
+            <a href="notReport.html" class="btn btn-warning" style="margin-left:16px;">查看</a>
         </td>
     </tr>
 </script>
