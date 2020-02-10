@@ -717,14 +717,15 @@
         layer.confirm('确定推送消息给所有人？', {
             btn: ['确定','取消'] //按钮
         }, function(){
+            layer.msg('请求成功,短信正在发送中...请稍后查看');
             $.ajax({
                 type: "get",
                 url: "/publish/sendInviteCodeAll.json",
                 success: function(data) {
                     if(data.success){
-                        layer.msg('请求成功,短信正在发送中...请稍后查看');
+                        console.log(data)
                     }else{
-                        layer.msg(data.message);
+                        console.log(data)
                     }
                 }
             })

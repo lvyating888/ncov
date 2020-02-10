@@ -52,7 +52,7 @@
                 登记地址
             </th>
             <th>
-                是否接触湖北人员
+                是否接触过疫区人员、疑似病例或确诊病例
             </th>
         </tr>
         {{each data as item index}}
@@ -74,6 +74,11 @@
                 {{else if item.state==6}}
                 已就医，确诊为新型肺炎
                 {{/if}}
+                {{if item.state==5 || item.state==6}}
+                    {{if item.content!==''}}
+                <span class="text-danger">入院情况：{{item.content}}</span>
+                    {{/if}}
+                {{/if}}
             </th>
             <th>
                 {{item.temperature}}℃
@@ -85,7 +90,7 @@
                 {{item.province}}{{item.city}}{{item.district}}{{item.recommend}}
             </th>
             <th>
-                {{if item.huibei==1}}
+                {{if item.hubei==1}}
                 是
                 {{else}}
                 否
