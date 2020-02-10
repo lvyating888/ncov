@@ -45,10 +45,13 @@
 .mycontul{
     display:table;
     width:100%;
+    border-bottom: 1px solid #ddd;
 }
 .mycontul:first-child{
     padding-top:6px;
-    border-bottom: 1px solid #ddd;
+}
+.mycontul:last-child{
+    border-bottom: 0;
 }
 .mycontlis{
     display:table-cell;
