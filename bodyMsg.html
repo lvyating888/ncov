@@ -156,6 +156,7 @@
         <div class="form-group clearfix">
             <label class="col-sm-3 col-xs-3 leftlabel" >地理位置<span class="red">*</span></label>
             <div  class="col-sm-9 col-xs-9 ">
+                <div id="Mapcontainer" style="display:none;"></div>
                 <span style="color: #5e5e5e;line-height:34px;" id="address">
                 </span>
             </div>
@@ -344,6 +345,7 @@
         }
     })
 </script>
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=86064e85e8e0cdbba4a25062b24fdb36&plugin=AMap.Geocoder"></script>
 <script>
     /* 公众号数据 纬度经度 */
     var dataInfo={};
@@ -373,7 +375,9 @@
 
         }
     })
-    getloaction();
+    $(function () {
+        getloaction();
+    })
     function getloaction(){
         // 微信配置
         wx.config({
@@ -401,10 +405,9 @@
                     /*-- 根据经纬度获取地理位置 --*/
                     /*--dataInfo.latitude,dataInfo.longitude 39.916263,116.49683--*/
                     /*  */
-                    console.log('https://apis.map.qq.com/ws/geocoder/v1/?location='+dataInfo.latitude+','+dataInfo.longitude+'&key=3U4BZ-UCDKF-F2ZJZ-NEMK7-XK5B7-7XFHN')
-                    console.log('+DA+DA+D+AD+D+D+SA+')
 
-                    $.ajax({
+                    /* 腾讯地图 */
+                    /*$.ajax({
                         url: 'https://apis.map.qq.com/ws/geocoder/v1/?',
                         dataType: 'jsonp',
                         data:{
@@ -412,7 +415,6 @@
                             key:'3U4BZ-UCDKF-F2ZJZ-NEMK7-XK5B7-7XFHN',
                             output:'jsonp',
                         },
-
                         success: function(data) {
                             console.log(data);
                             console.log('weizhi +++++++');
@@ -429,7 +431,41 @@
                             console.log(data);
                             console.log('=================')
                         }
+                    });*/
+                    /* 高得地图 */
+                    // /*------------*/
+                    var map = new AMap.Map("Mapcontainer", {
+                        resizeEnable: true
                     });
+                    var geocoder = new AMap.Geocoder({
+                        city: "", //城市设为北京，默认：“全国”
+                        /*radius: 1000 //范围，默认：500*/
+                    });
+                    var marker = new AMap.Marker();;
+                    function regeoCode() {
+                        var lnglat  = [dataInfo.longitude,dataInfo.latitude];
+                        map.add(marker);
+                        marker.setPosition(lnglat);
+                        geocoder.getAddress(lnglat, function(status, result) {
+                            if (status === 'complete'&&result.regeocode) {
+                                console.log(result);
+                                console.log('-------------')
+                                var address = result.regeocode.formattedAddress;
+                                document.getElementById('address').value = address;
+                                reportInfo.province=result.regeocode.addressComponent.province;
+                                reportInfo.city=result.regeocode.addressComponent.city;
+                                reportInfo.district=result.regeocode.addressComponent.district;
+                                reportInfo.street=result.regeocode.addressComponent.street;
+                                reportInfo.recommend=result.regeocode.formattedAddress;
+                                $('#address').html(reportInfo.recommend)
+
+                            }else{
+                                console.log('根据经纬度查询地址失败')
+                            }
+                        });
+                    }
+                    regeoCode();
+                    /* 高得地图 end */
                 },
                 cancel: function (res) {
                     console.log(JSON.stringify(res))

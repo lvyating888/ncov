@@ -64,7 +64,7 @@ function checkall(obj,demo,arr,attrval) {
         /*console.log(demo,arr,attrval)*/
     })
 }
-function clearfrom(demo) {
+function clearfrom(demo,fun) {
     /*$(":input");//选择的是所有元素，包括input,textarea,select,button*/
     $(demo).find('input[type="text"]').val('');
     $(demo).find('input[type="number"]').val('');
@@ -72,6 +72,9 @@ function clearfrom(demo) {
     $(demo).find('textarea').val('');
     $(demo).find('input[type="radio"]').removeAttr('checked');
     $(demo).find('input[type="checkbox"]').removeAttr('checked');
+    if(fun){
+        fun();
+    }
    /* $('',demo).not(':button, :submit, :reset, :hidden').val('').removeAttr('checked').removeAttr('selected');*/
 }
 //将form中的值转换为键值对。
@@ -108,3 +111,39 @@ function GetQueryValue(queryName) {
     return null;
 }
 
+var Healthyobj = {
+    '1' : '健康',
+    '2' : '咳嗽打喷嚏',
+    '3' : '发热（未就诊或医生诊断为普通发热）',
+    '4' : '已就诊，被要求回家自行隔离观察',
+    '5' : '已就医，被判定为【疑似】新型肺炎，留在医院隔离观察',
+    '6' : '已就医，确诊为新型肺炎'
+}
+
+function getType(number) {
+    return Healthyobj[number];
+}
+
+function dividata(demo,type) {
+    type=type?type:'';
+    if(type==''){
+        url='/publish/statis/memberDivi.json'
+    }else{
+        url='/statis/memberDivi.json'
+    }
+    $.ajax({
+        type:'get',
+        url:url,
+        success:function (res) {
+            console.log(res);
+            console.log('+++++++++++++')
+            for (var i = 0; i <res.data.length; i++) {
+                var datainfo = res.data[i];
+                $(demo).append(`
+                        <option data-subtext="${datainfo.divi}">${datainfo.divi}</option>
+
+                    `);
+            }
+        }
+    })
+}

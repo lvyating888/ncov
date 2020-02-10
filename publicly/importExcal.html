@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="../js/paging/paging.css"/>
     <script src="../js/jquery.js"></script>
     <script src="../js/bootstrap.js"></script>
-    <script src="../js/common.js?v=0.1"></script>
+    <script src="../js/common.js?v=0.2"></script>
     <script src="../js/layer/layer.js"></script>
     <script src="../js/template.js"></script>
     <script src="../js/moment.js"></script>
@@ -23,6 +23,8 @@
     <script src="../js/bootstrapSwitch/bootstrap-switch.min.js"></script>
     <script src="../js/paging/paging.js"></script>
     <script src="../js/ajaxDom.js"> </script>
+    <link href="../js/select2/select2.min.css" rel="stylesheet" />
+    <script src="../js/select2/select2.min.js"></script>
 </head>
 <style>
     #importbtn_out{
@@ -243,7 +245,9 @@
                         </div>
                         <div class="input-group input-group-sm">
                             <span class="input-group-addon">部门</span>
-                            <input type="text" name="divi" class="form-control" >
+                            <select name="divi" class="form-control addinputs" style="min-width:100px;">
+                                <option value="">选择部门</option>
+                            </select>
                         </div>
                         <div class="input-group input-group-sm">
                             <span class="input-group-addon">职位</span>
@@ -263,15 +267,15 @@
                             <!--</span>-->
                         </div>
 
-                        <!--<div class="input-group input-group-sm">
+                        <div class="input-group input-group-sm">
                             <span class="input-group-addon">是否已推送验证码</span>
                             <select name="isSend" class="form-control addinputs" style="min-width:100px;">
                                 <option value="">是否已推送验证码</option>
-                                <option value="0">否</option>
-                                <option value="1">是</option>
+                                <option value="true">已推送</option>
+                                <option value="false">未推送</option>
                             </select>
                         </div>
-                        <div class="input-group input-group-sm">
+                        <!--<div class="input-group input-group-sm">
                             <span class="input-group-addon">是否已注册</span>
                             <select name="isRegist" class="form-control addinputs" style="min-width:100px;">
                                 <option value="">是否已注册</option>
@@ -285,7 +289,7 @@
                                 <button type="button" class="btn btn-success" style="width:80%" onclick="showgetlist(1)">查询</button>
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-6" align="center">
-                                <button type="button" class="btn btn-danger" style="width:80%" onclick="clearfrom('#searchForm')">清空</button>
+                                <button type="button" class="btn btn-danger" style="width:80%" onclick="clearfrom('#searchForm',selectclear())">清空</button>
                             </div>
                         </div>
                     </form>
@@ -434,9 +438,10 @@
             data:{
                 name: $('#searchForm input[name="name"]').val(),
                 phone : $('#searchForm input[name="phone"]').val(),
-                divi : $('#searchForm input[name="divi"]').val(),
+                divi : $('#searchForm select[name="divi"]').val(),
                 admin : $('#searchForm select[name="admin"]').val(),
                 job: $('#searchForm input[name="job"]').val(),
+                isSend: $('#searchForm select[name="isSend"]').val(),
                 pageNumber:pageindexnow,
                 pageSize:pagesize,
             },
@@ -753,5 +758,14 @@
                 }
             }
         })
+    }
+</script>
+<script type="text/javascript">
+    $(function () {
+        dividata("#searchForm select[name='divi']")
+        var selectorx = $("#searchForm select[name='divi']").select2();
+    })
+    function selectclear() {
+        $("#searchForm select[name='divi']").val("选择部门").select2();
     }
 </script>

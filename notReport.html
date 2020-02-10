@@ -5,22 +5,21 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>打卡列表</title>
-    <link rel="stylesheet" href="../css/dist/css/bootstrap.css">
-    <link rel="stylesheet" href="../css/base.css">
-    <link rel="stylesheet" href="../css/diseaseRegister.css">
-    <link rel="stylesheet" href="../js/paging/paging.css"/>
-    <script src="../js/jquery.js"></script>
-    <script src="../js/bootstrap.js"></script>
-    <script src="../js/common.js"></script>
-    <script src="../js/layer/layer.js"></script>
-    <script src="../js/template.js"></script>
-    <script src="../js/moment.js"></script>
-    <script src="../js/paging/paging.js"></script>
-    <script src="../js/ajaxDom.js"></script>
-    <script src="../js/laydate/laydate.js"></script>
-    <link href="../js/select2/select2.min.css" rel="stylesheet" />
-    <script src="../js/select2/select2.min.js"></script>
+    <title>忘健康打卡列表</title>
+    <link rel="stylesheet" href="css/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/diseaseRegister.css">
+    <link rel="stylesheet" href="js/paging/paging.css"/>
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/layer/layer.js"></script>
+    <script src="js/template.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/paging/paging.js"></script>
+    <script src="js/ajaxDom.js"></script>
+    <link href="js/select2/select2.min.css" rel="stylesheet" />
+    <script src="js/select2/select2.min.js"></script>
 </head>
 <body class="hastopout">
 <!--#include file="/ncov/headerback.html"-->
@@ -34,10 +33,6 @@
             <div class="input-group input-group-sm">
                 <span class="input-group-addon">联系方式</span>
                 <input type="text" name="phone" class="form-control">
-            </div>
-            <div class="input-group input-group-sm">
-                <span class="input-group-addon">打卡时间</span>
-                <input type="text" name="cdate" id="cdate" class="form-control">
             </div>
             <div class="input-group input-group-sm">
                 <span class="input-group-addon">部门</span>
@@ -74,34 +69,33 @@
     </div>
 </div>
 <script type="text/html" id="v_todystate">
-    {{if data.length>0}}
     <thead>
-        <tr>
-            <td>姓名</td>
-            <td>联系方式</td>
-            <td>打卡时间</td>
-            <td>地址</td>
-            <td>备注</td>
-        </tr>
+    <tr>
+        <th>姓名</th>
+        <th>联系方式</th>
+        <th>部门</th>
+        <th>职位</th>
+        <th>注册时间</th>
+    </tr>
     </thead>
     <tbody>
-        {{each data as item index }}
-        <tr>
-            <td>{{item.name}}</td>
-            <td>{{item.phone}}</td>
-            <td>{{item.c_date}}</td>
-            <td>{{item.province}}{{item.city}}{{item.district}}{{item.street}}{{item.recommend}}</td>
-            <td>{{item.content}}</td>
-        </tr>
-        {{/each}}
+    {{each data as item index }}
+    <tr>
+        <td>{{item.name}}</td>
+        <td>
+            {{item.phone}}
+        </td>
+        <td>
+            {{item.divi}}
+        </td>
+        <td>
+            {{item.obj}}
+        </td>
+        <td>{{item.cdatenow}}</td>
+    </tr>
+    {{/each}}
     </tbody>
-    {{else}}
-    <tbody>
-        <tr>
-            <td class="text-danger">暂无数据</td>
-        </tr>
-    </tbody>
-    {{/if}}
+
 </script>
 <script>
     var title='打卡列表'
@@ -127,7 +121,7 @@
         }
         var page = new Paging();
         $.ajaxDom('#dataList',{
-            url: '/publish/signIn/Log.json',
+            url: '/publish/statis/notReport.json',
             type: 'get',
             data:{
                 pageNumber: pageindexnow,
@@ -136,16 +130,24 @@
                 phone:$('#searchForm input[name="phone"]').val(),
                 divi:$('#searchForm select[name="divi"]').val(),
                 job:$('#searchForm input[name="job"]').val(),
-                cdate:$('#searchForm input[name="cdate"]').val(),
-                company:$('#searchForm select[name="company"]').val(),
             },
             success: function (data) {
+                console.log(data);
+                console.log('------------')
                 var dataInfo=data.data;
+                if(dataInfo.data.length>0){
+                    for(var i=0;i<dataInfo.data.length;i++){
+                        if(dataInfo.data[i].cdate){
+                            dataInfo.data[i].cdatenow=moment(dataInfo.data[i].cdate).format('YYYY-MM-DD HH:mm:ss')
+                        }
+                    }
+                }
                 var todystate = template('v_todystate', data.data);
                 $("#dataList").empty().append(todystate);
                 if(dataInfo.data.length<1){
                     $('#pageTool').hide();
                 }
+
                 pageSize(pageindexnow,pagesize)
                 function pageSize(pagenumber, pagesize) {
                     page.init({
@@ -169,15 +171,26 @@
         });
     }
 </script>
-<script>
+<script type="text/javascript">
     $(function () {
-        laydate.render({
-            elem: '#cdate',
-            format: 'yyyy-MM-dd',
-        });
+        /*-- 健康打卡 --*/
+        var Healthyarr = []
+        for (let i in Healthyobj) {
+            var obj={};
+            obj.name=Healthyobj[i];
+            obj.value=i;
+            Healthyarr.push(obj);
+        }
+        for (var i = 0; i <Healthyarr.length; i++) {
+            var datainfo = Healthyarr[i];
+            $("#searchForm select[name='state']").append(`
+                        <option value='${datainfo.value}'>${datainfo.name}</option>
+                    `);
+        }
         /*-- 部门 --*/
         dividata("#searchForm select[name='divi']")
         var selectorx = $("#searchForm select[name='divi']").select2();
+
     })
     function selectclear() {
         $("#searchForm select[name='divi']").val("选择部门").select2();

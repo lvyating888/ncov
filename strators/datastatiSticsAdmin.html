@@ -10,14 +10,18 @@
     <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/statiStics.css">
     <link rel="stylesheet" href="../js/paging/paging.css"/>
+    <link rel="stylesheet" href="../css/diseaseRegister.css">
     <script src="../js/jquery.js"></script>
     <script src="../js/bootstrap.js"></script>
-    <script src="../js/common.js"></script>
-    <script src="../js/template.js"></script>
+    <script src="../js/common.js?v=0.1"></script>
+    <script src="../js/template.js?v=0.1"></script>
     <script src="../js/echarts.min.js"></script>
     <script src="../js/paging/paging.js"></script>
     <script src="../js/ajaxDom.js"></script>
     <script src="../js/moment.js"></script>
+    <script src="../js/laydate/laydate.js"></script>
+    <link href="../js/select2/select2.min.css" rel="stylesheet" />
+    <script src="../js/select2/select2.min.js"></script>
 </head>
 <body class="hastopout">
     <!--#include file="/ncov/headerback.html"-->
@@ -38,6 +42,52 @@
             </div>
             <div class="tjout">
                 <p class="linetitle">统计状态 健康考勤记录</p>
+                <form action="#" id="searchForm">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">员工姓名</span>
+                        <input type="text" name="name" class="form-control">
+                    </div>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">联系方式</span>
+                        <input type="text" name="phone" class="form-control">
+                    </div>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">部门</span>
+                        <select name="divi" class="form-control addinputs" style="min-width:100px;">
+                            <option value="">选择部门</option>
+                        </select>
+                    </div>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">职位</span>
+                        <input type="text" name="job" class="form-control">
+                    </div>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">上报日期</span>
+                        <input type="text" name="cdate" id="importdate" class="form-control" readonly style="background-color: #fff;">
+                    </div>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">身体状态</span>
+                        <select name="state" class="form-control addinputs" style="min-width:100px;">
+                            <option value="">选择身体状态</option>
+                        </select>
+                    </div>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">是否接触湖北</span>
+                        <select name="hubei" class="form-control addinputs" style="min-width:100px;">
+                            <option value="">选择是否接触</option>
+                            <option value="1">是</option>
+                            <option value="2">否</option>
+                        </select>
+                    </div>
+                    <div class="botbtn row">
+                        <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+                            <button type="button" class="btn btn-success" style="width:80%" onclick="datalist(1)">查询</button>
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+                            <button type="button" class="btn btn-danger" style="width:80%" onclick="clearfrom('#searchForm',selectclear())">清空</button>
+                        </div>
+                    </div>
+                </form>
                 <div class="table-responsive">
                     <table class="table table-bordered" id="msgdata">
                     </table>
@@ -105,7 +155,7 @@
                 状态
             </th>
             <th>
-                是否接触湖北
+                是否接触过疫区人员、疑似病例或确诊病例
             </th>
             <th>
                 申报地址
@@ -131,19 +181,7 @@
                 {{data.phone}}
             </td>
             <td>
-                {{if data.state==1}}
-                健康
-                {{else if data.state==2}}
-                咳嗽打喷嚏
-                {{else if data.state==3}}
-                发热（未就诊或医生诊断为普通发热）
-                {{else if data.state==4}}
-                已就诊，被要求回家自行隔离观察
-                {{else if data.state==5}}
-                已就医，被判定为【疑似】新型肺炎，留在医院隔离观察
-                {{else if data.state==5}}
-                已就医，确诊为新型肺炎
-                {{/if}}
+                {{data.state | getType}}
             </td>
             <td>
                 {{if data.hubei== 1}}
@@ -198,12 +236,12 @@
             console.log(data);
             console.log('================');
             data.info=[
-                {text:'健康',state:1,number:0},
-                {text:'咳嗽打喷嚏',state:2,number:0},
-                {text:'发热（未就诊或医生诊断为普通发热）',state:3,number:0},
-                {text:'已就诊，被要求回家自行隔离观察',state:4,number:0},
-                {text:'已就医，被判定为【疑似】新型肺炎，留在医院隔离观察',state:5,number:0},
-                {text:'已就医，确诊为新型肺炎',state:6,number:0},
+                {text:getType(1),state:1,number:0},
+                {text:getType(2),state:2,number:0},
+                {text:getType(3),state:3,number:0},
+                {text:getType(4),state:4,number:0},
+                {text:getType(5),state:5,number:0},
+                {text:getType(6),state:6,number:0},
             ]
             for(var i=0;i<data.data.length;i++){
                 for(var j=0;j<data.info.length;j++){
@@ -235,6 +273,13 @@
                 company:compname,
                 pageNumber: pageindexnow,
                 pageSize:pagesize,
+                name:$('#searchForm input[name="name"]').val(),
+                phone:$('#searchForm input[name="phone"]').val(),
+                divi:$('#searchForm select[name="divi"]').val(),
+                job:$('#searchForm input[name="job"]').val(),
+                cdate:$('#searchForm input[name="cdate"]').val(),
+                state:$('#searchForm select[name="state"]').val(),
+                hubei:$('#searchForm select[name="hubei"]').val(),
             },
             success:function (data) {
                 var dataInfo=data.data;
@@ -273,4 +318,35 @@
         })
     }
 
+</script>
+<script>
+    $(function () {
+        laydate.render({
+            elem: '#importdate',
+            format: 'yyyy-MM-dd',
+        });
+        var Healthyarr = []
+        for (let i in Healthyobj) {
+            var obj={};
+            obj.name=Healthyobj[i];
+            obj.value=i;
+            Healthyarr.push(obj);
+        }
+        for (var i = 0; i <Healthyarr.length; i++) {
+            var datainfo = Healthyarr[i];
+            $("#searchForm select[name='state']").append(`
+                        <option value='${datainfo.value}'>${datainfo.name}</option>
+                    `);
+        }
+    })
+
+</script>
+<script type="text/javascript">
+    $(function () {
+        dividata("#searchForm select[name='divi']",'all')
+        var selectorx = $("#searchForm select[name='divi']").select2();
+    })
+    function selectclear() {
+        $("#searchForm select[name='divi']").val("选择部门").select2();
+    }
 </script>
