@@ -6,29 +6,39 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>打卡</title>
-    <link rel="stylesheet" href="../css/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/diseaseRegister.css">
-    <script src="../js/jquery.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
     <!-- 获取位置 -->
     <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.3.2.js"></script>
 
-    <script src="../js/bootstrap.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
     <script src="../js/common.js?v=0.2"></script>
-    <script src="../js/layer/layer.js"></script>
-    <script src="../js/template.js"></script>
-    <script src="../js/moment.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
 </head>
 <body class="hastopout">
+<!--#include file="/ncov/statichtml/loading.html"-->
 <!--#include file="/ncov/headerback.html"-->
 <div class="innerout">
     <div class="padtb10">
         <div class="form-group clearfix">
             <label class="col-sm-3 col-xs-3 leftlabel">地理位置<span class="red">*</span></label>
-            <div class="col-sm-9 col-xs-9 ">
+            <div  class="col-sm-9 col-xs-9 padlr0" style="text-align: right;padding-top:7px;">
+                <a href="javascript:;"
+                   onclick="getlocationfun()" class="text-muted"
+                >
+                    <span style="font-size:16px;padding-right:4px;">刷新地址</span><span class="glyphicon glyphicon-refresh" style="padding-right:4px;"></span>
+                </a>
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <div  class="col-sm-12 col-xs-12 padlr0">
                 <div id="Mapcontainer" style="display:none;"></div>
-                <span style="color: #5e5e5e;line-height:34px;" id="address">
-                </span>
+                <span style="color: #5e5e5e;line-height:26px;" id="address">
+                    </span>
             </div>
         </div>
         <div class="form-group padlr0 clearfix">
@@ -87,6 +97,7 @@
         getlocationfun();
     })
    function getlocationfun() {
+       $('#locationloading').show();
        // 微信配置
        wx.config({
            debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -167,9 +178,10 @@
                                reportInfo.street=result.regeocode.addressComponent.street;
                                reportInfo.recommend=result.regeocode.formattedAddress;
                                $('#address').html(reportInfo.recommend)
-
+                               $('#locationloading').hide();
                            }else{
-                               console.log('根据经纬度查询地址失败')
+                               layer.msg('根据经纬度查询地址失败')
+                               $('#locationloading').hide();
                            }
                        });
                    }
@@ -190,7 +202,8 @@
        wx.error(function (res) {
            /*alert(JSON.stringify(res));*/
            console.log(res);
-           console.log('error--------------')
+           console.log('error--------------');
+           $('#locationloading').hide();
        })
    }
 </script>

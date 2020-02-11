@@ -124,7 +124,7 @@ function getType(number) {
     return Healthyobj[number];
 }
 
-function dividata(demo,type) {
+function dividata(demo,type,fun) {
     type=type?type:'';
     if(type==''){
         url='/publish/statis/memberDivi.json'
@@ -140,9 +140,12 @@ function dividata(demo,type) {
             for (var i = 0; i <res.data.length; i++) {
                 var datainfo = res.data[i];
                 $(demo).append(`
-                        <option data-subtext="${datainfo.divi}">${datainfo.divi}</option>
+                        <option data-subtext="${datainfo.divi}" value="${datainfo.divi}">${datainfo.divi}</option>
 
                     `);
+            }
+            if(fun){
+                fun();
             }
         }
     })

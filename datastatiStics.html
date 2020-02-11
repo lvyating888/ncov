@@ -6,22 +6,23 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>后台统计</title>
-    <link rel="stylesheet" href="css/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/statiStics.css">
     <link rel="stylesheet" href="css/diseaseRegister.css">
-    <link rel="stylesheet" href="js/paging/paging.css"/>
-    <script src="js/jquery.js"></script>
-    <script src="js/bootstrap.js"></script>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/paging.css"/>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/pagingNcov.css"/>
+    <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
     <script src="js/common.js?v=0.2"></script>
-    <script src="js/template.js?v=0.1"></script>
-    <script src="js/echarts.min.js"></script>
-    <script src="js/paging/paging.js"></script>
-    <script src="js/ajaxDom.js"></script>
-    <script src="js/moment.js"></script>
-    <script src="js/laydate/laydate.js"></script>
-    <link href="js/select2/select2.min.css" rel="stylesheet" />
-    <script src="js/select2/select2.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
+    <script src="js/templateHelper.js?v=0.1"></script>
+    <script src="http://webimg.mp12345.com/jslib/paging/paging.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/laydate/laydate.js"></script>
+    <link href="http://webimg.mp12345.com/jslib/select2/select2.min.css" rel="stylesheet" />
+    <script src="http://webimg.mp12345.com/jslib/select2/select2.min.js"></script>
 </head>
 <body class="hastopout">
     <!--#include file="/ncov/headerback.html"-->
@@ -100,35 +101,38 @@
         </div>
     </div>
 <script type="text/html" id="v_todydata">
-    <tr>
-        <th>
-            总人数
-        </th>
-        <th>
-            今日上报次数
-        </th>
-        <th>
-            今日上报总人数
-        </th>
-        <th>
-            未上报人数
-        </th>
-    </tr>
-    <tr>
-        <td>
-            {{data.memberCount}}
-        </td>
-        <td>
-            {{data.reportCount}}
-        </td>
-        <td>
-            {{data.groupReportCount}}
-        </td>
-        <td>
-            {{data.memberCount-data.groupReportCount}}
-            <a href="notReport.html" class="btn btn-warning" style="margin-left:16px;">查看</a>
-        </td>
-    </tr>
+    <tbody>
+        <tr>
+            <th>
+                总人数
+            </th>
+            <th>
+                今日上报次数
+            </th>
+            <th>
+                今日上报总人数
+            </th>
+            <th>
+                未上报人数
+            </th>
+        </tr>
+        <tr>
+            <td>
+                {{data.memberCount}}
+            </td>
+            <td>
+                {{data.reportCount}}
+            </td>
+            <td>
+                {{data.groupReportCount}}
+            </td>
+            <td>
+                {{data.memberCount-data.groupReportCount}}
+                <a href="notReport.html" class="btn btn-warning" style="margin-left:16px;">查看</a>
+            </td>
+        </tr>
+    </tbody>
+
 </script>
 <script type="text/html" id="v_todystate">
     <tbody>

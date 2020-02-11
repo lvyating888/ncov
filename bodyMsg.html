@@ -6,16 +6,17 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>申报身体状况</title>
-    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/diseaseRegister.css">
-    <script src="js/jquery.js"></script>
-    <script src="js/bootstrap.js"></script>
-    <script src="js/common.js?v=0.2"></script>
-    <script src="js/layer/layer.js"></script>
-    <script src="js/laydate/laydate.js"></script>
-    <script src="js/template.js?v=0.2"></script>
-    <script src="js/moment.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
+    <script src="js/common.js?v=0.3"></script>
+    <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/laydate/laydate.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
+    <script src="js/templateHelper.js?v=0.2"></script>
+    <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
     <!-- 获取位置 -->
     <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.3.2.js"> </script>
 </head>
@@ -26,6 +27,7 @@
     }
 </style>
 <body class="hasbotout">
+<!--#include file="statichtml/loading.html"-->
 <div class="innerout" style="padding-top: 10px;">
     <p class="reminderTips">
         疫情当前，如有任何不适或需要帮助，我们将二十四小时守望相助！
@@ -68,7 +70,56 @@
     <div class="innerlisout">
         <p class="linetitle">健康考勤</p>
         <label class="col-sm-12 col-xs-12 padlr0" style="line-height: 32px;">健康状况<span class="red">*</span></label>
-        <div id="hearthout"></div>
+        <div id="hearthout">
+            <div class="form-group clearfix">
+                <div  class="col-sm-12 col-xs-12 padlr0">
+                    <div class="col-sm-4 col-xs-4 padlr0">
+                        <label>
+                            <input type="checkbox" name="status"  value="1" class="rightradio">
+                            健康
+                        </label>
+                    </div>
+                    <div class="col-sm-8 col-xs-8">
+                        <label>
+                            <input type="checkbox" name="status"  value="2" class="rightradio">
+                            咳嗽打喷嚏
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <div  class="col-sm-12 col-xs-12 padlr0">
+                    <div class="col-sm-4 col-xs-4 padlr0">
+                        <label>
+                            <input type="checkbox" name="status"  value="3" class="rightradio">
+                            发热（未就诊或医生诊断为普通发热）
+                        </label>
+                    </div>
+                    <div class="col-sm-8 col-xs-8">
+                        <label>
+                            <input type="checkbox" name="status"  value="4" class="rightradio">
+                            已就诊，被要求回家自行隔离观察
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <div  class="col-sm-12 col-xs-12 padlr0">
+                    <label>
+                        <input type="checkbox" name="status"  value="5" class="rightradio">
+                        已就医，被判定为【疑似】新型肺炎，留在医院隔离观察
+                    </label>
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <div  class="col-sm-12 col-xs-12 padlr0">
+                    <label>
+                        <input type="checkbox" name="status"  value="6" class="rightradio">
+                        已就医，确诊为新型肺炎
+                    </label>
+                </div>
+            </div>
+        </div>
 
         <div class="form-group clearfix" id="redcontent" style="display:none;">
             <label class="col-sm-3 col-xs-3 leftlabel" >入院情况</label>
@@ -109,10 +160,19 @@
 
         <div class="form-group clearfix">
             <label class="col-sm-3 col-xs-3 leftlabel" >地理位置<span class="red">*</span></label>
-            <div  class="col-sm-9 col-xs-9 ">
+            <div  class="col-sm-9 col-xs-9 padlr0" style="text-align: right;padding-top:7px;">
+                <a href="javascript:;"
+                   onclick="getloaction()" class="text-muted"
+                >
+                    <span style="font-size:16px;padding-right:4px;">刷新地址</span><span class="glyphicon glyphicon-refresh" style="padding-right:4px;"></span>
+                </a>
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <div  class="col-sm-12 col-xs-12 padlr0">
                 <div id="Mapcontainer" style="display:none;"></div>
-                <span style="color: #5e5e5e;line-height:34px;" id="address">
-                </span>
+                <span style="color: #5e5e5e;line-height:26px;" id="address">
+                    </span>
             </div>
         </div>
     </div>
@@ -325,6 +385,7 @@
         getloaction();
     })
     function getloaction(){
+        $('#locationloading').show();
         // 微信配置
         wx.config({
             debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -404,9 +465,10 @@
                                 reportInfo.street=result.regeocode.addressComponent.street;
                                 reportInfo.recommend=result.regeocode.formattedAddress;
                                 $('#address').html(reportInfo.recommend)
-
+                                $('#locationloading').hide();
                             }else{
-                                console.log('根据经纬度查询地址失败')
+                                layer.msg('根据经纬度查询地址失败');
+                                $('#locationloading').hide();
                             }
                         });
                     }
@@ -427,7 +489,8 @@
         wx.error(function(res){
             /*alert(JSON.stringify(res));*/
             console.log(res);
-            console.log('error--------------')
+            console.log('error--------------');
+            $('#locationloading').hide();
         })
     }
 
@@ -520,19 +583,19 @@
     }
 </script>
 <script>
-    /*-- 健康参数 --*/
-    var Healthyarr = []
-    for (let i in Healthyobj) {
-        var obj={};
-        obj.name=Healthyobj[i];
-        obj.value=i;
-        Healthyarr.push(obj);
-    }
-    var obj={data:Healthyarr}
     $(function () {
+        /*-- 健康参数 --*/
+        /*var Healthyarr = []
+        for (let i in Healthyobj) {
+            var obj={};
+            obj.name=Healthyobj[i];
+            obj.value=i;
+            Healthyarr.push(obj);
+        }
+        var obj={data:Healthyarr}
         console.log(obj)
         var dynamic = template('v_hearth', obj);
-        $("#hearthout").empty().append(dynamic);
+        $("#hearthout").empty().append(dynamic);*/
         /*-- 监听选择健康情况显示 content --*/
         var checkboxlis=$('#bodyInfo input[type="checkbox"][name="status"]');
 

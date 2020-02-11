@@ -56,12 +56,13 @@
 .mycontlis{
     display:table-cell;
     text-align: center;
-    padding:8px;
+    padding:8px 4px;
     cursor: pointer;
 }
 
 .mycontlis a{
     text-decoration: none;
+    display: block;
 }
 .mycontlis span{
     color: #f29400;
