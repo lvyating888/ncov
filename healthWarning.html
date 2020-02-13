@@ -9,19 +9,101 @@
     <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/personalCenter.css">
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/paging.css"/>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/pagingNcov.css"/>
+    <link rel="stylesheet" href="css/diseaseRegister.css">
     <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
     <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
     <script src="js/common.js?v=0.2"></script>
     <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
     <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
     <script src="js/templateHelper.js?v=0.2"></script>
+    <script src="http://webimg.mp12345.com/jslib/paging/paging.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/laydate/laydate.js"></script>
+    <link href="http://webimg.mp12345.com/jslib/select2/select2.min.css" rel="stylesheet" />
+    <script src="http://webimg.mp12345.com/jslib/select2/select2.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
+
+    <script	type="text/javascript" src="https://webimg.mp12345.com/js/js-xlsx/xlsx.core.min.js"></script>
+    <script type="text/javascript" src="../js/importexcal/checkin.js"></script>
 </head>
 <body class="hastopout">
+<div class="modal" id="exportmyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">导出excel</h4>
+            </div>
+            <div id="">
+                <div class="modal-body">
+                    <form id="exportBody">
+                        <div class="form-group">
+                            <label>提交时间<span class="red">*</span></label>
+                            <input type="text" name="cdate" id="exportdate" class="form-control" readonly style="background-color: #fff;">
+                        </div>
+                    </form>
+                    <p class="text-danger" style="padding: 4px 0 8px;">
+                        若点击导出没有反应请打开电脑端下载
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="exportexcel()">
+                    确定导出
+                </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
     <!--#include file="/ncov/headerback.html"-->
     <div class="innerout">
         <div class="staticbox">
             <div class="tjout">
                 <p class="linetitle">统计危险人员列表</p>
+                <form action="#" id="searchForm">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">员工姓名</span>
+                        <input type="text" name="name" class="form-control">
+                    </div>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">联系方式</span>
+                        <input type="text" name="phone" class="form-control">
+                    </div>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">部门</span>
+                        <select name="divi" class="form-control addinputs" style="min-width:100px;">
+                            <option value="">选择部门</option>
+                        </select>
+                        <!--<select id="divi" name="divi" class="form-control selectpicker" data-live-search="true">-->
+                        <!--<option data-subtext="">选择部门</option>-->
+                        <!--</select>-->
+                    </div>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">职位</span>
+                        <input type="text" name="job" class="form-control">
+                    </div>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">上报日期</span>
+                        <input type="text" name="cdate" id="importdate" class="form-control" readonly style="background-color: #fff;">
+                    </div>
+
+                    <div class="botbtn row">
+                        <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+                            <button type="button" class="btn btn-success" style="width:80%" onclick="datalist(1)">查询</button>
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+                            <button type="button" class="btn btn-danger" style="width:80%" onclick="clearfrom('#searchForm',selectclear())">清空</button>
+                        </div>
+                    </div>
+                </form>
+                <div style="padding:8px 0;">
+                    <button type="button" class="btn btn-primary" onclick="exportexcelout()">导出excal</button>
+                </div>
                 <p class="red" style="line-height:20px;margin:6px 0;">
                    人员数量:<span id="zjnumber">0</span>
                 </p>
@@ -30,15 +112,23 @@
 
                     </table>
                 </div>
+                <div id="pageTool" class="newpages"></div>
             </div>
         </div>
     </div>
 </body>
 <script type="text/html" id="v_earlydata">
+    {{if data.length>0}}
     <tbody>
         <tr>
             <th>
+                操作
+            </th>
+            <th>
                 姓名
+            </th>
+            <th>
+                提交时间
             </th>
             <th>
                 情况
@@ -58,60 +148,203 @@
         </tr>
         {{each data as item index}}
         <tr>
-            <th>
+            <td>
+                <button id="btn" class="btn btn-danger" onclick="deleteUser('{{item.id}}')">删除</button>
+            </td>
+            <td>
                 {{item.name}}
-            </th>
-            <th>
+            </td>
+            <td>
+                {{item.cdatenow}}
+            </td>
+            <td>
                 {{item.state | getType}}
                 {{if item.state==5 || item.state==6}}
                     {{if item.content!==''}}
                 <span class="text-danger">入院情况：{{item.content}}</span>
                     {{/if}}
                 {{/if}}
-            </th>
-            <th>
+            </td>
+            <td>
                 {{item.temperature}}℃
-            </th>
-            <th>
+            </td>
+            <td>
                 {{item.phone}}
-            </th>
-            <th>
+            </td>
+            <td>
                 {{item.province}}{{item.city}}{{item.district}}{{item.recommend}}
-            </th>
-            <th>
+            </td>
+            <td>
                 {{if item.hubei==1}}
                 是
                 {{else}}
                 否
                 {{/if}}
-            </th>
+            </td>
         </tr>
         {{/each}}
     </tbody>
+    {{else}}
+    <tbody>
+        <tr>
+            <td class="text-danger">暂无数据</td>
+        </tr>
+    </tbody>
+    {{/if}}
 </script>
 </html>
 <script>
-    /*-- 获取危险列表 /memner/early.json--*/
-   $.ajax({
-       type:'get',
-       url:'/member/early.json',
-       success:function (data) {
-           console.log(data)
-           if(data.data!==0){
-               $.ajax({
-                   type:'get',
-                   url:'/member/early/list.json',
-                   success:function (data) {
-                       if(data.data.length>0){
-                           $('#zjnumber').html(data.data.length)
-                       }
-                       var earlydata = template('v_earlydata', data);
-                       $("#earlydata").empty().append(earlydata);
-                   }
-               })
-           }else{
-               $("#earlydata").empty().html('<tr><td class="red">暂无危险人员</td></tr>')
-           }
-       }
-   })
+    var pageindexnow=1;
+    var pagesizeout=10;
+
+    function deleteUser(id) {
+        layer.confirm('确定要删除吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.ajax({
+                type:'delete',
+                url:'/publish/member/early.json',
+                data:{id:id},
+                success:function (data) {
+                    if(data.success){
+                        layer.msg('删除成功');
+                        datalist(1);
+                    }else{
+                        /*layer.msg('删除失败联系管理员')*/
+                        layer.msg(data.message);
+                    }
+                }
+            })
+        });
+
+    }
+    function datalist(pageindex,pagesize) {
+        if (pageindex == undefined || pageindex == null) {
+            pageindex = pageindexnow;
+        } else {
+            pageindexnow = pageindex;
+        }
+        var page = new Paging();
+        $.ajaxDom('#earlydata',{
+            type:'get',
+            url:'/publish/member/early/list.json',
+            data:{
+                pageNumber: pageindexnow,
+                pageSize:pagesize,
+                name:$('#searchForm input[name="name"]').val(),
+                phone:$('#searchForm input[name="phone"]').val(),
+                divi:$('#searchForm select[name="divi"]').val(),
+                job:$('#searchForm input[name="job"]').val(),
+                cdate:$('#searchForm input[name="cdate"]').val(),
+            },
+            success:function (data) {
+                console.log(data);
+                var dataInfo=data.data;
+                if(dataInfo.data.length>0){
+                    $('#zjnumber').html(dataInfo.totalCount);
+                    for(var i=0;i<dataInfo.data.length;i++){
+                        if(dataInfo.data[i].cdate){
+                            dataInfo.data[i].cdatenow=moment(dataInfo.data[i].cdate).format('YYYY-MM-DD HH:mm:ss')
+                        }
+                    }
+                }
+                var earlydata = template('v_earlydata', dataInfo);
+                $("#earlydata").empty().append(earlydata);
+                if(dataInfo.data.length<1){
+                    $('#pageTool').hide();
+                }
+
+                pageSize(pageindexnow,pagesize)
+                function pageSize(pagenumber, pagesize) {
+                    page.init({
+                        target: $('#pageTool').empty(),
+                        pagesize: pagesize,
+                        count: data.data.totalCount,
+                        toolbar: true,
+                        current: pagenumber,
+                        //hash: true ,
+                        changePagesize: function (_psize, _pnumber) {
+                            pagesizeout=_psize;
+                            datalist(1,_psize)
+                        },
+                        callback: function (_pnumber, _psize, count) {
+                            pagesizeout=_psize;
+                            datalist(_pnumber,_psize)
+                        }
+                    });
+                }
+            }
+        })
+    }
+</script>
+<script type="text/javascript">
+    $(function () {
+
+        laydate.render({
+            elem: '#importdate',
+            format: 'yyyy-MM-dd',
+        });
+        laydate.render({
+            elem: '#exportdate',
+            format: 'yyyy-MM-dd',
+            value: moment(new Date()).format('YYYY-MM-DD')
+        });
+        dividata("#searchForm select[name='divi']")
+        var selectorx = $("#searchForm select[name='divi']").select2();
+        datalist(1)
+    })
+    function selectclear() {
+        $("#searchForm select[name='divi']").val("选择部门").select2();
+    }
+
+    /*-- 导出弹出框 --*/
+    function exportexcelout() {
+        $('#exportmyModal').modal('show');
+    }
+    /*-- 健康预警导出 --*/
+    function exportexcel() {
+        var exporttime=$('#exportBody input[name="cdate"]').val();
+        if(exporttime.trim()==''){
+            layer.msg('请选择查询时间')
+        }else{
+            $.ajax({
+                type:'get',
+                url:'/publish/excelData/early.json',
+                data:{
+                    cdate:exporttime,
+                },
+                success:function (data) {
+                    console.log(data);
+                    console.log('--------------')
+                    /*-- 下载模板 --*/
+                    /*json 导出*/
+                    if(data.data.length>0){
+                        var aoa = [
+                            ['姓名','提交时间', '情况', '体温', '联系电话', '登记地址','是否接触过疫区人员、疑似病例或确诊病例'],
+                        ];
+                        // console.log(aoa)
+                        for(var i=0;i<data.data.length;i++){
+                            var dataInfo=data.data[i];
+                            aoa.push([
+                                dataInfo.name,
+                                moment(dataInfo.cdate).format('YYYY-MM-DD HH:mm:ss'),
+                                getType(dataInfo.state),
+                                dataInfo.temperature+'℃',
+                                dataInfo.phone,
+                                dataInfo.province+dataInfo.city+dataInfo.district+dataInfo.recommend,
+                                dataInfo.hubei==1?'是':'否'
+                            ]);
+                        }
+                        var sheet = XLSX.utils.aoa_to_sheet(aoa);
+                        var df=moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
+                        openDownloadDialog(sheet2blob(sheet), '危险员工列表'+df+'.xls');
+                    }else{
+                        layer.msg('该时间没有危险人员');
+                    }
+
+                }
+            })
+        }
+
+    }
 </script>

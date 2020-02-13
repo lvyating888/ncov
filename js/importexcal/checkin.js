@@ -13,7 +13,13 @@ function formatDateTime(inputTime) {
     second = second < 10 ? ('0' + second) : second;
     return y + '/' + m + '/' + d + '_' + '_' + h + ':' + minute + ':' + second;
 }
-function openDownloadDialog(url, saveName)  {
+/**
+ * 通用的打开下载对话框方法，没有测试过具体兼容性
+ * @param url 下载地址，也可以是一个blob对象，必选
+ * @param saveName 保存文件名，可选
+ */
+function openDownloadDialog(url, saveName)
+{
     if(typeof url == 'object' && url instanceof Blob)
     {
         url = URL.createObjectURL(url); // 创建blob地址
@@ -29,7 +35,8 @@ function openDownloadDialog(url, saveName)  {
         event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
     }
     aLink.dispatchEvent(event);
-    console.log('走到这里')
+    console.log(aLink)
+    console.log('走到这里111111111111+')
 }
 // 将一个sheet转成最终的excel文件的blob对象，然后利用URL.createObjectURL下载
 function sheet2blob(sheet, sheetName) {

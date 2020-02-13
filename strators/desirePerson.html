@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>查看意向用户</title>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrapSwitch/bootstrap-switch.min.css">
+    <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
+    <script src="../js/common.js?v=0.2"></script>
+    <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/bootstrapSwitch/bootstrap-switch.min.js"></script>
+</head>
+<style>
+    #importbtn_out{
+        position: relative;
+    }
+    #file{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left:0;
+        top:0;
+        opacity: 0;
+    }
+</style>
+<body class="hastopout">
+<!--#include file="/ncov/headerback.html"-->
+<div class="innerout ">
+    <div class="padtb10">
+        <ul id="myTab" class="nav nav-tabs">
+            <li class="active">
+                <a href="#desirePersonnotice" data-toggle="tab">
+                    查看已申请用户列表
+                </a>
+            </li>
+            <li>
+                <a href="#personUselist" data-toggle="tab">
+                    查看已试用用户列表
+                </a>
+            </li>
+        </ul>
+        <div id="myTabContent" class="tab-content padtb10">
+            <div class="tab-pane fade in active" id="desirePersonnotice">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="desirePerdata">
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="personUselist">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="personUsedata">
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+
+<script type="text/html" id="v_olddata">
+    <tbody>
+    <tr>
+        <th>
+            人员姓名
+        </th>
+        <th>
+            手机号
+        </th>
+        <th>
+            登记时间
+        </th>
+
+    </tr>
+    {{each data as item index}}
+    <tr>
+        <td>
+            {{item.name}}
+        </td>
+        <td>
+            {{item.phone}}
+        </td>
+        <td>
+            {{item.cdatenow}}
+        </td>
+    </tr>
+    {{/each}}
+    </tbody>
+</script>
+<script type="text/html" id="v_personuser">
+    <tbody>
+    <tr>
+        <th>
+            人员姓名
+        </th>
+        <th>
+            手机号
+        </th>
+        <th>
+            登记时间
+        </th>
+        <th>
+            ip
+        </th>
+    </tr>
+    {{each data as item index}}
+    <tr>
+        <td>
+            {{item.name}}
+        </td>
+        <td>
+            {{item.phone}}
+        </td>
+        <td>
+            {{item.cdatenow}}
+        </td>
+        <td>
+            {{item.ip}}
+        </td>
+    </tr>
+    {{/each}}
+    </tbody>
+</script>
+</html>
+<script>
+    /*-- 已申请用户列表 --*/
+    desiredata();
+    function desiredata(){
+        $.ajax({
+            type:'get',
+            url:"/admin/applyCompany.json",
+            success:function (data) {
+                console.log(data)
+                if(data.data!==0){
+                    if(data.data.length>0){
+                        for(var i=0;i<data.data.length;i++){
+                            if(data.data[i].cdate){
+                                data.data[i].cdatenow=moment(data.data[i].cdate).format('YYYY-MM-DD HH:mm:ss')
+                            }
+                        }
+                    }
+                    var olddata = template('v_olddata', data);
+                    $("#desirePerdata").empty().append(olddata);
+                }else{
+                    $("#desirePerdata").empty().html('<tr><td class="red">暂无数据</td></tr>')
+                }
+            }
+        })
+    }
+
+    /*-- 已试用用户列表 --*/
+    userdata();
+    function userdata(){
+        $.ajax({
+            type:'get',
+            url:"/admin/userTest.json",
+            success:function (data) {
+                console.log(data)
+                if(data.data!==0){
+                    if(data.data.length>0){
+                        for(var i=0;i<data.data.length;i++){
+                            if(data.data[i].cdate){
+                                data.data[i].cdatenow=moment(data.data[i].cdate).format('YYYY-MM-DD HH:mm:ss')
+                            }
+                        }
+                    }
+                    var personuser = template('v_personuser', data);
+                    $("#personUsedata").empty().append(personuser);
+                }else{
+                    $("#personUsedata").empty().html('<tr><td class="red">暂无数据</td></tr>')
+                }
+            }
+        })
+    }
+</script>

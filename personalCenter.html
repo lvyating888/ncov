@@ -34,35 +34,8 @@
 </div>
 <!-- 底部 -->
 <div class="innerout">
-    <ul class="mycontul">
-
-        <li class="mycontlis">
-            <a href="./staffTravel.html" id="usergo">
-                <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
-                <p>
-                    人员出行
-                </p>
-            </a>
-        </li>
-        <li class="mycontlis" style="min-width: 33.3%">
-            <a href="./noticeReminderList.html" id="publishgo">
-                <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
-                <p>
-                    公告列表
-                </p>
-            </a>
-        </li>
-        <li class="mycontlis">
-            <a href="https://webimg.mp12345.com/NCP2020/yiqing.html" >
-                <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>
-                <p>
-                    疫情数据
-                </p>
-            </a>
-        </li>
-    </ul>
     <ul  class="mycontul">
-        <li class="mycontlis is-admin">
+        <li class="mycontlis is-admin" style="display:none;">
             <a href="healthWarning.html" class="per_smicon" id="per_body">
                     <span class="glyphicon glyphicon-warning-sign red" aria-hidden="true">
                     </span>
@@ -89,6 +62,14 @@
                 </p>
             </a>
         </li>
+        <li class="mycontlis is-admin" style="display:none;">
+            <a href="./publicly/importExcal.html">
+                <span class="glyphicon glyphicon-th" aria-hidden="true"></span>
+                <p>
+                    员工添加
+                </p>
+            </a>
+        </li>
     </ul>
     <ul class="mycontul">
         <li class="mycontlis is-admin" style="display:none;">
@@ -108,14 +89,42 @@
             </a>
         </li>
         <li class="mycontlis is-admin" style="display:none;">
-            <a href="./publicly/importExcal.html">
-                <span class="glyphicon glyphicon-th" aria-hidden="true"></span>
+            <a href="createLink.html">
+                <span class="glyphicon glyphicon-blackboard" aria-hidden="true"></span>
                 <p>
-                    员工添加
+                    电脑登录
                 </p>
             </a>
         </li>
     </ul>
+    <ul class="mycontul">
+        <li class="mycontlis">
+            <a href="./staffTravel.html" id="usergo">
+                <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
+                <p>
+                    人员出行
+                </p>
+            </a>
+        </li>
+        <li class="mycontlis" >
+            <a href="./noticeReminderList.html" id="publishgo">
+                <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+                <p>
+                    公告列表
+                </p>
+            </a>
+        </li>
+        <li class="mycontlis">
+            <a href="https://webimg.mp12345.com/NCP2020/yiqing.html" >
+                <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>
+                <p>
+                    疫情数据
+                </p>
+            </a>
+        </li>
+    </ul>
+
+
 </div>
 <!--#include file="/ncov/navBottom.html"-->
 </body>
@@ -199,22 +208,11 @@
     $(function () {
         $.ajax({
             type: 'get',
-            url: '/member/early.json',
+            url: '/publish/member/early/list.json',
             success: function (data) {
-                console.log(data)
-                if (data.data !== 0) {
-                    $.ajax({
-                        type: 'get',
-                        url: '/member/early/list.json',
-                        success: function (data) {
-                            if (data.data.length > 0) {
-                                $('#onetips').show();
-                                $('#onetips').html(data.data.length)
-                            } else {
-                                $('#onetips').hide();
-                            }
-                        }
-                    })
+                if (data.data.data.length > 0) {
+                    $('#onetips').show();
+                    $('#onetips').html(data.data.totalCount)
                 } else {
                     $('#onetips').hide();
                 }

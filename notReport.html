@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>忘健康打卡列表</title>
+    <title>未打卡列表</title>
     <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/diseaseRegister.css">
@@ -15,14 +15,49 @@
     <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
     <script src="js/common.js?v=0.2"></script>
     <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/laydate/laydate.js"></script>
     <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
     <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
     <script src="http://webimg.mp12345.com/jslib/paging/paging.js"></script>
     <script src="http://webimg.mp12345.com/jslib/ajaxDom.js"></script>
     <link href="http://webimg.mp12345.com/jslib/select2/select2.min.css" rel="stylesheet" />
     <script src="http://webimg.mp12345.com/jslib/select2/select2.min.js"></script>
+
+    <script	type="text/javascript" src="https://webimg.mp12345.com/js/js-xlsx/xlsx.core.min.js"></script>
+    <script type="text/javascript" src="../js/importexcal/checkin.js"></script>
 </head>
 <body class="hastopout">
+<div class="modal" id="exportmyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">导出excel</h4>
+            </div>
+            <div id="">
+                <div class="modal-body">
+                    <form id="exportBody">
+                        <div class="form-group">
+                            <label>提交时间<span class="red">*</span></label>
+                            <input type="text" name="cdate" id="exportdate" class="form-control" readonly style="background-color: #fff;">
+                        </div>
+                    </form>
+                    <p class="text-danger" style="padding: 4px 0 8px;">
+                        若点击导出没有反应请打开电脑端下载
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="exportexcel()">
+                    确定导出
+                </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 <!--#include file="/ncov/headerback.html"-->
 <div class="innerout">
     <div class="padtb10">
@@ -61,6 +96,10 @@
                 </div>
             </div>
         </form>
+        <div style="padding:8px 0;">
+            <button type="button" class="btn btn-warning" onclick="remindBtnall()">提醒所有人</button>
+            <button type="button" class="btn btn-primary" onclick="exportexcelout()">导出excel</button>
+        </div>
         <div class="table-responsive">
             <table class="table table-bordered" id="dataList">
 
@@ -198,6 +237,12 @@
         dividata("#searchForm select[name='divi']")
         var selectorx = $("#searchForm select[name='divi']").select2();
 
+        laydate.render({
+            elem: '#exportdate',
+            format: 'yyyy-MM-dd',
+            value: moment(new Date()).format('YYYY-MM-DD')
+        });
+
     })
     function selectclear() {
         $("#searchForm select[name='divi']").val("选择部门").select2();
@@ -225,6 +270,74 @@
                 }
             });
         });
+    }
+    /*-- 提醒打卡所有未打卡 --*/
+    function remindBtnall() {
+        layer.confirm('确定发送微信提醒', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.ajax({
+                type: "get",
+                url: "/publish/statis/notReportNoticeAll.json",
+                success: function(data) {
+                    if(data.success){
+                        layer.msg('提醒成功');
+                        datacount(1);
+                    }else{
+                        /*layer.msg('删除失败联系管理员')*/
+                        layer.msg(data.message);
+                    }
+                    /*console.log(data);*/
+                }
+            });
+        });
+    }
+    /*-- 导出弹出框 --*/
+    function exportexcelout() {
+        $('#exportmyModal').modal('show');
+    }
+    /*-- excel 导出 --*/
+    function exportexcel(){
+        var exporttime=$('#exportBody input[name="cdate"]').val();
+        if(exporttime.trim()==''){
+            layer.msg('请选择查询时间')
+        }else{
+            $.ajax({
+                type:'get',
+                url:'/publish/excelData/notReport.json',
+                data:{
+                    cdate:exporttime,
+                },
+                success:function (data) {
+                    console.log(data);
+                    console.log('--------------')
+                    /*-- 下载模板 --*/
+                    /*json 导出*/
+                    if(data.data.length>0){
+                        var aoa = [
+                            ['姓名','联系方式', '部门', '职位', '注册时间'],
+                        ];
+                        // console.log(aoa)
+                        for(var i=0;i<data.data.length;i++){
+                            var dataInfo=data.data[i];
+                            aoa.push([
+                                dataInfo.name,
+                                dataInfo.phone,
+                                dataInfo.divi,
+                                dataInfo.job,
+                                moment(dataInfo.cdate).format('YYYY-MM-DD HH:mm:ss')
+                            ]);
+                        }
+                        var sheet = XLSX.utils.aoa_to_sheet(aoa);
+                        var df=moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
+                        openDownloadDialog(sheet2blob(sheet), '未打卡员工列表'+df+'.xls');
+                    }else{
+                        layer.msg('该时间没有未打卡人员');
+                    }
+
+                }
+            })
+        }
     }
 </script>
 </body>

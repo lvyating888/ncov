@@ -330,8 +330,10 @@
             {{if item.invite_code}}
                 {{if item.wx_openid}}
                 <span class="text-success">已验证</span>
+                {{if item.admin !== 1}}
                 <br>
                 <button type="button" class="btn btn-warning" style="margin:6px 0;" onclick="untyingbtn('{{item.id}}')" >解绑</button>
+                {{/if}}
                 {{else}}
                 <button type="button" class="btn btn-warning" style="margin:6px 0;" onclick="pushcompmsg('{{item.phone}}')" >再次推送</button>
                 {{/if}}
@@ -736,7 +738,7 @@
         layer.confirm('确定推送消息吗？', {
             btn: ['确定','取消'] //按钮
         }, function(){
-            $.ajax({
+            $.ajaxDom('#noticelist',{
                 type: "get",
                 url: "/publish/sendInviteCode.json",
                 data:{
@@ -767,12 +769,12 @@
         layer.confirm('确定推送消息给所有人？', {
             btn: ['确定','取消'] //按钮
         }, function(){
-            layer.msg('请求成功,短信正在发送中...请稍后查看');
-            $.ajax({
+            $.ajaxDom('#noticelist',{
                 type: "get",
                 url: "/publish/sendInviteCodeAll.json",
                 success: function(data) {
                     if(data.success){
+                        layer.msg('请求成功,短信正在发送中...请稍后查看');
                         console.log(data)
                     }else{
                         console.log(data)

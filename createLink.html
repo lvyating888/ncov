@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>生成测试链接</title>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/statiStics.css">
+    <link rel="stylesheet" href="css/diseaseRegister.css">
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/paging.css"/>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/pagingNcov.css"/>
+    <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
+</head>
+<body class="hastopout">
+<!--#include file="/ncov/headerback.html"-->
+    <div class="innerout padtb10">
+        <p class="text-muted" style="margin-bottom:6px;">复制到电脑浏览器打开</p>
+        <p class="text-danger" style="margin-bottom:6px;">(请勿转发给他人,防止泄露信息)</p>
+        <p class="text-primary" id="links" style="margin-bottom:6px;word-wrap:break-word;word-break:normal; "></p>
+        <button id="btn" class="btn btn-success" >复制链接</button>
+        <input id="hide" type="text" style="opacity:0;">
+    </div>
+
+</body>
+<script>
+    $(function () {
+        /*-- 获取链接 --*/
+        $.ajax({
+            type: "get",
+            url:'/publish/pc/createSecret.json',
+            success:function (data) {
+                if(data.success){
+                    $('#links').html(data.data);
+                    $("#btn").click(function(){
+                        $("#hide").val($("#links").text());
+                        $("#hide").select();
+                        document.execCommand("Copy")
+                        try {
+                            var msg = document.execCommand('Copy')?'成功':'失败'
+                            layer.msg('复制链接' + msg)
+                        } catch (err) {
+                            layer.msg('不能使用这种方法复制内容')
+                        }
+                    })
+                }
+
+            }
+        })
+    })
+
+</script>
+</html>

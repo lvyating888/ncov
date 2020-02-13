@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>登录</title>
+    <title>测试账号登录</title>
     <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/diseaseRegister.css">
@@ -84,9 +84,9 @@
                 </div>
             </div>
             <div class="form-group clearfix">
-                <label class="col-sm-3 col-xs-3 leftlabel" >认证码<span class="red">*</span></label>
+                <label class="col-sm-3 col-xs-3 leftlabel" >姓名<span class="red">*</span></label>
                 <div  class="col-sm-9 col-xs-9 ">
-                    <input class="form-control" name="code" type="text" placeholder="请输入认证码"
+                    <input class="form-control" name="name" type="text" placeholder="请输入姓名"
                     />
                 </div>
             </div>
@@ -115,9 +115,11 @@
 <script>
     $.ajaxDom('#addInfo',{
         type:'get',
-        url:'/ncov/isExist.json',
+        url:'/ncov/isUse.json',
         data:{openId:openId},
         success:function (data) {
+            console.log(data);
+            console.log('---------------')
             if(data.success){
                 window.location.href='bodyMsg.html?openId='+openId;
             }
@@ -133,14 +135,14 @@
         }else if(!dataInfo.phone || dataInfo.phone==''){
             layer.msg('请输入手机号');
             $('#addInfo').find('input[name="phone"]').focus();
-        }else if(!dataInfo.code || dataInfo.code=='') {
+        }else if(!dataInfo.name || dataInfo.name=='') {
             layer.msg('请输入认证码');
-            $('#addInfo').find('input[name="code"]').focus();
+            $('#addInfo').find('input[name="name"]').focus();
         }else{
             console.log(dataInfo);
             $.ajaxDom('#addInfo',{
                 type: "get",
-                url: "/ncov/register.json",
+                url: "/ncov/useLog.json",
                 data:dataInfo,
                 success: function(data) {
                     if(data.success){
