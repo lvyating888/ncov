@@ -191,58 +191,15 @@
 <div class="innerout">
     <div class="innerlisout">
         <p class="linetitle">历史记录</p>
+
+        <a style="margin:6px 0;" class="btn btn-success hearthmsg" href="javascript:;">查看打卡详情</a>
         <ul class="list-group" id="historydata">
 
         </ul>
     </div>
 </div>
 <!--#include file="/ncov/navBottom.html"-->
-<!-- 历史记录 -->
-<script type="text/html" id="v_bodyhtml">
-    {{if data.length<0}}
-    <li class="list-group-item red">
-        暂无数据
-    </li>
-    {{else}}
-    {{each data as list index}}
-    <li class="list-group-item ">
-        <div class="clearfix">
-            <div class=" col-md-12 col-sm-12 col-xs-12 padlr0">
-                {{list.state | getType}}
-            </div>
-        </div>
-        <div class="clearfix padlr0" style="margin-top:6px;margin-bottom:6px;">
-            <div class="col-md-6 col-sm-6 col-xs-6 padlr0 " style="color:#8D8D8D;">
-                是否接触过疫区人员、疑似病例或确诊病例：
-                {{if list.hubei==1}}
-                是
-                {{else}}
-                否
-                {{/if}}
-            </div>
-            <div class="col-md-6 col-sm-6 col-xs-6 padlr0 red" style="text-align: right;">
-                体温：{{list.temperature}}℃
-            </div>
-        </div>
-        <div class="clearfix">
-            <div class="col-md-8 col-sm-8 col-xs-8 padlr0" style="float: left;">
-                <p style="color: #333;font-size:16px;">
-                    {{list.recommend}}
-                </p>
-                <p style="color: #8D8D8D;font-size:14px;">
-                    {{list.cdatenow}}
-                </p>
-            </div>
-            <div style="float: right;">
-                <!--<button type="button" class="btn btn-danger"-->
-                        <!--onclick="deletefrom('{{list.id}}')">删除</button>-->
-            </div>
-        </div>
 
-    </li>
-    {{/each}}
-    {{/if}}
-</script>
 <script type="text/html" id="v_hearth">
     <div class="form-group clearfix">
 
@@ -291,6 +248,7 @@
         $('#modifybtn').click(function () {
             window.location.href='indexfillIn.html?type="edit"&openId='+openId;
         })
+        $('.hearthmsg').attr('href','bodychildre/hearthpunchClock.html?openId='+openId)
     })
     $.ajax({
         type: "get",
@@ -328,28 +286,6 @@
         }
     })
 
-    /*-- 获取该用户所上报的所有数据 --*/
-    $.ajax({
-        type: "get",
-        url:'/member/report/list.json',
-        data:{
-            openId:openId,
-        },
-        success: function (data) {
-            console.log(data);
-            console.log('++++++++++++++++');
-            if(data.data.length>0){
-                for(var i=0;i<data.data.length;i++){
-                    if(data.data[i].cdate){
-                        data.data[i].cdatenow=moment(data.data[i].cdate).format('YYYY-MM-DD HH:mm:ss')
-                    }
-                }
-            }
-            var dynamic = template('v_bodyhtml', data);
-            $("#historydata").empty().append(dynamic);
-
-        }
-    })
 </script>
 <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=86064e85e8e0cdbba4a25062b24fdb36&plugin=AMap.Geocoder"></script>
 <script>
@@ -492,6 +428,13 @@
             console.log('error--------------');
             $('#locationloading').hide();
         })
+       /* reportInfo.province='山西';
+        reportInfo.city='山西';
+        reportInfo.district='山西';
+        reportInfo.street='山西';
+        reportInfo.recommend='山西省测试地区';
+        $('#address').html('山西省测试地区');
+        $('#locationloading').hide();*/
     }
 
 </script>
@@ -503,11 +446,7 @@
             }else{
                 reportInfo.early=0
             }
-            /*reportInfo.province='山西';
-            reportInfo.city='山西';
-            reportInfo.district='山西';
-            reportInfo.street='山西';
-            reportInfo.recommend='山西';*/
+
             reportInfo.state=newstate;
             reportInfo.content=$('#bodyInfo').find('input[name="content"]').val();
             reportInfo.hubei=$('#bodyInfo').find('input[name="hubei"]:checked').val();

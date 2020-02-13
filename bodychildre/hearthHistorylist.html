@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>打卡任务</title>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/diseaseRegister.css">
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/paging.css"/>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/pagingNcov.css"/>
+    <link rel="stylesheet" href="../css/punchClock.css">
+    <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
+    <script src="../js/common.js?v=0.2"></script>
+    <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
+    <script src="../js/templateHelper.js?v=0.2"></script>
+    <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/paging/paging.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/laydate/laydate.js"></script>
+    <link href="http://webimg.mp12345.com/jslib/select2/select2.min.css" rel="stylesheet" />
+    <script src="http://webimg.mp12345.com/jslib/select2/select2.min.js"></script>
+</head>
+<body class="hastopout" style="padding-bottom:50px;">
+<!--#include file="/ncov/headerback.html"-->
+    <div class="innerout padtb10">
+        <div id="historydata"></div>
+    </div>
+
+</body>
+<!-- 历史记录 -->
+<script type="text/html" id="v_bodyhtml">
+    {{if data.length<0}}
+    <li class="list-group-item red">
+        暂无数据
+    </li>
+    {{else}}
+    {{each data as list index}}
+    <li class="list-group-item ">
+        <div class="clearfix">
+            <div class=" col-md-12 col-sm-12 col-xs-12 padlr0">
+                {{list.state | getType}}
+            </div>
+        </div>
+        <div class="clearfix padlr0" style="margin-top:6px;margin-bottom:6px;">
+            <div class="col-md-6 col-sm-6 col-xs-6 padlr0 " style="color:#8D8D8D;">
+                是否接触过疫区人员、疑似病例或确诊病例：
+                {{if list.hubei==1}}
+                是
+                {{else}}
+                否
+                {{/if}}
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6 padlr0 red" style="text-align: right;">
+                体温：{{list.temperature}}℃
+            </div>
+        </div>
+        <div class="clearfix">
+            <div class="col-md-8 col-sm-8 col-xs-8 padlr0" style="float: left;">
+                <p style="color: #333;font-size:16px;">
+                    {{list.recommend}}
+                </p>
+                <p style="color: #8D8D8D;font-size:14px;">
+                    {{list.cdatenow}}
+                </p>
+            </div>
+            <div style="float: right;">
+                <!--<button type="button" class="btn btn-danger"-->
+                <!--onclick="deletefrom('{{list.id}}')">删除</button>-->
+            </div>
+        </div>
+
+    </li>
+    {{/each}}
+    {{/if}}
+</script>
+</html>
+<script>
+    var title="健康考勤打卡记录"
+    /*var backtitlebg="white";*/
+    var openId=GetQueryValue('openId');
+    $(function () {
+        /*-- 获取该用户所上报的所有数据 --*/
+        $.ajax({
+            type: "get",
+            url:'/member/report/list.json',
+            data:{
+                openId:openId,
+            },
+            success: function (data) {
+                console.log(data);
+                console.log('++++++++++++++++');
+                if(data.data.length>0){
+                    for(var i=0;i<data.data.length;i++){
+                        if(data.data[i].cdate){
+                            data.data[i].cdatenow=moment(data.data[i].cdate).format('YYYY-MM-DD HH:mm:ss')
+                        }
+                    }
+                }
+                var dynamic = template('v_bodyhtml', data);
+                $("#historydata").empty().append(dynamic);
+
+            }
+        })
+    })
+</script>

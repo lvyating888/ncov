@@ -35,8 +35,6 @@ function openDownloadDialog(url, saveName)
         event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
     }
     aLink.dispatchEvent(event);
-    console.log(aLink)
-    console.log('走到这里111111111111+')
 }
 // 将一个sheet转成最终的excel文件的blob对象，然后利用URL.createObjectURL下载
 function sheet2blob(sheet, sheetName) {

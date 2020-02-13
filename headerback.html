@@ -34,8 +34,24 @@
 </style>
 <script>
     var title;
+    var backtitlebg;
     $(function () {
         var showtitle=title?title:'健康考勤';
-        $('#showtitle').html(showtitle)
+        $('#showtitle').html(showtitle);
+        if(backtitlebg=='white'){
+            $('.header').css({
+                background:"#fff",
+                color:'#333',
+            })
+            $('.back').css({
+                color:'#333',
+            })
+            $('.back:active').css({
+                color:'#333',
+            })
+            $('.back:hover').css({
+                color:'#333',
+            })
+        }
     })
 </script>

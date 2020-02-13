@@ -86,8 +86,8 @@
 </body>
 </html>
 <script>
+    var title="打卡记录"
     init();
-
     function init() {
         $.ajax({
             url: '/member/sign/list.json',
@@ -102,7 +102,7 @@
                         `
                             <tr>
                                 <td>${d.c_date}</td>
-                                <td>${d.province}${d.city}${d.district}${d.street}${d.recommend}</td>
+                                <td>${d.recommend}</td>
                                 <td>${d.content}</td>
                             </tr>
                         `

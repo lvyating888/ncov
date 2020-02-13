@@ -1,0 +1,108 @@
+.punchout{
+    /*background-color:#235572;*/
+    border-radius:3px;
+    background-color:#f7f7f7;
+}
+.eaittitle{
+    padding:10px 12px 0;
+    /*color: #fff;*/
+    color:#333
+}
+.bulefontred{
+    color:#f70d0d;
+}
+.montul{
+    padding:8px 8px 10px;
+}
+.montlis{
+    position: relative;
+    float: left;
+    width:14.2%;
+}
+.montlisinner,.montlisinnerno{
+    margin:8px 2px;
+}
+.daysinner{
+    width:40px;
+    height:40px;
+    border-radius: 50%;
+    display: block;
+    margin:0 auto;
+    position: relative;
+}
+.montlisinner .daysinner{
+   /*border:1px solid #fff;
+        color: #fff;*/
+    /*border:1px solid #a1a1a1;*/
+    color: #333;
+}
+.montlisinnerno .daysinner{
+    border:1px solid #dddddd;
+    color: #999;
+}
+.monthtext{
+    font-size:12px;
+    text-align: center;
+    line-height:22px;
+    margin-top:1px;
+}
+.daytext{
+    font-size:14px;
+    text-align: center;
+    line-height: 40px;
+    color: #fff;
+}
+.iconsm{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    font-style: normal;
+    display: inline-block;
+    /*position: absolute;
+    text-align: center;
+    font-size:16px;
+    top:-6px;
+    right: -12px;*/
+}
+.iconsm span{
+    top: 0;
+    line-height: 24px;
+    display: block;
+    font-style: normal;
+    width: 22px;
+    text-align: center;
+    font-size:16px;
+    color: #fff;
+}
+.alreadycard,.nocard{
+    text-align: center;
+    line-height:24px;
+    font-size: 12px;
+    padding:6px 0;
+}
+.montlisinner .alreadycard,.montlisinner .nocard{
+    color: #777;
+}
+.montlisinnerno .alreadycard,.montlisinnerno .nocard{
+    color: #999;
+}
+.iconsm_green{
+    background-color: #34ab36;
+}
+.iconsm_yellow{
+    background-color: #f39700;
+}
+.iconsm_hui{
+    background-color: #ddd;
+}
+/*.iconsm_hui .daytext{
+    color: #8D8D8D;
+}*/
+.tiplis{
+    padding-right: 3px;
+    line-height: 20px;
+    vertical-align: middle;
+}
+.tiplis i{
+    margin-right:3px;
+}

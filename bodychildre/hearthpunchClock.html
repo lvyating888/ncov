@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>健康考勤打卡任务</title>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/diseaseRegister.css">
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/paging.css"/>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/pagingNcov.css"/>
+    <link rel="stylesheet" href="../css/punchClock.css">
+    <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
+    <script src="../js/common.js?v=0.2"></script>
+    <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
+    <script src="../js/templateHelper.js?v=0.3"></script>
+    <script src="http://webimg.mp12345.com/jslib/paging/paging.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/laydate/laydate.js"></script>
+    <link href="http://webimg.mp12345.com/jslib/select2/select2.min.css" rel="stylesheet" />
+    <script src="http://webimg.mp12345.com/jslib/select2/select2.min.js"></script>
+</head>
+<body class="hastopout" style="padding-bottom:50px;">
+<!--#include file="/ncov/headerback.html"-->
+<div class="innerout">
+    <div>
+        <a href="javascript:;" class="dataState hearthlist" style="padding-top:10px;display: block;">
+            查看健康考勤全部打卡任务 >
+        </a>
+    </div>
+    <div class="input-group padtb10 col-sm-12 col-xs-12 padlr0">
+        <input type="text" name="cdate" id="cdate" class=" form-control " placeholder="选择月份">
+    </div>
+</div>
+<div class="punchout" id="monthday">
+</div>
+<div class="innerout" id="daylist">
+</div>
+
+<div class="main_nav_bottom">
+    <nav class="navbar navbar-default navbar-fixed-bottom">
+        <div class="container" align="center">
+            <style>
+                .main_nav_bottom{
+                    width: 100%;
+                    overflow-x: hidden;
+                }
+                .nav-tabs
+                {
+                    text-align: center;
+                    height: 50px;
+                    line-height: 50px;
+                }
+            </style>
+            <ul class="nav nav-tabs nav-tabs-justified">
+                <div class="row" align="center">
+                    <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+                        <li>
+                            <a href="javascript:;" class="btn btn-default hearthlist" style="width:80%" >打卡成果</a>
+                        </li>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+                        <li>
+                            <a class="btn btn-primary hearthbtn" style="width:80%" href="javascript:;">打卡</a>
+                        </li>
+                    </div>
+
+                </div>
+            </ul>
+        </div>
+    </nav>
+</div>
+</body>
+<script type="text/html" id="v_monthday">
+    <p style="" class="eaittitle">
+        已累计打卡 <span id="alreadys" class="bulefontred">{{signIn}}</span>/<span id="monthdays">{{dayMonth}}</span>天
+    </p>
+    <div class="eaittitle">
+        <span class="tiplis">
+             <i class="iconsm iconsm_yellow"></i>未打卡
+        </span>
+        <span class="tiplis">
+             <i class="iconsm iconsm_green"></i>已打卡
+        </span>
+        <span class="tiplis">
+             <i class="iconsm iconsm_hui"></i>未开始
+        </span>
+    </div>
+    <ul class="montul clearfix">
+        {{each dataInfo as item index}}
+        <li class="montlis" onclick="daydataInfo('{{item.data.day}}')">
+            <div class="montlisinner">
+                <div class="daysinner {{item.data.signIn==0?'iconsm_yellow':(item.data.signIn==1?'iconsm_green':(item.data.signIn==2?'iconsm_hui':''))}}">
+                    <p class="daytext">
+                        {{item.day[2]}}
+                    </p>
+                </div>
+            </div>
+        </li>
+        {{/each}}
+    </ul>
+</script>
+<script type="text/html" id="v_daylist">
+    <p class="linetitle">
+        {{day}}打卡记录</p>
+    <div class="table-responsive">
+        {{if signIn == 1}}
+        {{if data.length>0}}
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <td>打卡时间</td>
+                <td>健康状态</td>
+                <td>打卡地址</td>
+                <td>是否接触过疫区人员、疑似病例或确诊病例：</td>
+                <td>体温</td>
+            </tr>
+            </thead>
+            <tbody>
+            {{each data as list index}}
+            <tr>
+                <td>{{list.cdate | moment}}</td>
+                <td>{{list.state | getType}}</td>
+                <td>
+                    {{list.recommend}}
+                </td>
+                <td>
+                    {{if list.hubei==1}}
+                    是
+                    {{else}}
+                    否
+                    {{/if}}
+                </td>
+                <td>{{list.temperature}}℃</td>
+            </tr>
+            {{/each}}
+            </tbody>
+        </table>
+        {{else}}
+        <p class="text-danger">暂无数据</p>
+        {{/if}}
+        {{else if signIn == 0}}
+        <p class="text-danger">未打卡</p>
+        {{else if signIn == 2}}
+        <p class="text-danger">未开始打卡</p>
+        {{/if}}
+    </div>
+</script>
+</html>
+<script>
+    var title="健康考勤打卡任务"
+    var backtitlebg="white";
+    var datalistInfo={};
+    var openId=GetQueryValue('openId');
+    $(function () {
+
+        laydate.render({
+            elem: '#cdate',
+            type: 'month',
+            format: 'yyyy-MM',
+            value: moment(new Date()).format('YYYY-MM')
+            ,done: function(value, date){
+                console.log(value, date)
+                /*--点击时间 执行事件--*/
+                $('#cdate').val(value)
+                datalist(function () {
+                    daydataInfo(value+'-'+moment(new Date()).format('DD'));
+                });
+            }
+        });
+        datalist(function () {
+            daydataInfo(moment(new Date()).format('YYYY-MM-DD'));
+        });
+        $('.hearthbtn').attr('href','../bodyMsg.html?openId='+openId)
+        $('.hearthlist').attr('href','hearthHistorylist.html?openId='+openId)
+    })
+    function daydataInfo(time) {
+        /* v_daylist*/
+        var daylist = template('v_daylist', datalistInfo.data.data[time]);
+        $("#daylist").empty().append(daylist);
+    }
+    function datalist(fn) {
+        $.ajax({
+            type: "get",
+            url: '/member/report/calendar.json',
+            data:{
+                cdate:$('#cdate').val(),
+            },
+            success: function (res) {
+                console.log(res);
+                datalistInfo=res;
+                if (res.success) {
+                    res.data.dataInfo=[];
+                    for (let i in res.data.data) {
+                        var info={};
+                        var n=i.split("-");
+                        info.day=n;
+                        info.data=res.data.data[i];
+                        res.data.dataInfo.push(info); //属性
+                    }
+                    console.log(res);
+                    var dynamic = template('v_monthday', res.data);
+                    $("#monthday").empty().append(dynamic);
+                    if(fn){
+                        fn();
+                    }
+                }
+            }
+        })
+    }
+</script>
