@@ -229,9 +229,11 @@
                 data: JSON.stringify(reportInfo),
                 success: function (res) {
                     if (res.success) {
-                        layer.msg('打卡成功');
-                        $('#content').val('');
-                        init();
+                        layer.msg('打卡成功',function f() {
+                            $('#content').val('');
+                            window.location.href='punchClock.html';
+                        });
+
                     } else {
                         layer.msg(res.message);
                     }

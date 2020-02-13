@@ -29,7 +29,7 @@
 <!--#include file="/ncov/headerback.html"-->
 <div class="innerout">
     <div>
-        <a href="oldsignList.html" class="dataState" style="padding-top:10px;display: block;">
+        <a href="javascript:;" class="dataState looklist" style="padding-top:10px;display: block;">
             查看全部打卡任务 >
         </a>
     </div>
@@ -61,7 +61,7 @@
                 <div class="row" align="center">
                     <div class="col-md-6 col-sm-6 col-xs-6" align="center">
                         <li>
-                            <a href="oldsignList.html" class="btn btn-default" style="width:80%" >打卡成果</a>
+                            <a href="javascript:;" class="btn btn-default looklist" style="width:80%" >打卡成果</a>
                         </li>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6" align="center">
@@ -123,8 +123,8 @@
                     {{each data as item index}}
                         <tr>
                             <td>{{item.cdate | moment}}</td>
-                            <td>山西省测试地区</td>
-                            <td>测试</td>
+                            <td>{{item.recommend}}</td>
+                            <td>{{item.content}}</td>
                         </tr>
                     {{/each}}
                 </tbody>
@@ -192,6 +192,7 @@
                     console.log(res);
                     var dynamic = template('v_monthday', res.data);
                     $("#monthday").empty().append(dynamic);
+                    $('.looklist').attr('href','oldsignList.html')
                     if(fn){
                         fn();
                     }

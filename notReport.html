@@ -80,12 +80,6 @@
                 <span class="input-group-addon">职位</span>
                 <input type="text" name="job" class="form-control">
             </div>
-            <div class="input-group input-group-sm">
-                <span class="input-group-addon">身体状态</span>
-                <select name="state" class="form-control addinputs" style="min-width:100px;">
-                    <option value="">选择身体状态</option>
-                </select>
-            </div>
 
             <div class="botbtn row">
                 <div class="col-md-6 col-sm-6 col-xs-6" align="center">
@@ -192,6 +186,8 @@
                 $("#dataList").empty().append(todystate);
                 if(dataInfo.data.length<1){
                     $('#pageTool').hide();
+                }else{
+                    $('#pageTool').show();
                 }
 
                 pageSize(pageindexnow,pagesize)
