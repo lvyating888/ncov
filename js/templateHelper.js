@@ -2,8 +2,8 @@
 template.helper('getType', function (date) {
     return getType(date)
 })
-template.helper('moment',function(data){
+template.helper('moment',function(data,type){
     if(moment){
-        return moment(data).format('YYYY-MM-DD HH:mm:ss');
+        return moment(data).format(type);
     }
 })

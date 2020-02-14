@@ -1,5 +1,5 @@
 <div class="header navbar-default navbar-fixed-top">
-    <a class="back" href="javascript:history.go(-1);">
+    <a class="back" href="javascript:;">
         <i class="glyphicon glyphicon-menu-left" style="margin-top:17px"></i>
     </a>
     <span id="showtitle"></span>
@@ -35,8 +35,12 @@
 <script>
     var title;
     var backtitlebg;
+    var backhref;
     $(function () {
         var showtitle=title?title:'健康考勤';
+        var backhrefnow=backhref?backhref:'javascript:history.go(-1);';
+        console.log(backhrefnow)
+        $('.header .back').attr('href',backhrefnow)
         $('#showtitle').html(showtitle);
         if(backtitlebg=='white'){
             $('.header').css({

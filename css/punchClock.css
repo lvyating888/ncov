@@ -95,9 +95,14 @@
 .iconsm_hui{
     background-color: #ddd;
 }
-/*.iconsm_hui .daytext{
-    color: #8D8D8D;
-}*/
+.iconsm_act{
+    background-color: #ffffff;
+    box-sizing: border-box;
+    border:1px solid #8D8D8D;
+}
+.iconsm_act .daytext{
+    color: #333;
+}
 .tiplis{
     padding-right: 3px;
     line-height: 20px;

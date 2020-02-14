@@ -11,15 +11,15 @@
     <link rel="stylesheet" href="../css/diseaseRegister.css">
     <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/paging.css"/>
     <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/pagingNcov.css"/>
-    <link rel="stylesheet" href="../css/punchClock.css">
+    <link rel="stylesheet" href="../css/punchClock.css?v=0.1">
     <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
     <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
     <script src="../js/common.js?v=0.2"></script>
     <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
     <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
     <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
-    <script src="../js/templateHelper.js?v=0.3"></script>
-    <script src="http://webimg.mp12345.com/jslib/paging/paging.js"></script>
+    <script src="../js/templateHelper.js?v=0.4"></script>
+    <script src="http://webimg.mp12345.com/jslib/paging/paging.js?v=0.1"></script>
     <script src="http://webimg.mp12345.com/jslib/ajaxDom.js"></script>
     <script src="http://webimg.mp12345.com/jslib/laydate/laydate.js"></script>
     <link href="http://webimg.mp12345.com/jslib/select2/select2.min.css" rel="stylesheet" />
@@ -90,16 +90,27 @@
         <span class="tiplis">
              <i class="iconsm iconsm_hui"></i>未开始
         </span>
+        <span class="tiplis">
+             <i class="iconsm iconsm_act"></i>选中
+        </span>
     </div>
     <ul class="montul clearfix">
         {{each dataInfo as item index}}
         <li class="montlis" onclick="daydataInfo('{{item.data.day}}')">
             <div class="montlisinner">
+                {{if item.data.checked==true}}
+                <div class="daysinner iconsm_act">
+                    <p class="daytext">
+                        {{item.day[2]}}
+                    </p>
+                </div>
+                {{else}}
                 <div class="daysinner {{item.data.signIn==0?'iconsm_yellow':(item.data.signIn==1?'iconsm_green':(item.data.signIn==2?'iconsm_hui':''))}}">
                     <p class="daytext">
                         {{item.day[2]}}
                     </p>
                 </div>
+                {{/if}}
             </div>
         </li>
         {{/each}}
@@ -109,46 +120,40 @@
     <p class="linetitle">
         {{day}}打卡记录</p>
     <div class="table-responsive">
-        {{if signIn == 1}}
-        {{if data.length>0}}
         <table class="table table-bordered">
+            {{if data.length>0}}
             <thead>
             <tr>
                 <td>打卡时间</td>
-                <td>健康状态</td>
-                <td>打卡地址</td>
-                <td>是否接触过疫区人员、疑似病例或确诊病例：</td>
-                <td>体温</td>
+                <td>地址</td>
+                <td>备注</td>
             </tr>
             </thead>
             <tbody>
-            {{each data as list index}}
+            {{each data as item index}}
             <tr>
-                <td>{{list.cdate | moment}}</td>
-                <td>{{list.state | getType}}</td>
-                <td>
-                    {{list.recommend}}
-                </td>
-                <td>
-                    {{if list.hubei==1}}
-                    是
-                    {{else}}
-                    否
-                    {{/if}}
-                </td>
-                <td>{{list.temperature}}℃</td>
+                <td>{{item.cdate | moment:'HH:mm:ss'}}</td>
+                <td>{{item.recommend}}</td>
+                <td>{{item.content}}</td>
             </tr>
             {{/each}}
             </tbody>
+            {{else}}
+            <tbody>
+            <tr>
+                <td>
+                    {{if signIn == 0}}
+                    <p class="text-danger">未打卡</p>
+                    {{else if signIn == 2}}
+                    <p class="text-danger">未开始打卡</p>
+                    {{else if signIn == 1}}
+                    <p class="text-danger">暂无数据</p>
+                    {{/if}}
+                </td>
+            </tr>
+            </tbody>
+            {{/if}}
         </table>
-        {{else}}
-        <p class="text-danger">暂无数据</p>
-        {{/if}}
-        {{else if signIn == 0}}
-        <p class="text-danger">未打卡</p>
-        {{else if signIn == 2}}
-        <p class="text-danger">未开始打卡</p>
-        {{/if}}
     </div>
 </script>
 </html>
@@ -181,6 +186,19 @@
     })
     function daydataInfo(time) {
         /* v_daylist*/
+        var timesplit=time.split('-');
+        for(var i=0;i<datalistInfo.data.dataInfo.length;i++){
+            var textlist=datalistInfo.data.dataInfo;
+            if(textlist[i].day[2]==timesplit[2]){
+                textlist[i].data.checked=true;
+            }else{
+                textlist[i].data.checked=false;
+            }
+        }
+        console.log(datalistInfo)
+        var dynamic = template('v_monthday', datalistInfo.data);
+        $("#monthday").empty().append(dynamic);
+
         var daylist = template('v_daylist', datalistInfo.data.data[time]);
         $("#daylist").empty().append(daylist);
     }
@@ -203,9 +221,9 @@
                         info.data=res.data.data[i];
                         res.data.dataInfo.push(info); //属性
                     }
-                    console.log(res);
-                    var dynamic = template('v_monthday', res.data);
-                    $("#monthday").empty().append(dynamic);
+
+                    /*var dynamic = template('v_monthday', res.data);
+                    $("#monthday").empty().append(dynamic);*/
                     if(fn){
                         fn();
                     }

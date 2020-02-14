@@ -24,7 +24,7 @@
         </p>
     </div>
     <div class="myselfright">
-        <a href="./sign/punchClock.html" class="signbtn">
+        <a href="javascript:;" class="signbtn" >
             签到
         </a>
         <!--<a href="javascript:;" class="signtext" style="display: none;">-->
@@ -132,6 +132,9 @@
 <script>
     /*-- 获取openid 是否注册过 假设openId=001--*/
     var openId = GetQueryValue('openId');
+    $(function () {
+        $('.signbtn').attr('href','./sign/punchClock.html?openId='+openId);
+    })
     /*-- 获取用户填写的信息 --*/
     $.ajax({
         type: "get",
