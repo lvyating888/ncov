@@ -66,7 +66,7 @@
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6" align="center">
                         <li>
-                            <a  class="btn btn-primary" style="width:80%" href="index.html">打卡</a>
+                            <a  class="btn btn-primary dakabtn" style="width:80%" href="javascript:;">打卡</a>
                         </li>
                     </div>
 
@@ -224,7 +224,8 @@
                     }
                     /*var dynamic = template('v_monthday', datalistInfo.data);
                     $("#monthday").empty().append(dynamic);*/
-                    $('.looklist').attr('href','oldsignList.html')
+                    $('.looklist').attr('href','oldsignList.html?openId='+openId);
+                    $('.dakabtn').attr('href','index.html?openId='+openId)
                     if(fn){
                         fn();
                     }

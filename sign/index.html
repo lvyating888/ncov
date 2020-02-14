@@ -73,7 +73,7 @@
     href = href.split("#");
     console.log(href);
     console.log(href[0])
-
+    var openId = GetQueryValue('openId');
     $.ajax({
         type: "post",
         url: "/member/location.json",
@@ -191,9 +191,13 @@
                cancel: function (res) {
                    console.log(JSON.stringify(res))
                    console.log('用户拒绝授权获取地理位置');
+                   layer.msg('用户拒绝授权获取地理位置')
+                   $('#locationloading').hide();
                },
                fail: function (res) {
                    /* alert(JSON.stringify(res))*/
+                   layer.msg('用户授权获取地理位置失败')
+                   $('#locationloading').hide();
                }
            })
 
@@ -231,7 +235,7 @@
                     if (res.success) {
                         layer.msg('打卡成功',function f() {
                             $('#content').val('');
-                            window.location.href='punchClock.html';
+                            window.location.href='punchClock.html?openId='+openId;
                         });
 
                     } else {

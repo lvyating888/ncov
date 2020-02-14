@@ -412,11 +412,15 @@
                     /* 高得地图 end */
                 },
                 cancel: function (res) {
-                    console.log(JSON.stringify(res))
-                    console.log('用户拒绝授权获取地理位置');
+                    /*console.log(JSON.stringify(res))
+                    console.log('用户拒绝授权获取地理位置');*/
+                    layer.msg('用户拒绝授权获取地理位置')
+                    $('#locationloading').hide();
                 },
                 fail: function (res) {
                     /* alert(JSON.stringify(res))*/
+                    layer.msg('用户授权获取地理位置失败')
+                    $('#locationloading').hide();
                 }
             })
 
