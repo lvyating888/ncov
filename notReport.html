@@ -81,6 +81,10 @@
                 <input type="text" name="job" class="form-control">
             </div>
             <div class="input-group input-group-sm">
+                <span class="input-group-addon">未打卡日期</span>
+                <input type="text" name="cdate" id="importdate" class="form-control" readonly style="background-color: #fff;">
+            </div>
+            <div class="input-group input-group-sm">
                 <span class="input-group-addon">打卡次数</span>
                 <select name="reportCount" class="form-control">
                     <option value="">选择打卡次数</option>
@@ -147,7 +151,7 @@
 
 </script>
 <script>
-    var title='健康考勤打卡未打卡'
+    var title='健康考勤未打卡列表'
 </script>
 <script>
     /*-- 获取统计详细数据 --*/
@@ -179,7 +183,8 @@
                 phone:$('#searchForm input[name="phone"]').val(),
                 divi:$('#searchForm select[name="divi"]').val(),
                 job:$('#searchForm input[name="job"]').val(),
-                reportCount:$('#searchForm select[name="reportCount"]').val()
+                reportCount:$('#searchForm select[name="reportCount"]').val(),
+                cdate:$('#searchForm input[name="cdate"]').val()
             },
             success: function (data) {
                 console.log(data);
@@ -225,6 +230,11 @@
 </script>
 <script type="text/javascript">
     $(function () {
+        laydate.render({
+            elem: '#importdate',
+            format: 'yyyy-MM-dd',
+            value: moment(new Date()).format('YYYY-MM-DD')
+        });
         /*-- 健康打卡 --*/
         var Healthyarr = []
         for (let i in Healthyobj) {
