@@ -70,8 +70,8 @@ function clearfrom(demo,fun) {
     $(demo).find('input[type="number"]').val('');
     $(demo).find('select').val("");
     $(demo).find('textarea').val('');
-    $(demo).find('input[type="radio"]').removeAttr('checked');
-    $(demo).find('input[type="checkbox"]').removeAttr('checked');
+    $(demo).find('input[type="radio"]').prop("checked",false);
+    $(demo).find('input[type="checkbox"]').prop("checked",false);
     if(fun){
         fun();
     }

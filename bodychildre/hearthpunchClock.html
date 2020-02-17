@@ -135,7 +135,7 @@
             <tbody>
             {{each data as list index}}
             <tr>
-                <td>{{list.cdate | moment}}</td>
+                <td>{{list.cdate | moment:'HH:mm:ss'}}</td>
                 <td>{{list.state | getType}}</td>
                 <td>
                     {{list.recommend}}

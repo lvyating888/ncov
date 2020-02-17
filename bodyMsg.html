@@ -484,7 +484,7 @@
                     success: function(data) {
                         if(data.success){
                             layer.msg('申报成功',function () {
-                                window.location.reload();
+                                clearfrom('#bodyInfo')
                                 window.location.href='bodychildre/hearthpunchClock.html?openId='+openId;
                             })
                         }else{
