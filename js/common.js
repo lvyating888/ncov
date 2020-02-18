@@ -1,3 +1,4 @@
+$.fn.modal.Constructor.prototype.enforceFocus = function () { }
 /*-- 全选 保存属性 数组 initTablearr("类名",[数组名称],['属性名称']); --*/
 function initTablearr(demo,arr,attrval){
     // console.log(demo,arr,attrval)

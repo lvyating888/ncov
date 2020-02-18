@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/pagingNcov.css"/>
     <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
     <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
-    <script src="js/common.js?v=0.2"></script>
+    <script src="js/common.js?v=0.4"></script>
     <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
     <script src="js/templateHelper.js?v=0.1"></script>
     <script src="http://webimg.mp12345.com/jslib/paging/paging.js?v=0.1"></script>
@@ -42,6 +42,12 @@
                         <div class="form-group">
                             <label>提交时间<span class="red">*</span></label>
                             <input type="text" name="cdate" id="exportdate" class="form-control" readonly style="background-color: #fff;">
+                        </div>
+                        <div class="form-group">
+                            <label>部门</label>
+                            <select name="divi" class="form-control addinputs" style="width:100%!important;">
+                                <option value="">选择部门</option>
+                            </select>
                         </div>
                     </form>
                     <p class="text-danger" style="padding: 4px 0 8px;">
@@ -410,7 +416,8 @@
     $(function () {
         dividata("#searchForm select[name='divi']")
         var selectorx = $("#searchForm select[name='divi']").select2();
-
+        dividata("#exportBody select[name='divi']")
+        var selectorx2 = $("#exportBody select[name='divi']").select2();
         laydate.render({
             elem: '#exportdate',
             format: 'yyyy-MM-dd',
@@ -438,10 +445,12 @@
                 url:'/publish/excelData/report.json',
                 data:{
                     cdate:exporttime,
+                    divi:$("#exportBody select[name='divi']").val(),
                 },
                 success:function (data) {
                     /*-- 下载模板 --*/
                     /*json 导出*/
+                    console.log(data);
                     if(data.data.length>0){
                         var aoa = [
                             ['姓名', '体温','提交时间', '联系方式', '状态', '是否接触过疫区人员、疑似病例或确诊病例','部门','职位','申报地址'],
