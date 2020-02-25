@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>健康状况</title>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/ncov/css/base.css">
+    <link rel="stylesheet" href="/ncov/css/diseaseRegister.css">
+    <link rel="stylesheet" href="css/visitorMsg.css">
+    <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
+    <script src="/ncov/js/common.js?v=0.2"></script>
+    <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/laydate/laydate.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
+    <script src="/ncov/js/templateHelper.js?v=0.2"></script>
+    <!-- 获取位置 -->
+    <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"> </script>
+</head>
+<style>
+    .reminderTips {
+        color: #8D8D8D;
+        font-size: 12px;
+    }
+</style>
+<body class="hastopout">
+<!--#include file="/ncov/headerback.html"-->
+
+<div class="innerout padtb10" style="padding-bottom: 0;">
+    <p class="reminderTips">
+        疫情当前，如有任何不适或需要帮助，我们将二十四小时守望相助！
+    </p>
+    <div class="innerlisout" id="usermsg">
+        <p class="linetitle" style="margin-top:0;">个人信息</p>
+        <ul class="list-group">
+            <li class="list-group-item padlr0 clearfix ">
+                <div class="col-sm-12 col-xs-12">
+                    姓名：<span id="username"></span>
+                </div>
+            </li>
+            <li class="list-group-item padlr0 clearfix ">
+                <div class="col-sm-12 col-xs-12">
+                    手机号：<span id="userphone"></span>
+                </div>
+            </li>
+            <li class="list-group-item padlr0 clearfix ">
+                <div class="col-sm-12 col-xs-12">
+                    公司：<span id="usercompany"></span>
+                </div>
+            </li>
+            <!--<li class="list-group-item padlr0 clearfix ">-->
+            <!--<div class="col-sm-6 col-xs-6">-->
+            <!--随行车牌号：<span id="usercompanyaddress">随行车牌号</span>-->
+            <!--</div>-->
+            <!--<div class="col-sm-6 col-xs-6">-->
+            <!--随行人数：<span >随行人数</span>-->
+            <!--</div>-->
+            <!--</li>-->
+            <li class="list-group-item padlr0 clearfix ">
+                <p class="col-sm-12 col-xs-12">
+                    附件资料：
+                </p>
+                <p class="col-sm-12 col-xs-12" style="margin:10px 0;word-wrap:break-word;word-break:normal; " id="userfile">
+
+                </p>
+            </li>
+            <li class="list-group-item padlr0 clearfix ">
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <a href="javascript:;" type="button" class="btn btn-danger" style="width:80%" id="modifybtn">修改</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<form class="innerout" id="bodyInfo">
+    <div class="innerlisout">
+        <p class="linetitle">健康考勤</p>
+        <label class="col-sm-12 col-xs-12 padlr0" style="line-height: 32px;">健康状况<span class="red">*</span></label>
+        <div id="hearthout">
+            <div class="form-group clearfix">
+                <div  class="col-sm-12 col-xs-12 padlr0">
+                    <div class="col-sm-4 col-xs-4 padlr0">
+                        <label>
+                            <input type="checkbox" name="status"  value="1" class="rightradio">
+                            健康
+                        </label>
+                    </div>
+                    <div class="col-sm-8 col-xs-8">
+                        <label>
+                            <input type="checkbox" name="status"  value="2" class="rightradio">
+                            咳嗽打喷嚏
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <div  class="col-sm-12 col-xs-12 padlr0">
+                    <div class="col-sm-4 col-xs-4 padlr0">
+                        <label>
+                            <input type="checkbox" name="status"  value="3" class="rightradio">
+                            发热（未就诊或医生诊断为普通发热）
+                        </label>
+                    </div>
+                    <div class="col-sm-8 col-xs-8">
+                        <label>
+                            <input type="checkbox" name="status"  value="4" class="rightradio">
+                            已就诊，被要求回家自行隔离观察
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <div  class="col-sm-12 col-xs-12 padlr0">
+                    <label>
+                        <input type="checkbox" name="status"  value="5" class="rightradio">
+                        已就医，被判定为【疑似】新型肺炎，留在医院隔离观察
+                    </label>
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <div  class="col-sm-12 col-xs-12 padlr0">
+                    <label>
+                        <input type="checkbox" name="status"  value="6" class="rightradio">
+                        已就医，确诊为新型肺炎
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group clearfix" id="redcontent" style="display:none;">
+            <label class="col-sm-3 col-xs-3 leftlabel" >入院情况</label>
+            <div  class="col-sm-9 col-xs-9">
+                <input class="form-control"
+                       name="content" type="text" placeholder="请输入入院时间及所在医院"
+                />
+            </div>
+        </div>
+        <div>
+            <label class="col-sm-12 col-xs-12 padlr0" style="line-height: 32px;">是否接触过疫区人员、疑似病例或确诊病例?<span class="red">*</span></label>
+            <div class="form-group clearfix">
+                <div  class="col-sm-12 col-xs-12 padlr0">
+                    <div class="col-sm-6 col-xs-6 padlr0">
+                        <label>
+                            <input type="radio" name="hubei"  value="1" class="rightradio">
+                            是
+                        </label>
+                    </div>
+                    <div class="col-sm-6 col-xs-6">
+                        <label>
+                            <input type="radio" name="hubei"  value="2" class="rightradio">
+                            否
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-sm-3 col-xs-3 leftlabel" >体温<span class="red">*</span></label>
+            <div  class="col-sm-9 col-xs-9 clearfix">
+                <input class="form-control"
+                       style="float: left;width:70%"
+                       name="temperature" type="number" placeholder="请输入个人体温"
+                /><span class="red" style="line-height:34px;font-size:20px;padding-left: 6px">℃</span>
+                <p class="tiplis red" style="margin-top:6px;">注：要求现场测量</p>
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-sm-3 col-xs-3 leftlabel" >地理位置<span class="red">*</span></label>
+            <div  class="col-sm-9 col-xs-9 padlr0" style="text-align: right;padding-top:7px;">
+                <a href="javascript:;"
+                   onclick="getloaction()" class="text-muted"
+                >
+                    <span style="font-size:16px;padding-right:4px;">刷新地址</span><span class="glyphicon glyphicon-refresh" style="padding-right:4px;"></span>
+                </a>
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <div  class="col-sm-12 col-xs-12 padlr0">
+                <div id="Mapcontainer" style="display:none;"></div>
+                <span class="addressloading"></span>
+                <span style="color: #5e5e5e;line-height:26px;" id="address">
+                </span>
+            </div>
+        </div>
+    </div>
+
+</form>
+<div class="botbtn row">
+    <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+        <button type="button" class="btn btn-lg btn-success" style="width:80%"
+                onclick="addMsg()">打卡</button>
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+        <button type="button" class="btn btn-lg btn-danger" style="width:80%"
+                onclick="clearfrom('#bodyInfo')">重置</button>
+    </div>
+</div>
+<div class="innerout">
+    <div class="innerlisout">
+        <p class="linetitle">历史记录</p>
+
+        <a style="margin:6px 0;" class="btn btn-success hearthmsg" href="javascript:;">查看打卡详情</a>
+
+    </div>
+</div>
+</body>
+<script type="text/html" id="v_datalist">
+    {{each data as item index}}
+    <li class="list-group-item listlis-item">
+        <a href="appointVisit/visitDetails.html?openId={{item.wx_openid}}&id={{item.id}}">
+            <div class="listlis">
+                <div class="list_left">
+                    <div class="list_leftinner clearfix">
+                        <p class="list_title">
+                            访问：{{item.to_name}}
+                        </p>
+                        <p class="list_result">
+                            {{if item.audit==0}}
+                            未审核
+                            {{else if item.audit==1}}
+                            已通过
+                            {{else if item.audit==2}}
+                            已拒绝
+                            {{/if}}
+                        </p>
+                    </div>
+                    <div class="list_leftinner">
+                        <p class="list_contperson">
+                            提交时间：{{item.cdate | moment:'YYYY-MM-DD HH:mm:ss'}}
+                        </p>
+                    </div>
+                </div>
+                <div class="list_right">
+                    <span class="glyphicon glyphicon-menu-right moretext"></span>
+                </div>
+            </div>
+
+        </a>
+    </li>
+    {{/each}}
+</script>
+</html>
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=86064e85e8e0cdbba4a25062b24fdb36&plugin=AMap.Geocoder"></script>
+<script>
+    var contArry=[];
+    $(function () {
+        var checkboxlis=$('#bodyInfo input[type="checkbox"][name="status"]');
+
+        checkboxlis.change(function() {
+            for(var i=0;i<checkboxlis.length;i++){
+                if(checkboxlis.eq(i).prop('checked')){
+                    var nowchangeVal=checkboxlis.eq(i).val();
+                    var index = $.inArray(nowchangeVal, contArry);   //结果：index=1
+                    if (index >= 0) {
+                    } else {
+                        contArry.push(nowchangeVal);
+                    }
+                }else if(!checkboxlis.eq(i).prop('checked')){
+                    var nowchangeVal=checkboxlis.eq(i).val();
+                    var index = $.inArray(nowchangeVal, contArry);
+                    if (index >= 0) {
+                        contArry.splice(index,1);
+                    }
+                }
+            }
+            if(contArry.length>0){
+                if($.inArray("5", contArry)!=-1 || $.inArray("6", contArry)!=-1){
+                    $('#redcontent').show();
+                }else{
+                    $('#redcontent').hide();
+                }
+            }else{
+                $('#redcontent').hide();
+            }
+        });
+    })
+    function addMsg(){
+        function addinnerfun(newstate){
+            if(newstate==3 || newstate==4 ||  newstate==5  || newstate==6 ){
+                dataInfo.early=1
+            }else{
+                dataInfo.early=0
+            }
+
+            dataInfo.state=newstate;
+            dataInfo.content=$('#bodyInfo').find('input[name="content"]').val();
+            dataInfo.hubei=$('#bodyInfo').find('input[name="hubei"]:checked').val();
+            dataInfo.temperature=$('#bodyInfo').find('input[name="temperature"]').val();
+            dataInfo.openId=openId;
+            if(!dataInfo.company || dataInfo.company==''){
+                layer.msg('请选择填写个人公司');
+            }else if(!dataInfo.hubei || dataInfo.hubei==''){
+                layer.msg('请选择是否接触');
+            }else if(!dataInfo.temperature || dataInfo.temperature==''){
+                layer.msg('请填写个人体温');
+                $('#bodyInfo').find('input[name="temperature"]').focus();
+            }else if(!dataInfo.province || dataInfo.province==''){
+                layer.msg('未获取到位置，请打开定位权限');
+                getloaction();
+            }else{
+                console.log(dataInfo);
+                $.ajaxDom('body',{
+                    type: "post",
+                    headers:{'Content-Type':'application/json;charset=UTF-8'},
+                    url: "/visitor/report.json",
+                    data:JSON.stringify(dataInfo),
+                    success: function(data) {
+                        if(data.success){
+                            layer.msg('申报成功',function () {
+                                clearfrom('#bodyInfo')
+                                window.location.href='healthState/edithealthyMsg.html?openId='+openId;
+                            })
+                        }else{
+                            /* layer.msg('申报失败联系管理员')*/
+                            layer.msg(data.message);
+                        }
+                    }
+                });
+            }
+        }
+        if(contArry.length>0){
+            for(var i=0;i<contArry.length;i++){
+                addinnerfun(contArry[i]);
+            }
+        }else{
+            layer.msg('请选择健康状况');
+        }
+    }
+    $(function () {
+        var href=window.location.href;
+        href = href.split("#");
+        console.log(href)
+        $.ajax({
+            type: "post",
+            url: "/visitor/location.json",
+            headers:{'Content-Type':'application/json;charset=UTF-8'},
+            data:JSON.stringify({
+                url:href[0],
+            }),
+            async: false,
+            success: function (data) {
+                if (data.success){
+                    dataInfo.appId=data.data.appId;
+                    dataInfo.timestamp=data.data.timeStamp;
+                    dataInfo.nonceStr=data.data.nonceStr;
+                    dataInfo.signature=data.data.signature;
+                }
+
+            }
+        })
+        getloaction();
+    })
+    function getloaction(){
+       /* dataInfo.province='山西';
+        dataInfo.city='山西';
+        dataInfo.district='山西';
+        dataInfo.street='山西';
+        dataInfo.recommend='山西省测试地区';
+        $('#address').html('山西省测试地区');
+        $('#locationloading').hide();*/
+        // 微信配置
+        wx.config({
+            debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+            appId: dataInfo.appId, // 必填，公众号的唯一标识
+            timestamp:dataInfo.timestamp , // 必填，生成签名的时间戳
+            nonceStr: dataInfo.nonceStr, // 必填，生成签名的随机串
+            signature: dataInfo.signature,// 必填，签名
+            jsApiList: ['getLocation'] // 必填，需要使用的JS接口列表
+        });
+
+        wx.ready(function(){
+            console.log('wx.ready-----------')
+            /* --获取经纬度-- */
+            wx.getLocation({
+                type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+                success: function (res) {
+                    $('.addressloading').html('地理位置获取中')
+                    console.log(res);
+                    console.log('地图经纬度==========')
+                    dataInfo.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                    dataInfo.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                    /* 高得地图 */
+
+                    var map = new AMap.Map("Mapcontainer", {
+                        resizeEnable: true
+                    });
+                    var geocoder = new AMap.Geocoder({
+                        city: "", //城市设为北京，默认：“全国”
+                        /*radius: 1000 //范围，默认：500*/
+                    });
+                    var marker = new AMap.Marker();;
+                    function regeoCode() {
+                        var lnglat  = [dataInfo.longitude,dataInfo.latitude];
+                        map.add(marker);
+                        marker.setPosition(lnglat);
+                        geocoder.getAddress(lnglat, function(status, result) {
+                            if (status === 'complete'&&result.regeocode) {
+                                console.log(result);
+                                console.log('-------------')
+                                var address = result.regeocode.formattedAddress;
+                                document.getElementById('address').value = address;
+                                dataInfo.province=result.regeocode.addressComponent.province;
+                                dataInfo.city=result.regeocode.addressComponent.city;
+                                dataInfo.district=result.regeocode.addressComponent.district;
+                                dataInfo.street=result.regeocode.addressComponent.street;
+                                dataInfo.recommend=result.regeocode.formattedAddress;
+                                $('#address').html(dataInfo.recommend)
+                                $('.addressloading').html('')
+                            }else{
+                                layer.msg('根据经纬度查询地址失败');
+                                $('.addressloading').html('')
+                            }
+                        });
+                    }
+                    regeoCode();
+                    /* 高得地图 end */
+                },
+                cancel: function (res) {
+                    /*console.log(JSON.stringify(res))
+                    console.log('用户拒绝授权获取地理位置');*/
+                    layer.msg('用户拒绝授权获取地理位置');
+                    $('.addressloading').html('')
+                },
+                fail: function (res) {
+                    /* alert(JSON.stringify(res))*/
+                    layer.msg('用户授权获取地理位置失败');
+                    $('.addressloading').html('')
+                }
+            })
+
+
+        });
+        wx.error(function(res){
+            /*alert(JSON.stringify(res));*/
+            console.log(res);
+            console.log('error--------------');
+            $('.addressloading').html('')
+        })
+
+    }
+    /*-- 删除申报信息 --*/
+
+    function deletefrom(id){
+        layer.confirm('确定要删除吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.ajaxDom('#bodyInfo',{
+                type: "delete",
+                url: "/member/report.json",
+                data:{
+                    id:id,
+                    openId:openId,
+                },
+                success: function(data) {
+
+                    if(data.success){
+                        layer.msg('删除成功',function () {
+                            window.location.reload();
+                        })
+                    }else{
+                        /*layer.msg('删除失败联系管理员')*/
+                        layer.msg(data.message);
+                    }
+                    /*console.log(data);*/
+                }
+            });
+        });
+
+    }
+</script>
+<script>
+    var title="健康状况"
+    var backtitlebg="white";
+    var datalistInfo={};
+    var openId=GetQueryValue('openId');
+    var type=GetQueryValue('type');
+    var backhref='visitorIndex.html?openId='+openId+'&type='+type;
+    var dataInfo={};
+    $(function () {
+        $('.hearthmsg').attr('href','healthState/edithealthyMsg.html?openId='+openId)
+
+        laydate.render({
+            elem: '#todate',
+            type: 'datetime',
+            format: 'yyyy-MM-dd HH:mm:ss',
+        });
+        laydate.render({
+            elem: '#cdate',
+            format: 'yyyy-MM-dd',
+            value: moment(new Date()).format('YYYY-MM-DD')
+            ,done: function(value, date){
+                console.log(value, date)
+                /*--点击时间 执行事件--*/
+                $('#cdate').val(value)
+            }
+        });
+        $('#modifybtn').attr('href','appointVisit/editvisitMsg.html?openId='+openId+'&type='+type+'&edit="edit"&pagedata=2')
+        dataInitial();
+    })
+    function dataInitial() {
+        $.ajaxDom('#usermsg',{
+            type: "get",
+            url: '/visitor/info.json',
+            data: {openId: openId,type:type},
+            success: function (data) {
+                if(!data.success){
+                    layer.msg('请输入个人信息',function () {
+                        window.location.href='appointVisit/editvisitMsg.html?openId='+openId;
+                    })
+                }else{
+                    $('#username').html(data.data.name);
+                    $('#userphone').html(data.data.phone);
+                    $('#usercompany').html(data.data.company);
+                    var datafile=[];
+                    if(data.data.file.length>0){
+                        for(var i=0;i<data.data.file.length;i++){
+                            var msgInfo=data.data.file[i];
+                            $("#userfile").append(`
+                            <a href="/ncov/imgshow.html?href=${msgInfo.path}" filepath="${msgInfo.path}">
+                                   附件${i+1}
+                            </a>`)
+                            datafile.push(msgInfo.path);
+                        }
+                    }
+                    dataInfo.openId=openId;
+                    dataInfo.company=data.data.toCompany;
+
+                }
+            }
+        })
+        $.ajaxDom('#datalist',{
+            type: "get",
+            data: {openId: openId},
+            url:"/visitor/apply/list.json",
+            success:function (data) {
+                console.log(data);
+                console.log('+++++++++++');
+                var datalist = template('v_datalist', data);
+                $("#datalist").empty().append(datalist);
+            }
+        })
+    }
+
+</script>

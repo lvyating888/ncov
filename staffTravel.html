@@ -18,6 +18,7 @@
     <script src="http://webimg.mp12345.com/jslib/laydate/laydate.js"></script>
     <script src="http://webimg.mp12345.com/jslib/webuploader/webuploader.js"></script>
     <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js"></script>
 </head>
 <body class="hastopout">
 <!--#include file="/ncov/headerback.html"-->
@@ -142,9 +143,11 @@
 </script>
 <script>
     /*-- 获取出行记录 --*/
-    gohistory();
+    $(function () {
+        gohistory();
+    })
     function gohistory(){
-        $.ajax({
+        $.ajaxDom('#olddata',{
             type:'get',
             url:"/member/schedule/list.json",
             success:function (data) {
@@ -235,7 +238,7 @@
             layer.msg('选择结束时间');
         }else{
             console.log(dataInfo)
-            $.ajax({
+            $.ajaxDom('body',{
                 type:'post',
                 url:"/member/schedule.json",
                 headers:{'Content-Type':'application/json;charset=UTF-8'},
@@ -261,7 +264,7 @@
         layer.confirm('确定要删除吗？', {
             btn: ['确定','取消'] //按钮
         }, function(){
-            $.ajax({
+            $.ajaxDom('#olddata',{
                 type:'delete',
                 url:"/member/schedule.json",
                 data:{

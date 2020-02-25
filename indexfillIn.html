@@ -14,6 +14,7 @@
     <script src="js/common.js?v=0.2"></script>
     <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
     <script src="http://webimg.mp12345.com/jslib/laydate/laydate.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js"></script>
 </head>
 <body class="hasbotout">
 <form class="innerout" id="addInfo">
@@ -130,7 +131,7 @@
     var type=GetQueryValue('type')?GetQueryValue('type'):'';
     console.log(openId);
 
-    $.ajax({
+    $.ajaxDom('#addInfo',{
         type: "get",
         url:'/ncov/isExist.json',
         data:{openId:openId},
@@ -140,7 +141,7 @@
             if(data.success && type!==''){
                 if(type!==''){
                     /*-- 获取注册的用户信息 --*/
-                    $.ajax({
+                    $.ajaxDom('#addInfo',{
                         type: "get",
                         url:'/member/info.json',
                         data:{openId:openId},
@@ -199,7 +200,7 @@
         // });
         /*-- 动态获取公司列表 --*/
 
-        $.ajax({
+        $.ajaxDom('#company',{
             type: "get",
             url:'/ncov/company/list.json',
             success: function (data) {
@@ -250,7 +251,7 @@
             // var birthystr=$('#birthyear').val().split("-");
             //dataInfo.birthday=birthystr[0]+birthystr[1]+birthystr[2];
             /*console.log(dataInfo); */
-            $.ajax({
+            $.ajaxDom('#addInfo',{
                 type: "post",
                 headers:{'Content-Type':'application/json;charset=UTF-8'},
                 url: "/ncov/info.json",
@@ -303,7 +304,7 @@
             // var birthystr=$('#birthyear').val().split("-");
             // dataInfo.birthday = birthystr[0] + birthystr[1] + birthystr[2];
             console.log(dataInfo)
-            $.ajax({
+            $.ajaxDom('#addInfo',{
                 type: "put",
                 headers:{'Content-Type':'application/json;charset=UTF-8'},
                 url: "/member/info.json",

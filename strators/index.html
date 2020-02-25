@@ -13,6 +13,7 @@
     <script src="../js/common.js?v=0.2"></script>
     <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
     <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js"></script>
 </head>
 <body>
 
@@ -64,6 +65,16 @@
             <a href="datastatiSticsAdmin.html?name={{item.company}}&id={{item.id}}" class="btn btn-danger">
                 查看统计
             </a>
+            <br>
+            {{if item.ticket==''}}
+            <a href="javascript:;" onclick="openVisitor('{{item.id}}')" class="btn btn-warning" style="margin:5px 0">
+                开通访客
+            </a>
+            {{else}}
+            <a href="javascript:;" class="btn btn-default" style="margin:5px 0">
+                已开通访客
+            </a>
+            {{/if}}
         </td>
         <td>
             <a href="staffList.html?name={{item.company}}&id={{item.id}}" >
@@ -115,6 +126,30 @@
                     layer.msg(res.message);
                 }
             }
+        })
+    }
+    /* 开通访客 */
+    function openVisitor(id) {
+        var openVisitor=layer.confirm('确定要开通访客吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.ajaxDom('body',{
+                type:'get',
+                url:'/admin/company/openVisitor.json',
+                data:{id:id},
+                success:function (data) {
+                    console.log(data);
+                    console.log('++++++++++++++')
+                    if(data.success){
+                        layer.close(openVisitor);
+                        layer.msg('开通成功');
+                        init();
+                    }else{
+                        layer.close(openVisitor);
+                        layer.msg(data.message);
+                    }
+                }
+            })
         })
     }
 </script>

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/ncov/css/base.css">
+    <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
+    <script src="/ncov/js/common.js?v=0.2"></script>
+</head>
+<style>
+    #img, #img img{
+        display: block;
+        width: 100%;
+    }
+</style>
+<body class="hastopout">
+<!--#include file="/ncov/headerback.html"-->
+<div id="img">
+
+</div>
+
+</body>
+</html>
+<script>
+    var backtitlebg="white";
+    var imghref=GetQueryValue('href')?GetQueryValue('href'):'';
+    $(function () {
+        if(imghref!==''){
+            var href=imghref;
+            $('#img').append(`
+                <img src="http://webimg.mp12345.com${href}" alt="">
+            `)
+        }
+    })
+</script>

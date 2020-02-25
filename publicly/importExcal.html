@@ -661,7 +661,7 @@
             }
         }
 
-        $.ajax({
+        $.ajaxDom('#addPerson',{
             type: "post",
             headers:{'Content-Type':'application/json;charset=UTF-8'},
             url: "/publish/importMember.json",

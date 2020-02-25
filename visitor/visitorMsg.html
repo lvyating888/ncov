@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>预约</title>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/ncov/css/base.css">
+    <link rel="stylesheet" href="/ncov/css/diseaseRegister.css">
+    <link rel="stylesheet" href="css/visitorMsg.css">
+    <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
+    <script src="/ncov/js/common.js?v=0.4"></script>
+    <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/laydate/laydate.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
+    <script src="/ncov/js/templateHelper.js?v=0.2"></script>
+    <link href="http://webimg.mp12345.com/jslib/select2/select2.min.css" rel="stylesheet" />
+    <script src="http://webimg.mp12345.com/jslib/select2/select2.min.js"></script>
+</head>
+<body class="hastopout">
+<!--#include file="/ncov/headerback.html"-->
+<div class="innerout padtb10" style="padding-bottom: 0;">
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active">
+            <a href="#visitAppoint" data-toggle="tab" onclick="dataInitial(1)">
+                访问预约
+            </a>
+        </li>
+        <li>
+            <a href="#visitHistorylist" data-toggle="tab" onclick="dataInitial(2)">
+                访问记录
+            </a>
+        </li>
+    </ul>
+
+</div>
+<div id="myTabContent" class="tab-content padtb10" tyle="padding-top: 0;">
+    <div class="tab-pane fade in active innerout" id="visitAppoint">
+        <div class="innerlisout">
+            <p class="linetitle" style="margin-top:0;">个人信息</p>
+            <ul class="list-group">
+                <li class="list-group-item padlr0 clearfix ">
+                    <div class="col-sm-12 col-xs-12">
+                        姓名：<span id="username"></span>
+                    </div>
+                </li>
+                <li class="list-group-item padlr0 clearfix ">
+                    <div class="col-sm-12 col-xs-12">
+                        手机号：<span id="userphone"></span>
+                    </div>
+                </li>
+                <li class="list-group-item padlr0 clearfix ">
+                    <div class="col-sm-12 col-xs-12">
+                        公司：<span id="usercompany"></span>
+                    </div>
+                </li>
+                <!--<li class="list-group-item padlr0 clearfix ">-->
+                <!--<div class="col-sm-6 col-xs-6">-->
+                <!--随行车牌号：<span id="usercompanyaddress">随行车牌号</span>-->
+                <!--</div>-->
+                <!--<div class="col-sm-6 col-xs-6">-->
+                <!--随行人数：<span >随行人数</span>-->
+                <!--</div>-->
+                <!--</li>-->
+                <li class="list-group-item padlr0 clearfix ">
+                    <p class="col-sm-12 col-xs-12">
+                        附件资料：
+                    </p>
+                    <p class="col-sm-12 col-xs-12" style="margin:10px 0;word-wrap:break-word;word-break:normal; " id="userfile">
+
+                    </p>
+                </li>
+                <li class="list-group-item padlr0 clearfix ">
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        <a href="javascript:;" type="button" class="btn btn-danger" style="width:80%" id="modifybtn">修改</a>
+                    </div>
+                </li>
+            </ul>
+            <p class="linetitle">访问对象</p>
+            <form id="addmsgform">
+                <div class="form-group clearfix">
+                    <label class="col-sm-3 col-xs-3 leftlabel">公司名称<span class="red">*</span></label>
+                    <div class="col-sm-9 col-xs-9 ">
+                        <span id="visitorcompany" style="line-height: 24px;padding: 7px 0;display: inline-block;"></span>
+                        <!--<select name="to_company" class="form-control">
+                            <option value="">请输入公司名称</option>
+                        </select>-->
+                    </div>
+                </div>
+                <div class="form-group clearfix">
+                    <label class="col-sm-3 col-xs-3 leftlabel">部门<span class="red">*</span></label>
+                    <div class="col-sm-9 col-xs-9 ">
+                        <input class="form-control" name="to_divi" type="text" placeholder="请输入部门">
+                    </div>
+                </div>
+                <div class="form-group clearfix">
+                    <label class="col-sm-3 col-xs-3 leftlabel">姓名<span class="red">*</span></label>
+                    <div class="col-sm-9 col-xs-9 ">
+                        <input class="form-control" name="to_name" type="text" placeholder="请输入访问人姓名">
+                    </div>
+                </div>
+                <div class="form-group clearfix">
+                    <label class="col-sm-3 col-xs-3 leftlabel">手机<span class="red">*</span></label>
+                    <div class="col-sm-9 col-xs-9 ">
+                        <input class="form-control" name="to_phone" type="number" placeholder="请输入访问人手机" style="min-width:100px;" maxlength="11" oninput="if(value.length>11)value=value.slice(0,11)"  />
+                    </div>
+                </div>
+                <div class="form-group clearfix">
+                    <label class="col-sm-3 col-xs-3 leftlabel">访问时间<span class="red">*</span></label>
+                    <div class="col-sm-9 col-xs-9 ">
+                        <input class="form-control" name="to_date" type="text" id="todate" placeholder="请选择访问时间" readonly style="background-color: #fff;">
+                    </div>
+                </div>
+                <div class="form-group clearfix">
+                    <label class="col-sm-12 col-xs-12 clearfix padlr0">访问事由</label>
+                    <div class="col-sm-12 col-xs-12 clearfix padlr0">
+                        <textarea class="form-control" name="to_context" placeholder="请输入访问事由" style="height:100px;"></textarea>
+                    </div>
+                </div>
+            </form>
+
+            <div class="botbtn row">
+                <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+                    <button type="button" class="btn btn-lg btn-success" style="width:80%" onclick="addApply()">申请预约</button>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+                    <button type="button" class="btn btn-lg btn-danger" style="width:80%" onclick="clearfrom('#addmsgform',selectclear())">重置</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade " id="visitHistorylist">
+        <!--<form action="#" id="searchForm" class="innerout">
+            <div class="input-group input-group-sm">
+                <span class="input-group-addon">时间</span>
+                <input type="text" name="cdate" id="cdate" class="form-control" readonly style="background-color: #fff;">
+            </div>
+            <div class="botbtn row">
+                <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+                    <button type="button" class="btn btn-success" style="width:80%" onclick="datacount(1)">查询</button>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+                    <button type="button" class="btn btn-danger" style="width:80%" onclick="clearfrom('#searchForm')">清空</button>
+                </div>
+            </div>
+        </form>-->
+
+        <ul id="datalist" class="list-group listul">
+
+        </ul>
+    </div>
+</div>
+</body>
+<script type="text/html" id="v_datalist">
+    {{if data.length>0}}
+    {{each data as item index}}
+    <li class="list-group-item listlis-item">
+        <a href="appointVisit/visitDetails.html?openId={{item.wx_openid}}&type={{type}}&id={{item.id}}">
+            <div class="listlis">
+                <div class="list_left">
+                    <div class="list_leftinner clearfix">
+                        <p class="list_title">
+                            访问：{{item.to_name}}
+                        </p>
+                        <p class="list_result">
+                            {{if item.audit==0}}
+                            未审核
+                            {{else if item.audit==1}}
+                            已通过
+                            {{else if item.audit==2}}
+                            已拒绝
+                            {{/if}}
+                        </p>
+                    </div>
+                    <div class="list_leftinner">
+                        <p class="list_contperson">
+                            提交时间：{{item.cdate | moment:'YYYY-MM-DD HH:mm:ss'}}
+                        </p>
+                    </div>
+                </div>
+                <div class="list_right">
+                    <span class="glyphicon glyphicon-menu-right moretext"></span>
+                </div>
+            </div>
+
+        </a>
+    </li>
+    {{/each}}
+    {{else}}
+    <li class="list-group-item listlis-item">
+        <p class="red">暂无数据</p>
+    </li>
+    {{/if}}
+</script>
+</html>
+<script>
+    var title="预约"
+    var backtitlebg="white";
+    var datalistInfo={};
+    var openId=GetQueryValue('openId');
+    var type=GetQueryValue('type');
+    var backhref='visitorIndex.html?openId='+openId+'&type='+type;
+    var dataInfo={};
+    var typeflag=GetQueryValue('typeflag')?GetQueryValue('typeflag'):'';
+    function selectclear() {
+        var selectorx = $("#addmsgform select[name='to_company']").select2();
+        selectorx.val("").trigger("change");
+    }
+    $(function () {
+        $('#myTab a[href="#visitAppoint"]').tab('show');
+        companydata("#addmsgform select[name='to_company']")
+        var selectorx = $("#addmsgform select[name='to_company']").select2();
+        laydate.render({
+            elem: '#todate',
+            type: 'datetime',
+            format: 'yyyy-MM-dd HH:mm:ss',
+        });
+        laydate.render({
+            elem: '#cdate',
+            format: 'yyyy-MM-dd',
+            value: moment(new Date()).format('YYYY-MM-DD')
+            ,done: function(value, date){
+                console.log(value, date)
+                /*--点击时间 执行事件--*/
+                $('#cdate').val(value)
+            }
+        });
+        $('#modifybtn').attr('href','appointVisit/editvisitMsg.html?openId='+openId+'&type='+type+'&edit="edit"&pagedata=1')
+        dataInitial();
+    })
+    function dataInitial(typedata) {
+        typedata=typedata?typedata:typeflag;
+        if(typedata==2){
+            $('#myTab a[href="#visitHistorylist"]').tab('show');
+            window.history.replaceState(null, null, "?openId="+openId+"&type="+type+"&typeflag=2")
+        }else if(typedata==1){
+            $('#myTab a[href="#visitAppoint"]').tab('show');
+            window.history.replaceState(null, null, "?openId="+openId+"&type="+type+"&typeflag=1")
+        }
+        $.ajaxDom('#visitAppoint',{
+            type: "get",
+            url: '/visitor/info.json',
+            data: {openId: openId,type:type},
+            success: function (data) {
+                console.log(data);
+                console.log('++++++++++++')
+                if(!data.success){
+                    layer.msg('请输入个人信息',function () {
+                        window.location.href='appointVisit/editvisitMsg.html?openId='+openId;
+                    })
+                }else{
+                    $('#visitorcompany').html(data.data.toCompany)
+                    $('#username').html(data.data.name);
+                    $('#userphone').html(data.data.phone);
+                    $('#usercompany').html(data.data.company);
+                    var datafile=[];
+                    $("#userfile").empty();
+                    if(data.data.file.length>0){
+                        for(var i=0;i<data.data.file.length;i++){
+                            var msgInfo=data.data.file[i];
+                            $("#userfile").append(`
+                            <a href="/ncov/imgshow.html?href=${msgInfo.path}" filepath="${msgInfo.path}">
+                                   附件${i+1}
+                            </a>`)
+                            datafile.push(msgInfo.path);
+                        }
+                    }
+                    dataInfo.openId=openId;
+                    dataInfo.name=data.data.name;
+                    dataInfo.phone=data.data.phone;
+                    dataInfo.company=data.data.company;
+                    dataInfo.peoples=data.data.peoples;
+                    dataInfo.car_number=data.data.car_number;
+                    dataInfo.file=datafile.join(',');
+                }
+            }
+        })
+        $.ajaxDom('#datalist',{
+            type: "get",
+            data: {openId: openId,type:type},
+            url:"/visitor/apply/list.json",
+            success:function (data) {
+                data.type=type;
+                var datalist = template('v_datalist', data);
+                $("#datalist").empty().append(datalist);
+            }
+        })
+    }
+    function addApply(){
+        dataInfo.openId=openId;
+        dataInfo.type=type;
+        dataInfo.to_company=$('#addmsgform').find('span[id="visitorcompany"]').html().trim();
+        dataInfo.to_divi=$('#addmsgform').find('input[name="to_divi"]').val().trim();
+        dataInfo.to_name=$('#addmsgform').find('input[name="to_name"]').val().trim();
+        dataInfo.to_phone=$('#addmsgform').find('input[name="to_phone"]').val().trim();
+        dataInfo.to_date=$('#addmsgform').find('input[name="to_date"]').val().trim();
+        dataInfo.to_context=$('#addmsgform').find('textarea[name="to_context"]').val().trim();
+        if(!dataInfo.name || dataInfo.name==''){
+            layer.msg('请输入个人姓名');
+        }else if(!dataInfo.phone || dataInfo.phone==''){
+            layer.msg('请输入个人手机号');
+        }else if(!dataInfo.company || dataInfo.company==''){
+            layer.msg('请输入个人公司名称');
+        }else if(!dataInfo.to_company || dataInfo.to_company==''){
+            layer.msg('请输入访问公司名称');
+            $('#addmsgform').find('input[name="to_company"]').focus();
+        }else if(!dataInfo.to_divi || dataInfo.to_divi==''){
+            layer.msg('请输入访问公司的部门');
+            $('#addmsgform').find('input[name="to_divi"]').focus();
+        }else if(!dataInfo.to_name || dataInfo.to_name==''){
+            layer.msg('请输入访问的姓名');
+            $('#addmsgform').find('input[name="to_name"]').focus();
+        }else if(!dataInfo.to_phone || dataInfo.to_phone==''){
+            layer.msg('请输入访问人的联系方式');
+            $('#addmsgform').find('input[name="to_phone"]').focus();
+        }else if(!dataInfo.to_date || dataInfo.to_date==''){
+            layer.msg('请输入访问的时间');
+            $('#addmsgform').find('input[name="to_date"]').focus();
+        }
+        else{
+            /*console.log(dataInfo);*/
+            $.ajaxDom('#visitHistorylist',{
+                type: "post",
+                headers:{'Content-Type':'application/json;charset=UTF-8'},
+                url: "/visitor/apply.json",
+                data:JSON.stringify(dataInfo),
+                success: function(data) {
+                    if(data.success){
+                        layer.msg('预约成功',function () {
+                            clearfrom('#addmsgform',selectclear())
+                            $('#myTab a[href="#visitHistorylist"]').tab('show');
+                            dataInitial(2);
+                        });
+                    }else{
+                        layer.msg(data.message);
+                    }
+                }
+            });
+        }
+
+    }
+
+</script>

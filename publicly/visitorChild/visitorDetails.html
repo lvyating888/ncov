@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>预约</title>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/ncov/css/base.css">
+    <link rel="stylesheet" href="/ncov/css/diseaseRegister.css">
+    <link rel="stylesheet" href="../../visitor/css/visitorMsg.css">
+    <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
+    <script src="/ncov/js/common.js?v=0.4"></script>
+    <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/laydate/laydate.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
+    <script src="/ncov/js/templateHelper.js?v=0.2"></script>
+    <link href="http://webimg.mp12345.com/jslib/select2/select2.min.css" rel="stylesheet" />
+    <script src="http://webimg.mp12345.com/jslib/select2/select2.min.js"></script>
+</head>
+<body class="hastopout">
+<!--#include file="/ncov/headerback.html"-->
+<div  class="tab-content padtb10" >
+    <div class="innerout" >
+        <div id="visitAppoint">
+
+        </div>
+        <div class="botbtn row" style="margin: 0;" id="appFormout">
+            <form id="approvalForm">
+                <div class="form-group clearfix leftlabel">
+                    <label class="col-sm-4 col-xs-4 padlr0">修改到访时间<span class="red">*</span></label>
+                    <div class="col-sm-8 col-xs-8 ">
+                        <input type="text" class="form-control"  name="toDateChange" id="toDateChange" readonly style="background-color: #fff;">
+                    </div>
+                </div>
+                <div class="form-group clearfix leftlabel">
+                    <label class="col-sm-12 col-xs-12 padlr0">审批留言<span class="red">*</span></label>
+                    <div class="col-sm-12 col-xs-12 padlr0">
+                        <textarea name="auditMessage"  class="form-control" style="height: 100px" placeholder="输入留言"></textarea>
+                    </div>
+                </div>
+            </form>
+            <div class="botbtn row">
+                <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+                    <button type="button" class="btn btn-success" style="width:80%" onclick="addApply(1)">通过</button>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+                    <button type="button" class="btn btn-danger" style="width:80%" onclick="addApply(2)">拒绝</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+<script type="text/html" id="v_datalist">
+    <p class="linetitle">访客信息</p>
+    <ul class="list-group">
+        <li class="list-group-item padlr0 clearfix ">
+            <div class="col-sm-12 col-xs-12">
+                姓名：<span>{{data.name}}</span>
+            </div>
+        </li>
+        <li class="list-group-item padlr0 clearfix ">
+            <div class="col-sm-12 col-xs-12">
+                手机号：<span>{{data.phone}}</span>
+            </div>
+        </li>
+        <li class="list-group-item padlr0 clearfix ">
+            <div class="col-sm-12 col-xs-12">
+                公司：<span>{{data.company}}</span>
+            </div>
+        </li>
+        <li class="list-group-item padlr0 clearfix ">
+            <div class="col-sm-6 col-xs-6">
+                随行车牌号：<span>{{data.car_number}}</span>
+            </div>
+            <div class="col-sm-6 col-xs-6">
+                随行人数：<span >{{data.peoples}}</span>
+            </div>
+        </li>
+        <li class="list-group-item padlr0 clearfix ">
+            <p class="col-sm-12 col-xs-12">
+                附件资料：
+            </p>
+            <p class="col-sm-12 col-xs-12" style="margin:10px 0;word-wrap:break-word;word-break:normal; ">
+                {{each data.datafile as item index}}
+                <a href="/ncov/imgshow.html?href={{item}}" filepath="{{item}}">
+                   附件{{index+1}}
+                </a>
+                {{/each}}
+            </p>
+        </li>
+
+    </ul>
+    <p class="linetitle">来访对象</p>
+    <form id="addmsgform" style="padding-bottom:6px;">
+        <div class="form-group clearfix leftlabel">
+            <label class="col-sm-3 col-xs-3 padlr0">公司名称：</label>
+            <div class="col-sm-9 col-xs-9 ">
+                <span>{{data.to_company}}</span>
+            </div>
+        </div>
+        <div class="form-group clearfix leftlabel">
+            <label class="col-sm-3 col-xs-3 padlr0">部门：</label>
+            <div class="col-sm-9 col-xs-9 ">
+                <span>{{data.to_divi}}</span>
+            </div>
+        </div>
+        <div class="form-group clearfix leftlabel">
+            <label class="col-sm-3 col-xs-3 padlr0">姓名：</label>
+            <div class="col-sm-9 col-xs-9 ">
+                <span>{{data.to_name}}</span>
+            </div>
+        </div>
+        <div class="form-group clearfix leftlabel">
+            <label class="col-sm-3 col-xs-3 padlr0">手机：</label>
+            <div class="col-sm-9 col-xs-9 ">
+                <span>{{data.to_phone}}</span>
+            </div>
+        </div>
+        <div class="form-group clearfix leftlabel">
+            <label class="col-sm-3 col-xs-3 padlr0">访问时间：</label>
+            <div class="col-sm-9 col-xs-9 ">
+                <span>{{data.to_date | moment:'YYYY-MM-DD HH:mm:ss'}}</span>
+            </div>
+        </div>
+        {{if data.to_date_change && data.to_date_change!==data.to_date}}
+        <div class="form-group clearfix leftlabel">
+            <label class="col-sm-3 col-xs-3 padlr0">修改访问时间：</label>
+            <div class="col-sm-9 col-xs-9 ">
+                    <span>
+                        {{data.to_date_change | moment:'YYYY-MM-DD HH:mm:ss'}}
+                    </span>
+            </div>
+        </div>
+        {{/if}}
+        <div class="form-group clearfix leftlabel">
+            <label class="col-sm-3 col-xs-3 padlr0">访问事由：</label>
+            <div class="col-sm-9 col-xs-9 ">
+                <p >
+                    {{data.to_context}}
+                </p>
+            </div>
+        </div>
+    </form>
+    {{if data.audit!==0}}
+    <div class="botbtn row" style="margin: 0;">
+        <form >
+            <div class="form-group clearfix leftlabel">
+                <label class="col-sm-3 col-xs-3 padlr0">审批结果：</label>
+                <div class="col-sm-9 col-xs-9 ">
+                    <span class="red">
+                            {{if data.audit==0}}
+                            未审核
+                            {{else if data.audit==1}}
+                            已通过
+                            {{else if data.audit==2}}
+                            已拒绝
+                            {{/if}}
+                    </span>
+                </div>
+            </div>
+            <div class="form-group clearfix leftlabel">
+                <label class="col-sm-3 col-xs-3 padlr0">审批时间：</label>
+                <div class="col-sm-9 col-xs-9 ">
+                    <span>
+                        {{if data.audit_date}}
+                        {{data.audit_date | moment:'YYYY-MM-DD HH:mm:ss'}}
+                        {{/if}}
+                    </span>
+                </div>
+            </div>
+            <div class="form-group clearfix leftlabel">
+                <label class="col-sm-3 col-xs-3 padlr0">审批留言：</label>
+                <div class="col-sm-9 col-xs-9 ">
+                    <span>{{data.audit_message}}</span>
+                </div>
+            </div>
+        </form>
+    </div>
+    {{/if}}
+</script>
+</html>
+<script>
+    var title="预约详情"
+    var backtitlebg="white";
+    var datalistInfo={};
+    var id=GetQueryValue('id');
+    var openId=GetQueryValue('openId');
+    var backhref='../visitorManager.html?openId='+openId;
+    $(function () {
+
+        dataInitial();
+    })
+    function dataInitial() {
+        $.ajaxDom('#visitAppoint',{
+            type: "get",
+            url: '/publish/visitor/apply.json',
+            data: {id: id},
+            success: function (data) {
+                console.log(data);
+                if(data.data.file.trim()!=='') {
+                    var datafile = data.data.file.split(",");
+                    data.data.datafile = datafile;
+                }
+                var datalist = template('v_datalist', data);
+                $("#visitAppoint").empty().append(datalist);
+                laydate.render({
+                    elem: '#toDateChange',
+                    type: 'datetime',
+                    format: 'yyyy-MM-dd HH:mm:ss',
+                    value: moment(data.data.to_date).format('YYYY-MM-DD HH:mm:ss')
+                });
+                if(data.data.audit!==0){
+                    $('#appFormout').hide();
+                }
+
+            }
+        })
+
+    }
+    function addApply(audit){
+        var dataInfo=getFormJson('#approvalForm');
+        dataInfo.id=id;
+        dataInfo.audit=audit;
+        if(!dataInfo.toDateChange || dataInfo.toDateChange==''){
+            layer.msg('请选择到访时间');
+        }else if(!dataInfo.auditMessage || dataInfo.auditMessage.trim()==''){
+            layer.msg('请输入审批留言');
+            $('#approvalForm input[name="auditMessage"]').focus()
+        }else{
+            var text='确定要通过预约吗'
+            if(audit==2){
+                text='确定要拒绝预约吗'
+            }
+            layer.confirm(text, {
+                btn: ['确定','取消'] //按钮
+            }, function(){
+                    console.log(dataInfo);
+                    $.ajaxDom('body',{
+                        type: "patch",
+                        headers:{'Content-Type':'application/json;charset=UTF-8'},
+                        url: "/publish/visitor/audit.json",
+                        data:JSON.stringify(dataInfo),
+                        success: function(data) {
+                            if(data.success){
+                                layer.msg('已审核',function () {
+                                    window.location.href='../visitorManager.html?openId='+openId
+                                });
+                            }else{
+                                layer.msg(data.message);
+                            }
+                        }
+                    });
+
+            })
+        }
+
+    }
+
+</script>

@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>预约访问个人信息</title>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/ncov/css/base.css">
+    <link rel="stylesheet" href="/ncov/css/diseaseRegister.css">
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/webuploader/webuploader.css">
+    <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
+    <script src="/ncov/js/common.js?v=0.2"></script>
+    <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/webuploader/webuploader.js"></script>
+</head>
+<body>
+<form class="innerout" id="visitorInfo">
+    <div class="innerlisout">
+        <p class="linetitle">个人信息</p>
+        <div class="form-group clearfix">
+            <label class="col-sm-3 col-xs-3 leftlabel">姓名<span class="red">*</span></label>
+            <div class="col-sm-9 col-xs-9 ">
+                <input class="form-control" name="name" type="text" placeholder="请输入姓名">
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-sm-3 col-xs-3 leftlabel">手机号<span class="red">*</span></label>
+            <div class="col-sm-9 col-xs-9 ">
+                <input class="form-control" name="phone" type="number" placeholder="请输入手机号" style="min-width:100px;" maxlength="11" oninput="if(value.length>11)value=value.slice(0,11)"  />
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-sm-3 col-xs-3 leftlabel">公司<span class="red">*</span></label>
+            <div class="col-sm-9 col-xs-9 ">
+                <input class="form-control" name="company" type="text" placeholder="请填写公司名称">
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-sm-3 col-xs-3 leftlabel">随行人数</label>
+            <div class="col-sm-9 col-xs-9 ">
+                <input class="form-control" name="peoples" type="number" placeholder="请输入随行人数">
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-sm-3 col-xs-3 leftlabel">随行车牌号</label>
+            <div class="col-sm-9 col-xs-9 ">
+                <input class="form-control" name="car_number" type="text" placeholder="请输入随行车牌号">
+            </div>
+        </div>
+        <div class="form-group clearfix" id="uploader">
+            <label class="col-sm-3 col-xs-3 leftlabel">附件</label>
+            <div class="col-sm-9 col-xs-9 ">
+                <div id="thelist" class="uploader-list"></div>
+                <div id="picker">选择文件</div>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="botbtn row">
+    <div class="col-md-12 col-sm-12 col-xs-12 padlr0 saveul" align="center">
+
+        <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+            <button type="button" class="btn btn-lg btn-success " style="width: 80%;" onclick="addMsg()" id="savebtn">保存</button>
+        </div>
+        <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+            <a href="javascript:;" class="btn btn-lg btn-danger backBtn" style="width:80%">
+                返回
+            </a>
+        </div>
+    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12 padlr0 editul" style="display: none">
+        <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+            <button type="button" class="btn btn-lg btn-success" style="width: 80%;" onclick="modifyMsg()" id="modifybtn">
+                修改
+            </button>
+        </div>
+        <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+            <a href="javascript:;" class="btn btn-lg btn-danger backBtn" style="width:80%">
+                返回
+            </a>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
+<script>
+    /*--- 上传附件 ---*/
+    var uploader = WebUploader.create({
+        // 选完文件后，是否自动上传。
+        auto: true,
+        // swf文件路径
+        swf: 'js/webuploader/Uploader.swf',
+
+        // 文件接收服务端。
+        server:'/member/file/upload.json',
+        // 选择文件的按钮。可选。
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+        pick: '#picker',
+        // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+        resize: false,
+    });
+    // 当有文件被添加进队列的时候
+    uploader.on( 'fileQueued', function( file ) {
+        $('#thelist').append( '<div id="' + file.id + '" class="item">' +
+            '<h4 class="info">' + file.name + '</h4>' +
+            '<p class="state">等待上传...</p>' +
+            '</div>' );
+    });
+    // 文件上传过程中创建进度条实时显示。
+    uploader.on( 'uploadProgress', function( file, percentage ) {
+        var $li = $( '#'+file.id ),
+            $percent = $li.find('.progress .progress-bar');
+        // 避免重复创建
+        if ( !$percent.length ) {
+            $percent = $('<div class="progress progress-striped active">' +
+                '<div class="progress-bar" role="progressbar" style="width: 0%">' +
+                '</div>' +
+                '</div>').appendTo( $li ).find('.progress-bar');
+        }
+        $li.find('p.state').text('上传中');
+        $percent.css( 'width', percentage * 100 + '%' );
+    });
+    uploader.on( 'uploadSuccess', function( file,response ) {
+        console.log(file,response);
+        console.log(response.success)
+        if(response.success){
+            var htmllist=`
+            <p style="word-wrap:break-word;word-break:normal;"><a href="javascript:;" filePath="${response.data.path}">${file.name}</a>
+                <button class="btn btn-default" onclick="deletefile(this)">删除</button>
+            </p>
+        `
+            $('#thelist #'+file.id).remove();
+            $('#thelist').append(htmllist)
+        }
+    });
+    function deletefile(demo) {
+        $(demo).parent().remove();
+    }
+</script>
+<script>
+    var openId=GetQueryValue('openId');
+    var type=GetQueryValue('type');
+    var edit=GetQueryValue('edit')?GetQueryValue('edit'):'';
+    var pagedata=GetQueryValue('pagedata')?GetQueryValue('pagedata'):'';
+    console.log(pagedata)
+    $(function () {
+        datainit();
+    })
+    function datainit() {
+        $.ajax({
+            type: "get",
+            url: '/visitor/info.json',
+            data: {openId: openId,type:type},
+            success: function (data) {
+                if(!data.success){
+                    $('.saveul').show();
+                    $('.editul').hide();
+                    $('.backBtn').attr('href','javascript:history.go(-1);');
+                }else{
+                    $('.saveul').hide();
+                    $('.editul').show();
+                    if(edit==''){
+                        if(pagedata==1){
+                            window.location.href='../visitorMsg.html?openId='+openId+'&type='+type;
+                        }else if(pagedata==2){
+                            window.location.href='../healthyMsg.html?openId='+openId+'&type='+type;
+                        }
+                    }else{
+                        if(pagedata==1){
+                            $('.backBtn').attr('href','../visitorMsg.html?openId='+openId+'&type='+type)
+                        }else if(pagedata==2){
+                            $('.backBtn').attr('href','../healthyMsg.html?openId='+openId+'&type='+type)
+                        }
+                        $('#visitorInfo').find('input[name="name"]').val(data.data.name);
+                        $('#visitorInfo').find('input[name="peoples"]').val(data.data.peoples);
+                        $('#visitorInfo').find('input[name="phone"]').val(data.data.phone);
+                        $('#visitorInfo').find('input[name="company"]').val(data.data.company);
+                        $('#visitorInfo').find('input[name="car_number"]').val(data.data.car_number);
+                        if(data.data.file.length>0){
+                            for(var i=0;i<data.data.file.length;i++){
+                                var msgInfo=data.data.file[i];
+                                $("#visitorInfo #thelist").append(`
+                            <p style="word-wrap:break-word;word-break:normal;">
+                                <a href="/ncov/imgshow.html?href=${msgInfo.path}" filepath="${msgInfo.path}">
+                                   附件${i+1}
+                                </a>
+                                <button class="btn btn-default" onclick="deletefile(this)">删除</button>
+                            </p>`)
+                            }
+                        }
+                    }
+
+                }
+            }
+        })
+    }
+    /*<!-- 新增 -->*/
+    function addMsg(){
+        var dataInfo=getFormJson('#visitorInfo');
+        dataInfo.openId=openId;
+        if(!dataInfo.name || dataInfo.name==''){
+            layer.msg('请输入姓名');
+            $('#visitorInfo').find('input[name="name"]').focus();
+        }else if(!dataInfo.phone || dataInfo.phone==''){
+            layer.msg('请输入手机号');
+            $('#visitorInfo').find('input[name="phone"]').focus();
+        }else if(!dataInfo.company || dataInfo.company==''){
+            layer.msg('请输入公司名称');
+            $('#visitorInfo').find('input[name="company"]').focus();
+        }else{
+            /*console.log(dataInfo);*/
+            dataInfo.file =[];
+            for(var i=0;i<$('#thelist').find('p').length;i++){
+                var msgInfo=$('#thelist').find('p').eq(i);
+                dataInfo.file.push(msgInfo.find('a').attr('filepath'));
+            }
+            $.ajax({
+                type: "post",
+                headers:{'Content-Type':'application/json;charset=UTF-8'},
+                url: "/visitor/info.json",
+                data:JSON.stringify(dataInfo),
+                success: function(data) {
+                    if(data.success){
+                        layer.msg('保存成功',function () {
+                            if(pagedata==1){
+                                window.location.href='../visitorMsg.html?openId='+openId+'&type='+type;
+                            }else if(pagedata==2){
+                                window.location.href='../healthyMsg.html?openId='+openId+'&type='+type;
+                            }
+
+                        });
+
+                    }else{
+                        layer.msg(data.message);
+                    }
+                }
+            });
+        }
+
+    }
+    /*-- 修改 --*/
+    function modifyMsg(){
+        var dataInfo=getFormJson('#visitorInfo');
+        console.log(dataInfo)
+        dataInfo.openId=openId;
+        if(!dataInfo.name || dataInfo.name==''){
+            layer.msg('请输入姓名');
+            $('#visitorInfo').find('input[name="name"]').focus();
+        }else if(!dataInfo.phone || dataInfo.phone==''){
+            layer.msg('请输入手机号');
+            $('#visitorInfo').find('input[name="phone"]').focus();
+        }else if(!dataInfo.company || dataInfo.company==''){
+            layer.msg('请输入公司名称');
+            $('#visitorInfo').find('input[name="company"]').focus();
+        }else {
+            /* dataInfo.birthday=$('#birthyear').val()+$('#birthmonth').val()+$('#birthday').val()*/
+            // var birthystr=$('#birthyear').val().split("-");
+            // dataInfo.birthday = birthystr[0] + birthystr[1] + birthystr[2];
+            dataInfo.file =[];
+            for(var i=0;i<$('#thelist').find('p').length;i++){
+                var msgInfo=$('#thelist').find('p').eq(i);
+                dataInfo.file.push(msgInfo.find('a').attr('filepath'));
+            }
+            $.ajax({
+                type: "put",
+                headers:{'Content-Type':'application/json;charset=UTF-8'},
+                url: "/visitor/info.json",
+                data:JSON.stringify(dataInfo),
+                success: function(data) {
+                    if(data.success){
+                        layer.msg('修改成功',function () {
+                            if(pagedata==1){
+                                window.location.href='../visitorMsg.html?openId='+openId+'&type='+type;
+                            }else if(pagedata==2){
+                                window.location.href='../healthyMsg.html?openId='+openId+'&type='+type;
+                            }
+                        });
+                    }else{
+                        layer.msg(data.message)
+                    }
+                }
+            })
+        }
+
+    }
+</script>

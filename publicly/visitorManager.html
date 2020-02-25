@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>访客管理</title>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/personalCenter.css">
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/paging.css"/>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/pagingNcov.css"/>
+    <link rel="stylesheet" href="../css/diseaseRegister.css">
+    <link rel="stylesheet" href="../visitor/css/visitorMsg.css">
+    <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
+    <script src="../js/common.js?v=0.3"></script>
+    <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
+    <script src="../js/templateHelper.js?v=0.2"></script>
+    <script src="http://webimg.mp12345.com/jslib/paging/paging.js?v=0.1"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/laydate/laydate.js"></script>
+    <link href="http://webimg.mp12345.com/jslib/select2/select2.min.css" rel="stylesheet" />
+    <script src="http://webimg.mp12345.com/jslib/select2/select2.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
+
+    <script	type="text/javascript" src="https://webimg.mp12345.com/js/js-xlsx/xlsx.core.min.js"></script>
+    <script type="text/javascript" src="/ncov/js/importexcal/checkin.js"></script>
+</head>
+<style>
+    .qrcode{
+        width:68%;
+        margin:0 auto;
+        max-width:300px;
+    }
+    .qrcode img{
+        display: block;
+        width: 100%;
+    }
+    .cptips,.phonetips{
+        text-align: center;
+        font-size:14px;
+        display: none;
+    }
+    .phonetips{
+        display: block;
+    }
+    @media (min-width: 768px) {
+        .cptips{
+            display: block;
+        }
+        .phonetips{
+            display: none;
+        }
+    }
+</style>
+<body class="hastopout">
+<!--#include file="/ncov/headerback.html"-->
+<div class="innerout padtb10" style="padding-bottom: 0;">
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active">
+            <a href="#visitQrcode" data-toggle="tab" onclick="getData(3)">
+                二维码
+            </a>
+        </li>
+        <li>
+            <a href="#visitAppoint" data-toggle="tab" onclick="getData(1)">
+                申请列表
+            </a>
+        </li>
+        <li>
+            <a href="#visitHistorylist" data-toggle="tab" onclick="getData(2)">
+                健康列表
+            </a>
+        </li>
+
+    </ul>
+</div>
+<div id="myTabContent" class="tab-content padtb10" tyle="padding-top: 0;">
+    <div class="tab-pane fade innerout" id="visitAppoint">
+        <form action="#" id="searchForm">
+            <div class="input-group input-group-sm">
+                <span class="input-group-addon">员工姓名</span>
+                <input type="text" name="name" class="form-control">
+            </div>
+            <div class="input-group input-group-sm">
+                <span class="input-group-addon">联系方式</span>
+                <input type="text" name="phone" class="form-control">
+            </div>
+            <div class="input-group input-group-sm">
+                <span class="input-group-addon">访问日期</span>
+                <input type="text" name="toDate" id="importdate" class="form-control" readonly style="background-color: #fff;">
+            </div>
+            <div class="input-group input-group-sm">
+                <span class="input-group-addon">审核状态</span>
+                <select name="audit" class="form-control addinputs" style="min-width:100px;">
+                    <option value="0">未审核</option>
+                    <option value="1">已通过</option>
+                    <option value="2">已拒绝</option>
+                </select>
+            </div>
+
+            <div class="botbtn row">
+                <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+                    <button type="button" class="btn btn-success" style="width:80%" onclick="getVisitordata(1)">查询</button>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+                    <button type="button" class="btn btn-danger" style="width:80%" onclick="clearfrom('#searchForm')">清空</button>
+                </div>
+            </div>
+        </form>
+        <ul class="list-group listul" id="msgdata">
+        </ul>
+        <div id="pageTool" class="newpages"></div>
+    </div>
+    <div class="tab-pane fade innerout" id="visitHistorylist">
+        <form action="#" id="searchFormtwo">
+            <div class="input-group input-group-sm">
+                <span class="input-group-addon">员工姓名</span>
+                <input type="text" name="name" class="form-control">
+            </div>
+            <div class="input-group input-group-sm">
+                <span class="input-group-addon">联系方式</span>
+                <input type="text" name="phone" class="form-control">
+            </div>
+            <div class="input-group input-group-sm">
+                <span class="input-group-addon">登记日期</span>
+                <input type="text" name="cdate" id="cdate" class="form-control" readonly style="background-color: #fff;">
+            </div>
+
+            <div class="botbtn row">
+                <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+                    <button type="button" class="btn btn-success" style="width:80%" onclick="gethealthydata(1)">查询</button>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+                    <button type="button" class="btn btn-danger" style="width:80%" onclick="clearfrom('#searchFormtwo')">清空</button>
+                </div>
+            </div>
+        </form>
+        <div class="table-responsive">
+            <table class="table table-bordered" id="historylist">
+
+            </table>
+        </div>
+        <div id="pageTooltwo" class="newpages"></div>
+    </div>
+    <div class="tab-pane fade in active innerout" id="visitQrcode" class="tab-content padtb10" tyle="padding-top: 0;">
+
+    </div>
+</div>
+
+</body>
+<script type="text/html" id="v_qrcode">
+    <div class="qrcode">
+        <img src="https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket={{data.ticket}}" alt="">
+    </div>
+    <p class="cptips">
+        <a href="https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket={{data.ticket}}" target="_blank">
+            打开图片 右击保存发送给访客
+        </a>
+    </p>
+    <p class="phonetips">
+        长按二维码保存 发送给访客
+    </p>
+</script>
+<script type="text/html" id="v_hearthdata">
+    {{if data.length>0}}
+    <thead>
+    <tr>
+        <th>
+            姓名
+        </th>
+        <th>
+            体温
+        </th>
+        <th>
+            提交时间
+        </th>
+        <th>
+            联系方式
+        </th>
+        <th>
+            状态
+        </th>
+        <th>
+            是否接触过疫区人员、疑似病例或确诊病例
+        </th>
+        <th>
+            申报地址
+        </th>
+        <th>
+            入院情况
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    {{each data as data index}}
+    <tr>
+        <td>
+            {{data.name}}
+        </td>
+        <td>
+            {{data.temperature}}
+        </td>
+        <td>
+            {{data.cdate | moment:'YYYY-MM-DD HH:mm:ss'}}
+        </td>
+        <td>
+            {{data.phone}}
+        </td>
+        <td>
+            {{data.state | getType}}
+        </td>
+        <td>
+            {{if data.hubei== 1}}
+            是
+            {{else if data.hubei== 2}}
+            否
+            {{/if}}
+        </td>
+        <td>
+            {{data.recommend}}
+        </td>
+        <td>
+            {{data.content}}
+        </td>
+    </tr>
+    {{/each}}
+    </tbody>
+    {{else}}
+    <tbody>
+        <tr>
+            <td class="text-danger">
+                暂无数据
+            </td>
+        </tr>
+    </tbody>
+    {{/if}}
+</script>
+<script type="text/html" id="v_msgdata">
+    {{if data.data.length<=0}}
+    <li class="list-group-item red">
+        暂无数据
+    </li>
+    {{else}}
+    {{each data.data as item index}}
+    <li class="list-group-item listlis-item">
+        <a href="visitorChild/visitorDetails.html?openId={{openId}}&id={{item.id}}">
+            <div class="listlis">
+                <div class="list_left">
+                    <div class="list_leftinner clearfix">
+                        <p class="list_title">
+                            访客姓名：{{item.name}}
+                        </p>
+                        <p class="list_result">
+                            {{if item.audit==0}}
+                            未审核
+                            {{else if item.audit==1}}
+                            已通过
+                            {{else if item.audit==2}}
+                            已拒绝
+                            {{/if}}
+                        </p>
+                    </div>
+                    <div class="list_leftinner">
+                        <p class="list_contperson">
+                            申请时间：{{item.cdate | moment:'YYYY-MM-DD HH:mm:ss'}}
+                        </p>
+                    </div>
+                    <div class="list_leftinner">
+                        <p class="list_contperson">
+                            联系方式：{{item.phone}}
+                        </p>
+                    </div>
+                </div>
+                <div class="list_right">
+                    <span class="glyphicon glyphicon-menu-right moretext"></span>
+                </div>
+            </div>
+
+        </a>
+    </li>
+    {{/each}}
+    {{/if}}
+</script>
+</html>
+<script>
+    var title='访客管理';
+    var pageindexnow=1;
+    var pagesizeout=10;
+    var pageindexnowone=1;
+    var pagesizeoutone=10;
+    var type=GetQueryValue('type')?GetQueryValue('type'):'';
+    var openId=GetQueryValue('openId')?GetQueryValue('openId'):"";
+    var backhref='../personalCenter.html?openId='+openId;
+    $(function () {
+        laydate.render({
+            elem: '#importdate',
+            format: 'yyyy-MM-dd',
+        });
+        laydate.render({
+            elem: '#cdate',
+            format: 'yyyy-MM-dd',
+        });
+        getData();
+    })
+    function getData(typedata) {
+        if(type==''){
+            typedata=typedata?typedata:3;
+        }else{
+            typedata=typedata?typedata:type;
+        }
+        console.log(typedata);
+        if(typedata==2){
+            $('#myTab a[href="#visitHistorylist"]').tab('show');
+            window.history.replaceState(null, null, "?openId="+openId+"&type=2");
+            gethealthydata();
+        }else if(typedata==1){
+            $('#myTab a[href="#visitAppoint"]').tab('show');
+            window.history.replaceState(null, null, "?openId="+openId+"&type=1");
+            getVisitordata();
+        }else if(typedata==3){
+            $('#myTab a[href="#visitQrcode"]').tab('show');
+            window.history.replaceState(null, null, "?openId="+openId+"&type=3");
+            getQrcodedata();
+        }
+    }
+    function gethealthydata(pageindex,pagesize) {
+        pagesize=pagesize?pagesize:pagesizeoutone;
+        if (pageindex == undefined || pageindex == null) {
+            pageindex = pageindexnowone;
+        } else {
+            pageindexnowone = pageindex;
+        }
+        var page = new Paging();
+        $.ajaxDom("#visitHistorylist",{
+            type:'get',
+            url:"/publish/visitor/report/list.json",
+            data:{
+                pageNumber: pageindexnowone,
+                pageSize:pagesize,
+                phone:$('#searchFormtwo input[name="phone"]').val(),
+                name:$('#searchFormtwo input[name="name"]').val(),
+                cdate:$('#searchFormtwo input[name="cdate"]').val(),
+            },
+            success:function (data) {
+                console.log(data);
+                console.log('--------------')
+                var dataInfo=data.data;
+                var todydata = template('v_hearthdata', dataInfo);
+                $("#historylist").empty().append(todydata);
+                /*data.openId=openId;
+                var msgdata = template('v_msgdata', data);
+                $("#msgdata").empty().append(msgdata);*/
+                if(dataInfo.data.length<1){
+                    $('#pageTooltwo').hide();
+                }else{
+                    $('#pageTooltwo').show();
+                }
+
+                pageSize(pageindexnowone,pagesize)
+                function pageSize(pagenumber, pagesize) {
+                    page.init({
+                        target: $('#pageTooltwo').empty(),
+                        pagesize: pagesize,
+                        count: data.data.totalCount,
+                        toolbar: true,
+                        current: pagenumber,
+                        //hash: true ,
+                        changePagesize: function (_psize, _pnumber) {
+                            pagesizeoutone=_psize;
+                            gethealthydata(1,_psize)
+                        },
+                        callback: function (_pnumber, _psize, count) {
+                            pagesizeoutone=_psize;
+                            gethealthydata(_pnumber,_psize)
+                        }
+                    });
+                }
+            }
+        })
+    }
+    function getVisitordata(pageindex,pagesize) {
+
+        pagesize=pagesize?pagesize:pagesizeout;
+        if (pageindex == undefined || pageindex == null) {
+            pageindex = pageindexnow;
+        } else {
+            pageindexnow = pageindex;
+        }
+        var page = new Paging();
+        $.ajaxDom("#visitAppoint",{
+            type:'get',
+            url:"/publish/visitor/apply/list.json",
+            data:{
+                pageNumber: pageindexnow,
+                pageSize:pagesize,
+                phone:$('#searchForm input[name="phone"]').val(),
+                name:$('#searchForm input[name="name"]').val(),
+                toDate:$('#searchForm input[name="toDate"]').val(),
+                audit:$('#searchForm select[name="audit"]').val()
+            },
+            success:function (data) {
+                /*console.log(data);
+                console.log('++++++++++++')*/
+                var dataInfo=data.data;
+                data.openId=openId;
+                var msgdata = template('v_msgdata', data);
+                $("#msgdata").empty().append(msgdata);
+                if(dataInfo.data.length<1){
+                    $('#pageTool').hide();
+                }else{
+                    $('#pageTool').show();
+                }
+
+                pageSize(pageindexnow,pagesize)
+                function pageSize(pagenumber, pagesize) {
+                    page.init({
+                        target: $('#pageTool').empty(),
+                        pagesize: pagesize,
+                        count: data.data.totalCount,
+                        toolbar: true,
+                        current: pagenumber,
+                        //hash: true ,
+                        changePagesize: function (_psize, _pnumber) {
+                            pagesizeout=_psize;
+                            getVisitordata(1,_psize)
+                        },
+                        callback: function (_pnumber, _psize, count) {
+                            pagesizeout=_psize;
+                            getVisitordata(_pnumber,_psize)
+                        }
+                    });
+                }
+            }
+        })
+    }
+    /*-- 获取二维码 --*/
+    function getQrcodedata() {
+        $.ajaxDom('#visitQrcode',{
+            type:'get',
+            url:'/publish/master/company.json',
+            success:function (data) {
+                console.log(data);
+                console.log('+++++++++++++++++')
+                var qrcode = template('v_qrcode', data);
+                $("#visitQrcode").empty().append(qrcode);
+            }
+        })
+    }
+</script>

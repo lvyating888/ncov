@@ -13,6 +13,7 @@
     <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
     <script src="js/common.js?v=0.2"></script>
     <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js"></script>
 </head>
 <body class="hasbotout">
 <!-- 头部 -->
@@ -96,6 +97,14 @@
                 </p>
             </a>
         </li>
+        <li class="mycontlis is-admin" style="display:none;" id="addVisitor">
+            <a href="javascript:;" class="visitorbtn">
+                <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>
+                <p>
+                    访客管理
+                </p>
+            </a>
+        </li>
     </ul>
     <ul class="mycontul">
         <li class="mycontlis">
@@ -134,16 +143,17 @@
     var openId = GetQueryValue('openId');
     $(function () {
         $('.signbtn').attr('href','./sign/punchClock.html?openId='+openId);
+        $('.visitorbtn').attr('href','publicly/visitorManager.html?openId='+openId)
     })
     /*-- 获取用户填写的信息 --*/
-    $.ajax({
+    $.ajaxDom('body',{
         type: "get",
         url: '/ncov/isExist.json',
         data: {openId: openId},
         success: function (data) {
             if (data.success) {
                 /*-- 获取注册的用户信息 --*/
-                $.ajax({
+                $.ajaxDom('body',{
                     type: "get",
                     url: '/member/info.json',
                     data: {openId: openId},
@@ -156,6 +166,7 @@
                             } else if (data.data.admin == 0) {
                                 $('.is-admin').hide();
                             }
+                            addVisitorfun();
                         }
                     }
                 })
@@ -209,7 +220,7 @@
 
     /*-- 获取红色人员信息 onetips --*/
     $(function () {
-        $.ajax({
+        $.ajaxDom('#per_body',{
             type: 'get',
             url: '/publish/member/early/list.json',
             success: function (data) {
@@ -222,4 +233,22 @@
             }
         })
     })
+
+    /*-- 获取是否有访客功能权限 addVisitor --*/
+    function addVisitorfun(){
+        $.ajaxDom('#addVisitor',{
+            type: 'get',
+            url: '/publish/master/isOpenVisitor.json',
+            success: function (data) {
+                console.log(data);
+                console.log('============')
+                if(data.success){
+                    $('#addVisitor').show();
+                }else{
+                    $('#addVisitor').hide();
+                }
+            }
+        })
+    }
+
 </script>

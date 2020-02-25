@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>来访</title>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/ncov/css/base.css">
+    <link rel="stylesheet" href="/ncov/css/diseaseRegister.css">
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/webuploader/webuploader.css">
+    <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
+    <script src="/ncov/js/common.js?v=0.2"></script>
+    <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/webuploader/webuploader.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
+    <script src="/ncov/js/templateHelper.js?v=0.2"></script>
+
+</head>
+<style>
+    #datalist span,#datalist label{
+        line-height: 26px;
+    }
+    #datalist label{
+        margin-bottom: 0!important;
+    }
+</style>
+<body class="hastopout">
+<!--#include file="/ncov/headerback.html"-->
+<!--<div class="innerout padtb10" style="padding-bottom: 0;">
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active">
+            <a href="#visitAppoint" data-toggle="tab">
+                来访申请
+            </a>
+        </li>
+        <li>
+            <a href="#visitHistorylist" data-toggle="tab">
+                来访记录
+            </a>
+        </li>
+    </ul>
+</div>-->
+<div id="myTabContent" class="tab-content padtb10" tyle="padding-top: 0;">
+    <div class="tab-pane fade innerout active in" id="visitAppoint">
+        <div class="innerlisout">
+            <p class="linetitle" style="margin-top:0;">个人信息</p>
+            <div id="datalist">
+
+            </div>
+
+        </div>
+    </div>
+    <div class="tab-pane fade " id="visitHistorylist">
+    </div>
+</div>
+<script type="text/html" id="v_datalist">
+    <ul class="list-group">
+        <li class="list-group-item padlr0 clearfix ">
+            <div class="col-sm-12 col-xs-12">
+                姓名：<span>{{data.name}}</span>
+            </div>
+        </li>
+        <li class="list-group-item padlr0 clearfix ">
+            <div class="col-sm-12 col-xs-12">
+                手机号：<span>{{data.phone}}</span>
+            </div>
+        </li>
+        <li class="list-group-item padlr0 clearfix ">
+            <div class="col-sm-12 col-xs-12">
+                公司：<span>{{data.company}}</span>
+            </div>
+        </li>
+        <li class="list-group-item padlr0 clearfix ">
+        <div class="col-sm-6 col-xs-6">
+        随行车牌号：<span>{{data.car_number}}</span>
+        </div>
+        <div class="col-sm-6 col-xs-6">
+        随行人数：<span >{{data.peoples}}</span>
+        </div>
+        </li>
+        <li class="list-group-item padlr0 clearfix ">
+            <p class="col-sm-12 col-xs-12">
+                附件资料：
+            </p>
+            <p class="col-sm-12 col-xs-12" style="margin:10px 0;word-wrap:break-word;word-break:normal; ">
+                {{each data.datafile as item index}}
+                <a href="/ncov/imgshow.html?href={{item}}" filepath="{{item}}">
+                    附件{{index+1}}
+                </a>
+                {{/each}}
+            </p>
+        </li>
+
+    </ul>
+    <p class="linetitle">到访对象</p>
+    <form id="addmsgform">
+        <div class="form-group clearfix leftlabel">
+            <label class="col-sm-3 col-xs-3 padlr0">公司名称：</label>
+            <div class="col-sm-9 col-xs-9 ">
+                <span>{{data.to_company}}</span>
+            </div>
+        </div>
+        <div class="form-group clearfix leftlabel">
+            <label class="col-sm-3 col-xs-3 padlr0">到访部门：</label>
+            <div class="col-sm-9 col-xs-9 ">
+                <span>{{data.to_divi}}</span>
+            </div>
+        </div>
+        <div class="form-group clearfix leftlabel">
+            <label class="col-sm-3 col-xs-3 padlr0">姓名：</label>
+            <div class="col-sm-9 col-xs-9 ">
+                <span>{{data.to_name}}</span>
+            </div>
+        </div>
+        <div class="form-group clearfix leftlabel">
+            <label class="col-sm-3 col-xs-3 padlr0">手机：</label>
+            <div class="col-sm-9 col-xs-9 ">
+                <span>{{data.to_phone}}</span>
+            </div>
+        </div>
+        <div class="form-group clearfix leftlabel">
+            <label class="col-sm-3 col-xs-3 padlr0">访问时间：</label>
+            <div class="col-sm-9 col-xs-9 ">
+                <span>{{data.to_date | moment:'YYYY-MM-DD HH:mm:ss'}}</span>
+            </div>
+        </div>
+        {{if data.to_date_change && data.to_date_change!==data.to_date}}
+        <div class="form-group clearfix leftlabel">
+            <label class="col-sm-3 col-xs-3 padlr0">修改访问时间：</label>
+            <div class="col-sm-9 col-xs-9 ">
+                <span>
+                    {{data.to_date_change | moment:'YYYY-MM-DD HH:mm:ss'}}
+                </span>
+            </div>
+        </div>
+        {{/if}}
+        <div class="form-group clearfix">
+            <label class="col-sm-3 col-xs-3 padlr0">访问事由：</label>
+            <div class="col-sm-9 col-xs-9 ">
+                <p style="line-height:26px;">
+                    {{data.to_context}}
+                </p>
+            </div>
+        </div>
+    </form>
+
+    <div class="botbtn row" style="margin: 0;">
+        <form id="approvalForm">
+            <div class="form-group clearfix leftlabel">
+                <label class="col-sm-3 col-xs-3 padlr0">审批结果：</label>
+                <div class="col-sm-9 col-xs-9 ">
+                    <span class="red">
+                            {{if data.audit==0}}
+                            未审核
+                            {{else if data.audit==1}}
+                            已通过
+                            {{else if data.audit==2}}
+                            已拒绝
+                            {{/if}}
+                    </span>
+                </div>
+            </div>
+            <div class="form-group clearfix leftlabel">
+                <label class="col-sm-3 col-xs-3 padlr0">审批时间：</label>
+                <div class="col-sm-9 col-xs-9 ">
+                    <span>
+                        {{if data.audit_date}}
+                        {{data.audit_date | moment:'YYYY-MM-DD HH:mm:ss'}}
+                        {{/if}}
+                    </span>
+                </div>
+            </div>
+            <div class="form-group clearfix leftlabel">
+                <label class="col-sm-3 col-xs-3 padlr0">审批留言：</label>
+                <div class="col-sm-9 col-xs-9 ">
+                    <span>{{data.audit_message}}</span>
+                </div>
+            </div>
+        </form>
+    </div>
+</script>
+</body>
+</html>
+<script>
+    var openId=GetQueryValue('openId');
+    var title="来访"
+    var backtitlebg="white";
+    var id=GetQueryValue('id');
+    var type=GetQueryValue('type');
+    backhref='../visitorMsg.html?openId='+openId+'&type='+type+'&typeflag=2'
+    $(function () {
+        datainit();
+
+    })
+    function datainit() {
+        $.ajaxDom('#datalist',{
+            type: "get",
+            url: '/visitor/apply.json',
+            data: {
+                openId: openId,
+                id:id,
+            },
+            success: function (data) {
+                console.log(data);
+                console.log('++++++++++++')
+                if(data.data.file.trim()!==''){
+                    var datafile=data.data.file.split(",");
+                    data.data.datafile=datafile;
+                }
+                var datalist = template('v_datalist', data);
+                $("#datalist").empty().append(datalist);
+
+            }
+        })
+    }
+
+</script>

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>健康状况</title>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/ncov/css/base.css">
+    <link rel="stylesheet" href="/ncov/css/diseaseRegister.css">
+    <link rel="stylesheet" href="../css/visitorMsg.css">
+    <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js"></script>
+    <script src="/ncov/js/common.js?v=0.2"></script>
+    <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/laydate/laydate.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
+    <script src="/ncov/js/templateHelper.js?v=0.2"></script>
+    <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
+</head>
+<style>
+    .list_leftinner{
+        padding:5px 0;
+    }
+</style>
+<body class="hastopout" style="padding-bottom:50px;">
+<!--#include file="/ncov/headerback.html"-->
+    <div class="innerout padtb10">
+        <ul class="list-group listul" id="datalist">
+
+        </ul>
+    </div>
+</body>
+<script type="text/html" id="v_datalist">
+    {{if data.length<=0}}
+    <li class="list-group-item red">
+        暂无数据
+    </li>
+    {{else}}
+    {{each data as list index}}
+    <li class="list-group-item listlis-item">
+        <a href="javascript:;">
+            <div class="listlis">
+                <div class="list_left">
+                    <div class="list_leftinner clearfix">
+                        <p style="color: #333;font-size: 18px;">
+                            身体状态：{{list.state | getType}}
+                        </p>
+                    </div>
+                    <div class="list_leftinner clearfix">
+                       <p>
+                           是否接触过疫区人员、疑似病例或确诊病例：
+                           {{if list.hubei==1}}
+                           是
+                           {{else}}
+                           否
+                           {{/if}}
+                       </p>
+                    </div>
+                    <div class="list_leftinner clearfix">
+                        <p class="list_contperson" style="font-size: 16px;">
+                            拜访单位：{{list.company}}
+                        </p>
+                    </div>
+                    <div class="list_leftinner clearfix">
+                        <p class="list_contperson" style="font-size: 16px;">
+                            提交地点：{{list.recommend}}
+                        </p>
+                    </div>
+                    <div class="list_leftinner clearfix">
+                        <p class="list_contperson" style="float: left;">
+                            提交时间：{{list.cdate | moment:'YYYY-MM-DD HH:mm:ss'}}
+                        </p>
+                        <p class="list_result">
+                            体温：{{list.temperature}}℃
+                        </p>
+                    </div>
+                </div>
+                <div class="list_right" style="font-size:22px;display: none">
+                    <span class="glyphicon glyphicon-minus-sign"></span>
+                </div>
+            </div>
+
+        </a>
+    </li>
+    {{/each}}
+    {{/if}}
+</script>
+</html>
+<script>
+    var title="健康考勤打卡记录"
+    /*-- 获取openid 是否注册过 假设openId=001--*/
+    var openId=GetQueryValue('openId');
+    $.ajaxDom('#datalist',{
+        type: "get",
+        url:'/visitor/report/list.json',
+        data:{
+            openId:openId
+        },
+        success:function (data) {
+            var datalist = template('v_datalist', data);
+            $("#datalist").empty().append(datalist);
+        }
+    })
+</script>

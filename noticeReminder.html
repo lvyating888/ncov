@@ -16,6 +16,7 @@
     <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
     <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
     <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js"></script>
 </head>
 <body class="hastopout">
 <!--#include file="/ncov/headerback.html"-->
@@ -54,7 +55,7 @@
     }
     showgetcontent(dataId);
     function showgetcontent(dataId){
-        $.ajax({
+        $.ajaxDom('#companyContent',{
             type: "get",
             url: url,
             data:{id:dataId},

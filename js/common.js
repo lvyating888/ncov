@@ -124,7 +124,26 @@ var Healthyobj = {
 function getType(number) {
     return Healthyobj[number];
 }
-
+function companydata(demo,fun) {
+    $.ajax({
+        type: "get",
+        url:'/ncov/company/list.json',
+        success: function (data) {
+            /*  */
+            console.log(data,data.data.length);
+            console.log('=+++++')
+            for (var i = 0; i < data.data.length; i++) {
+                var datainfo = data.data[i];
+                $(demo).append(`
+                        <option value='${datainfo.company}'>${datainfo.company}</option>
+                    `);
+            }
+            if(fun){
+                fun();
+            }
+        }
+    })
+}
 function dividata(demo,type,fun) {
     type=type?type:'';
     if(type==''){
