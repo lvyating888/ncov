@@ -53,6 +53,11 @@
                     公司：<span id="usercompany"></span>
                 </div>
             </li>
+            <li class="list-group-item padlr0 clearfix ">
+                <div class="col-sm-12 col-xs-12">
+                    身份证：<span id="id_card"></span>
+                </div>
+            </li>
             <!--<li class="list-group-item padlr0 clearfix ">-->
             <!--<div class="col-sm-6 col-xs-6">-->
             <!--随行车牌号：<span id="usercompanyaddress">随行车牌号</span>-->
@@ -516,6 +521,7 @@
                     $('#username').html(data.data.name);
                     $('#userphone').html(data.data.phone);
                     $('#usercompany').html(data.data.company);
+                    $('#id_card').html(data.data.id_card);
                     var datafile=[];
                     if(data.data.file.length>0){
                         for(var i=0;i<data.data.file.length;i++){
@@ -529,7 +535,6 @@
                     }
                     dataInfo.openId=openId;
                     dataInfo.company=data.data.toCompany;
-
                 }
             }
         })

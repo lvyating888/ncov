@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>预约</title>
+    <title>被访问对象</title>
     <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="/ncov/css/base.css">
     <link rel="stylesheet" href="/ncov/css/diseaseRegister.css">
@@ -21,15 +21,15 @@
     <script src="/ncov/js/templateHelper.js?v=0.2"></script>
     <link href="http://webimg.mp12345.com/jslib/select2/select2.min.css" rel="stylesheet" />
     <script src="http://webimg.mp12345.com/jslib/select2/select2.min.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
 </head>
-<body class="hastopout">
-<!--#include file="/ncov/headerback.html"-->
+<body>
 <div  class="tab-content padtb10" >
     <div class="innerout" >
         <div id="visitAppoint">
 
         </div>
-       <!-- <div class="botbtn row" style="margin: 0;" id="appFormout">
+        <div class="botbtn row" style="margin: 0;" id="appFormout">
             <form id="approvalForm">
                 <div class="form-group clearfix leftlabel">
                     <label class="col-sm-4 col-xs-4 padlr0">修改到访时间<span class="red">*</span></label>
@@ -52,7 +52,7 @@
                     <button type="button" class="btn btn-danger" style="width:80%" onclick="addApply(2)">拒绝</button>
                 </div>
             </div>
-        </div>-->
+        </div>
     </div>
 
 </div>
@@ -102,7 +102,7 @@
         </li>
 
     </ul>
-    <p class="linetitle">来访对象</p>
+    <p class="linetitle">访问对象</p>
     <form id="addmsgform" style="padding-bottom:6px;">
         <div class="form-group clearfix leftlabel">
             <label class="col-sm-3 col-xs-3 padlr0">公司名称：</label>
@@ -153,7 +153,7 @@
             </div>
         </div>
     </form>
-
+    {{if data.audit!==0}}
     <div class="botbtn row" style="margin: 0;">
         <form >
             <div class="form-group clearfix leftlabel">
@@ -188,25 +188,91 @@
             </div>
         </form>
     </div>
-    <!--{{if data.audit!==0}}{{/if}}-->
+    {{/if}}
 </script>
 </html>
 <script>
-    var title="预约详情"
-    var backtitlebg="white";
-    var datalistInfo={};
-    var id=GetQueryValue('id');
-    var openId=GetQueryValue('openId');
-    var backhref='../visitorManager.html?openId='+openId+'&type=1';
-    $(function () {
+    var href=window.location.href;
+    href = href.split("#");
+    var dataInfo={};
+    $.ajax({
+        type: "post",
+        url: "/member/location.json",
+        headers:{'Content-Type':'application/json;charset=UTF-8'},
+        data:JSON.stringify({
+            url:href[0],
+        }),
+        async: false,
+        success: function (data) {
+            console.log(data);
+            if (data.success){
+                dataInfo.appId=data.data.appId;
+                dataInfo.timestamp=data.data.timeStamp;
+                dataInfo.nonceStr=data.data.nonceStr;
+                dataInfo.signature=data.data.signature;
+                wx.config({
+                    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                    appId: dataInfo.appId, // 必填，公众号的唯一标识
+                    timestamp:dataInfo.timestamp , // 必填，生成签名的时间戳
+                    nonceStr: dataInfo.nonceStr, // 必填，生成签名的随机串
+                    signature: dataInfo.signature,// 必填，签名
+                    jsApiList: ['closeWindow'] // 必填，需要使用的JS接口列表
+                });
+            }
 
-        dataInitial();
+        }
+    })
+
+</script>
+<script>
+   /* var title="预约详情"
+    var backtitlebg="white";*/
+    var datalistInfo={};
+    var uuid=GetQueryValue('uuid');
+    var openId=GetQueryValue('openId');
+    var backhref='../visitorManager.html?openId='+openId;
+    console.log(openId)
+    $(function () {
+        /*-- 获取用户填写的信息 --*/
+        $.ajaxDom('body',{
+            type: "get",
+            url: '/ncov/isExist.json',
+            data: {openId: openId},
+            success: function (data) {
+                if (data.success) {
+                    console.log(data)
+                    dataInitial();
+                }else{
+                    if (isWeixin()) {
+                       /* alert("Yes");//是微信*/
+                        layer.msg('无权操作',function () {
+                            wx.ready(function () {
+                                wx.closeWindow();
+                            });
+                        })
+                    } else {
+                       /* alert("No");//不是微信*/
+                        layer.msg('无权操作',function () {
+                            var userAgent = navigator.userAgent;
+                            if (userAgent.indexOf("Firefox") != -1 || userAgent.indexOf("Chrome") != -1) {
+                                location.href = "about:blank";
+                            } else {
+                                window.opener = null;
+                                window.open('', '_self');
+                            }
+                            window.close();
+                        })
+                    }
+                }
+            }
+        })
+
     })
     function dataInitial() {
         $.ajaxDom('#visitAppoint',{
             type: "get",
-            url: '/publish/visitor/apply.json',
-            data: {id: id},
+            url: '/member/visitor/apply.json',
+            data: {uuid: uuid},
             success: function (data) {
                 console.log(data);
                 if(data.data.file.trim()!=='') {
@@ -221,7 +287,6 @@
                     format: 'yyyy-MM-dd HH:mm:ss',
                     value: moment(data.data.to_date).format('YYYY-MM-DD HH:mm:ss')
                 });
-                $('#appFormout').hide();
                 if(data.data.audit!==0){
                     $('#appFormout').hide();
                 }
@@ -232,7 +297,8 @@
     }
     function addApply(audit){
         var dataInfo=getFormJson('#approvalForm');
-        dataInfo.id=id;
+        dataInfo.openId=openId;
+        dataInfo.uuid=uuid;
         dataInfo.audit=audit;
         if(!dataInfo.toDateChange || dataInfo.toDateChange==''){
             layer.msg('请选择到访时间');
@@ -251,12 +317,12 @@
                     $.ajaxDom('body',{
                         type: "patch",
                         headers:{'Content-Type':'application/json;charset=UTF-8'},
-                        url: "/publish/visitor/audit.json",
+                        url: "/member/visitor/audit.json",
                         data:JSON.stringify(dataInfo),
                         success: function(data) {
                             if(data.success){
                                 layer.msg('已审核',function () {
-                                    window.location.href='../visitorManager.html?openId='+openId
+                                    dataInitial();
                                 });
                             }else{
                                 layer.msg(data.message);
@@ -269,4 +335,15 @@
 
     }
 
+</script>
+<script>
+    //判断是否在微信中打开
+    function isWeixin() {
+        var ua = navigator.userAgent.toLowerCase();
+        if (ua.match(/MicroMessenger/i) == "micromessenger") {
+            return true;
+        } else {
+            return false;
+        }
+    }
 </script>

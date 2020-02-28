@@ -46,7 +46,7 @@
 }
 .visitor_liicon{
     display: block;
-    margin:30px auto 15px;
+    margin: 30px auto 6px;
     width: 55px;
     height: 55px;
     border-radius: 50%;
@@ -59,7 +59,7 @@
     background-color: #dbe9ff;
 }
 .visitor_liicon span{
-    font-size: 28px;
+    font-size: 26px;
     line-height: 55px;
 }
 .visitor_liicon_red span{
@@ -70,7 +70,7 @@
 }
 .visitor_bg_text_bot {
     line-height: 39px;
-    font-size: 28px;
+    font-size: 24px;
     text-align: center;
 }
 .visitor_bg_text_red{

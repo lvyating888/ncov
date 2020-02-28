@@ -59,6 +59,11 @@
                         公司：<span id="usercompany"></span>
                     </div>
                 </li>
+                <li class="list-group-item padlr0 clearfix ">
+                    <div class="col-sm-12 col-xs-12">
+                        身份证：<span id="id_card"></span>
+                    </div>
+                </li>
                 <!--<li class="list-group-item padlr0 clearfix ">-->
                 <!--<div class="col-sm-6 col-xs-6">-->
                 <!--随行车牌号：<span id="usercompanyaddress">随行车牌号</span>-->
@@ -258,6 +263,7 @@
                     $('#username').html(data.data.name);
                     $('#userphone').html(data.data.phone);
                     $('#usercompany').html(data.data.company);
+                    $('#id_card').html(data.data.id_card);
                     var datafile=[];
                     $("#userfile").empty();
                     if(data.data.file.length>0){
@@ -276,6 +282,7 @@
                     dataInfo.company=data.data.company;
                     dataInfo.peoples=data.data.peoples;
                     dataInfo.car_number=data.data.car_number;
+                    dataInfo.id_card=data.data.id_card;
                     dataInfo.file=datafile.join(',');
                 }
             }
@@ -292,6 +299,7 @@
         })
     }
     function addApply(){
+        console.log(dataInfo)
         dataInfo.openId=openId;
         dataInfo.type=type;
         dataInfo.to_company=$('#addmsgform').find('span[id="visitorcompany"]').html().trim();
@@ -306,6 +314,8 @@
             layer.msg('请输入个人手机号');
         }else if(!dataInfo.company || dataInfo.company==''){
             layer.msg('请输入个人公司名称');
+        }else if(!dataInfo.id_card || dataInfo.id_card==''){
+            layer.msg('请输入身份证号');
         }else if(!dataInfo.to_company || dataInfo.to_company==''){
             layer.msg('请输入访问公司名称');
             $('#addmsgform').find('input[name="to_company"]').focus();

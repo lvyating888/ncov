@@ -17,11 +17,25 @@
         display: block;
         width: 100%;
     }
+    #iframe img{
+        width: 100%;
+    }
+    .cpdown{
+        display: none;
+    }
+    @media (min-width: 768px) {
+        .cpdown{
+            display: block;
+        }
+    }
 </style>
+<script type="text/javascript">
+    window.οnerrοr=function(){return true;}
+</script>
 <body class="hastopout">
 <!--#include file="/ncov/headerback.html"-->
 <div id="img">
-
+    <a href="javascript:;" class="cpdown">点击下载</a>
 </div>
 
 </body>
@@ -32,9 +46,31 @@
     $(function () {
         if(imghref!==''){
             var href=imghref;
-            $('#img').append(`
-                <img src="http://webimg.mp12345.com${href}" alt="">
+            var str= imghref.split(".");
+           /*console.log(str);
+           console.log(str[1]==('jpg'||'png'||'bmp'||'tif'||'gif'||'pcx'||'tga'||'exif'||'fpx'||'svg'||'psd'||'cdr'||'pcd'||'dxf'||'ufo'||'eps'||'ai'||'raw'||'WMF'||'webp'))*/
+           /*bmp,jpg,png,tif,gif,pcx,tga,exif,fpx,svg,psd,cdr,pcd,dxf,ufo,eps,ai,raw,WMF,webp*/
+            console.log()
+            console.log(str[1]=='xls'||str[1]=='xlsx')
+            $('.cpdown').attr('href','http://webimg.mp12345.com'+href);
+            $('.cpdown').attr('target','_blank');
+           if(str[1]=='jpg'||str[1]=='png'||str[1]=='bmp'||str[1]=='tif'||str[1]=='gif'||str[1]=='pcx'||str[1]=='tga'||str[1]=='exif'||str[1]=='fpx'||str[1]=='svg'||str[1]=='psd'||str[1]=='cdr'||str[1]=='pcd'||str[1]=='dxf'||str[1]=='ufo'||str[1]=='eps'||str[1]=='ai'||str[1]=='raw'||str[1]=='WMF'||str[1]=='webp'){
+               $('#img').append(`
+                    <img src="http://webimg.mp12345.com${href}"/>
             `)
+           }else if((str[1]=='xls'||str[1]=='xlsx'||str[1]=='doc'||str[1]=='docx') && ($(window).width()>768)){
+               $('#img').append(`
+<iframe src='https://view.officeapps.live.com/op/view.aspx?src=http://webimg.mp12345.com${href}' width='100%' id="iframe" frameborder='0'>
+			</iframe>`)
+           } else {
+               $('#img').append(`
+<iframe src=http://webimg.mp12345.com${href} width='100%' id="iframe" frameborder='1'>
+			</iframe>
+            `)
+           }
+            var headerH = 52;
+            var h = $(window).height();
+            $("#iframe").height((h - headerH) + "px");
         }
     })
 </script>

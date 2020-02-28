@@ -40,6 +40,12 @@
             </div>
         </div>
         <div class="form-group clearfix">
+            <label class="col-sm-3 col-xs-3 leftlabel">身份证<span class="red">*</span></label>
+            <div class="col-sm-9 col-xs-9 ">
+                <input class="form-control" name="id_card" type="text" placeholder="请填写身份证号" maxlength="18">
+            </div>
+        </div>
+        <div class="form-group clearfix">
             <label class="col-sm-3 col-xs-3 leftlabel">随行人数</label>
             <div class="col-sm-9 col-xs-9 ">
                 <input class="form-control" name="peoples" type="number" placeholder="请输入随行人数">
@@ -97,7 +103,7 @@
         swf: 'js/webuploader/Uploader.swf',
 
         // 文件接收服务端。
-        server:'/member/file/upload.json',
+        server:'/visitor/file/upload.json',
         // 选择文件的按钮。可选。
         // 内部根据当前运行是创建，可能是input元素，也可能是flash.
         pick: '#picker',
@@ -181,6 +187,7 @@
                         $('#visitorInfo').find('input[name="phone"]').val(data.data.phone);
                         $('#visitorInfo').find('input[name="company"]').val(data.data.company);
                         $('#visitorInfo').find('input[name="car_number"]').val(data.data.car_number);
+                        $('#visitorInfo').find('input[name="id_card"]').val(data.data.id_card);
                         if(data.data.file.length>0){
                             for(var i=0;i<data.data.file.length;i++){
                                 var msgInfo=data.data.file[i];
@@ -212,6 +219,12 @@
         }else if(!dataInfo.company || dataInfo.company==''){
             layer.msg('请输入公司名称');
             $('#visitorInfo').find('input[name="company"]').focus();
+        }else if(!dataInfo.id_card || dataInfo.id_card==''){
+            layer.msg('请输入身份证号');
+            $('#visitorInfo').find('input[name="id_card"]').focus();
+        }else if(dataInfo.id_card.length !==18){
+            layer.msg('请输入正确的身份证号');
+            $('#visitorInfo').find('input[name="id_card"]').focus();
         }else{
             /*console.log(dataInfo);*/
             dataInfo.file =[];
@@ -257,6 +270,12 @@
         }else if(!dataInfo.company || dataInfo.company==''){
             layer.msg('请输入公司名称');
             $('#visitorInfo').find('input[name="company"]').focus();
+        }else if(!dataInfo.id_card || dataInfo.id_card==''){
+            layer.msg('请输入身份证号');
+            $('#visitorInfo').find('input[name="id_card"]').focus();
+        }else if(dataInfo.id_card.length !==18){
+            layer.msg('请输入正确的身份证号');
+            $('#visitorInfo').find('input[name="id_card"]').focus();
         }else {
             /* dataInfo.birthday=$('#birthyear').val()+$('#birthmonth').val()+$('#birthday').val()*/
             // var birthystr=$('#birthyear').val().split("-");
