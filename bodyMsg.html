@@ -70,6 +70,14 @@
 <form class="innerout" id="bodyInfo">
     <div class="innerlisout">
         <p class="linetitle">健康考勤</p>
+        <div class="form-group clearfix family_report">
+            <label class="col-sm-3 col-xs-3 leftlabel">家庭人员上报</label>
+            <div class="col-sm-9 col-xs-9 clearfix">
+                <select class="form-control" name="familyname">
+                    <option value="">上报个人健康</option>
+                </select>
+            </div>
+        </div>
         <label class="col-sm-12 col-xs-12 padlr0" style="line-height: 32px;">健康状况<span class="red">*</span></label>
         <div id="hearthout">
             <div class="form-group clearfix">
@@ -193,8 +201,8 @@
 <div class="innerout">
     <div class="innerlisout">
         <p class="linetitle">历史记录</p>
-
         <a style="margin:6px 0;" class="btn btn-success hearthmsg" href="javascript:;">查看打卡详情</a>
+        <a style="margin:6px 3px;" class="btn btn-warning family_report" href="bodychildre/familyHerthlist.html">查看代报详情</a>
         <ul class="list-group" id="historydata">
 
         </ul>
@@ -252,15 +260,21 @@
         })
         $('.hearthmsg').attr('href','bodychildre/hearthpunchClock.html?openId='+openId)
     })
+
     $(function () {
         $.ajaxDom('.innerlisout',{
             type: "get",
             url:'/ncov/isExist.json',
             data:{openId:openId},
-            success: function (data) {
-                console.log(data);
+            success: function (dataInfo) {
+                console.log(dataInfo);
                 console.log('=============')
-                if(data.success){
+                if(dataInfo.success){
+                    if(dataInfo.data.compMap.family_report){
+                        $('.family_report').show();
+                    }else{
+                        $('.family_report').hide();
+                    }
                     /*-- 获取注册的用户信息 --*/
                     $.ajax({
                         type: "get",
@@ -285,6 +299,21 @@
                     layer.msg("请先输入个人信息",function(){
                         window.location.href='indexfillIn.html?openId='+openId;
                     });
+                }
+            }
+        })
+        /*是否有家庭成员获取家庭成员 ;*/
+        $.ajaxDom('body',{
+            type:'get',
+            url:"/member/family/list.json",
+            success: function(data) {
+                console.log(data);
+                console.log('------------');
+                for (var i = 0; i <data.data.length; i++) {
+                    var datainfo=data.data[i];
+                    $("#bodyInfo select[name='familyname']").append(`
+                       <option value='${datainfo.id}'>${datainfo.name}</option>
+                   `)
                 }
             }
         })
@@ -458,6 +487,7 @@
 </script>
 <script>
     function addMsg(){
+
         function addinnerfun(newstate){
             if(newstate==3 || newstate==4 ||  newstate==5  || newstate==6 ){
                 reportInfo.early=1
@@ -470,6 +500,7 @@
             reportInfo.hubei=$('#bodyInfo').find('input[name="hubei"]:checked').val();
             reportInfo.temperature=$('#bodyInfo').find('input[name="temperature"]').val();
             reportInfo.openId=openId;
+            reportInfo.familyname=$('#bodyInfo').find('select[name="familyname"]').val();
             if(!reportInfo.hubei || reportInfo.hubei==''){
                 layer.msg('请选择是否接触');
             }else if(!reportInfo.temperature || reportInfo.temperature==''){
@@ -480,23 +511,45 @@
                 getloaction();
             }else{
                 console.log(reportInfo);
-                $.ajaxDom('body',{
-                    type: "post",
-                    headers:{'Content-Type':'application/json;charset=UTF-8'},
-                    url: "/member/report.json",
-                    data:JSON.stringify(reportInfo),
-                    success: function(data) {
-                        if(data.success){
-                            layer.msg('申报成功',function () {
-                                clearfrom('#bodyInfo')
-                                window.location.href='bodychildre/hearthpunchClock.html?openId='+openId;
-                            })
-                        }else{
-                           /* layer.msg('申报失败联系管理员')*/
-                            layer.msg(data.message);
+               if(reportInfo.familyname.trim()!==''){
+                    reportInfo.id=reportInfo.familyname;
+                    $.ajaxDom('body',{
+                        type: "post",
+                        headers:{'Content-Type':'application/json;charset=UTF-8'},
+                        url: "/member/family/report.json",
+                        data:JSON.stringify(reportInfo),
+                        success: function(data) {
+                            if(data.success){
+                                layer.msg('申报成功',function () {
+                                    clearfrom('#bodyInfo')
+                                    window.location.href='bodychildre/familyHerthlist.html';
+                                })
+                            }else{
+
+                                layer.msg(data.message);
+                            }
                         }
-                    }
-                });
+                    });
+                }else{
+                    $.ajaxDom('body',{
+                        type: "post",
+                        headers:{'Content-Type':'application/json;charset=UTF-8'},
+                        url: "/member/report.json",
+                        data:JSON.stringify(reportInfo),
+                        success: function(data) {
+                            if(data.success){
+                                layer.msg('申报成功',function () {
+                                    clearfrom('#bodyInfo')
+                                    window.location.href='bodychildre/hearthpunchClock.html?openId='+openId;
+                                })
+                            }else{
+                                /!* layer.msg('申报失败联系管理员')*!/
+                                layer.msg(data.message);
+                            }
+                        }
+                    });
+                }
+
             }
         }
         if(contArry.length>0){

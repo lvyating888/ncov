@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>设置</title>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/diseaseRegister.css">
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/paging.css"/>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/pagingNcov.css"/>
+    <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
+    <script src="js/common.js?v=0.4"></script>
+    <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/laydate/laydate.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/paging/paging.js?v=0.1"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js"></script>
+</head>
+<style>
+    .testswitch {
+        position: relative;
+        float: left;
+        width: 90px;
+        margin: 0;
+        -webkit-user-select:none;
+        -moz-user-select:none;
+        -ms-user-select: none;
+    }
+
+    .testswitch-checkbox {
+        display: none;
+    }
+
+    .testswitch-label {
+        display: block;
+        overflow: hidden;
+        cursor: pointer;
+        border: 2px solid #f5f5f5;
+        border-radius: 20px;
+    }
+
+    .testswitch-inner {
+        display: block;
+        width: 200%;
+        margin-left: -100%;
+        transition: margin 0.3s ease-in 0s;
+    }
+
+    .testswitch-inner::before, .testswitch-inner::after {
+        display: block;
+        float: right;
+        width: 50%;
+        height: 30px;
+        padding: 0;
+        line-height: 30px;
+        font-size: 14px;
+        color: white;
+        font-family:
+                Trebuchet, Arial, sans-serif;
+        font-weight: bold;
+        box-sizing: border-box;
+    }
+
+    .testswitch-inner::after {
+        content: attr(data-on);
+        padding-left: 10px;
+        background-color: #00e500;
+        color: #FFFFFF;
+    }
+
+    .testswitch-inner::before {
+        content: attr(data-off);
+        padding-right: 10px;
+        background-color: #EEEEEE;
+        color: #999999;
+        text-align: right;
+    }
+
+    .testswitch-switch {
+        position: absolute;
+        display: block;
+        width: 30px;
+        height: 30px;
+        margin: 2px;
+        background: #FFFFFF;
+        top: 0;
+        bottom: 0;
+        right: 56px;
+        border: 2px solid #f5f5f5;
+        border-radius: 20px;
+        transition: all 0.3s ease-in 0s;
+    }
+
+    .testswitch-checkbox:checked + .testswitch-label .testswitch-inner {
+        margin-left: 0;
+    }
+
+    .testswitch-checkbox:checked + .testswitch-label .testswitch-switch {
+        right: 0px;
+    }
+    .list_title{
+        float:left;
+        line-height:24px;
+        padding:5px 0;
+    }
+    .list_right{
+        float: right;
+    }
+    .list_right label{
+        margin-bottom: 0;
+    }
+    .list-group-item.list-item{
+        border-radius:0;
+        border:0;
+        border-bottom:1px solid #ddd;
+        margin-bottom:0;
+    }
+</style>
+<body class="hastopout" style="background-color: #f5f5f5">
+<!--#include file="/ncov/headerback.html"-->
+    <div class="padtb10">
+        <ul class="list-group listul">
+            <li class="list-group-item list-item clearfix">
+                <span class="list_title">考勤委托</span>
+                <div class="testswitch list_right">
+                    <input class="testswitch-checkbox" id="onoffswitchtwo" type="checkbox">
+                    <label class="testswitch-label" for="onoffswitchtwo">
+                        <span class="testswitch-inner" data-on="ON" data-off="OFF"></span>
+                        <span class="testswitch-switch"></span>
+                    </label>
+                </div>
+            </li>
+            <li class="list-group-item list-item clearfix">
+                <span class="list_title">多人考勤</span>
+                <div class="testswitch list_right">
+                    <input class="testswitch-checkbox" id="onoffswitch" type="checkbox">
+                    <label class="testswitch-label" for="onoffswitch">
+                        <span class="testswitch-inner" data-on="ON" data-off="OFF"></span>
+                        <span class="testswitch-switch"></span>
+                    </label>
+                </div>
+            </li>
+            <li class="list-group-item list-item clearfix">
+                <span class="list_title">代替考勤</span>
+                <div class="testswitch list_right">
+                    <input class="testswitch-checkbox" id="onoffswitchthree" type="checkbox">
+                    <label class="testswitch-label" for="onoffswitchthree">
+                        <span class="testswitch-inner" data-on="ON" data-off="OFF"></span>
+                        <span class="testswitch-switch"></span>
+                    </label>
+                </div>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>
+<script>
+    var title='健康考勤设置';
+    var backtitlebg='white';
+    var openId = GetQueryValue('openId');
+    $(function () {
+        var clickSwitch=function(obj) {
+            var demo=obj.demo;
+            var title=obj.title?obj.title:'';
+
+            if ($(demo).is(':checked')) {
+                var end=layer.confirm('确定开通'+title+'?', {
+                    btn: ['确定','取消'] //按钮
+                }, function(){
+                    var openfun=obj.openfun();
+                     if(openfun){
+                         openfun()
+                     }
+                }, function(){
+                    $(demo).prop('checked',false)
+                    layer.close(end);
+                })
+            } else {
+                var start=layer.confirm('确定取消'+title+'?', {
+                    btn: ['确定','取消'] //按钮
+                }, function(){
+                    var closefun=obj.closefun();
+                    if(closefun){
+                        closefun()
+                    }
+                }, function(){
+                    $(demo).prop('checked',true)
+                    layer.close(start);
+                })
+            }
+        }
+
+        $("#onoffswitch").on('click', function(){
+            var obj={
+                demo:'#onoffswitch',
+                title:'多人考勤',
+                openfun:function(){
+                    openfunone(1)
+                },
+                closefun:function(){
+                    openfunone(0)
+                }}
+            clickSwitch(obj)
+        });
+        $('#onoffswitchtwo').on('click',function () {
+            var obj={
+                demo:'#onoffswitchtwo',
+                title:'考勤委托',
+                openfun:function(){
+                    openfuntwo(1)
+                },
+                closefun:function(){
+                    openfuntwo(0)
+                }}
+            console.log(obj)
+            clickSwitch(obj)
+        })
+        $('#onoffswitchthree').on('click',function () {
+            var obj={
+                demo:'#onoffswitchthree',
+                title:'代替考勤',
+                openfun:function(){
+                    openfunthree(1)
+                },
+                closefun:function(){
+                    openfunthree(0)
+                }}
+            clickSwitch(obj)
+        })
+        dataInit(openId)
+        function openfunone(flag) {
+            $.ajaxDom('body',{
+                type:'get',
+                url:'/publish/company/openFamilyAdd.json',
+                data:{flag:flag},
+                success:function (data) {
+                    if(data.success){
+                        layer.msg('操作成功');
+                        dataInit(openId)
+                    }else{
+                        layer.msg(data.message);
+                    }
+                }
+            })
+        }
+        function openfuntwo(flag) {
+            $.ajaxDom('body',{
+                type:'get',
+                url:'/publish/company/openRegister.json',
+                data:{flag:flag},
+                success:function (data) {
+                    if(data.success){
+                        layer.msg('操作成功');
+                        dataInit(openId)
+                    }else{
+                        layer.msg(data.message);
+                    }
+                }
+            })
+        }
+        function openfunthree(flag) {
+            $.ajaxDom('body',{
+                type:'get',
+                url:'/publish/company/openFamilyReport.json',
+                data:{flag:flag},
+                success:function (data) {
+                    if(data.success){
+                        layer.msg('操作成功');
+                        dataInit(openId)
+                    }else{
+                        layer.msg(data.message);
+                    }
+                }
+            })
+        }
+
+        function dataInit(openId) {
+            $.ajaxDom('body', {
+                type: "get",
+                url: '/ncov/isExist.json',
+                data: {openId: openId},
+                success: function (data) {
+                    var dataInfo=data.data;
+                   /* console.log(dataInfo.compMap)*/
+                    if(dataInfo.compMap){
+                         if(dataInfo.compMap.register!==''){
+                             $('#onoffswitchtwo').prop('checked',true);
+                         }
+                         /*console.log(dataInfo.compMap.register)*/
+                         if(dataInfo.compMap.family_add){
+                            $('#onoffswitch').prop('checked',true);
+                         }
+                        if(dataInfo.compMap.family_report){
+                            $('#onoffswitchthree').prop('checked',true);
+                        }
+                    }
+                }
+            })
+        }
+    })
+</script>                                                                          

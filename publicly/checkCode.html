@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>考勤委托</title>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/personalCenter.css">
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/paging.css"/>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/pagingNcov.css"/>
+    <link rel="stylesheet" href="../css/diseaseRegister.css">
+    <link rel="stylesheet" href="../visitor/css/visitorMsg.css">
+    <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
+    <script src="../js/common.js?v=0.3"></script>
+    <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
+    <script src="../js/templateHelper.js?v=0.2"></script>
+    <script src="http://webimg.mp12345.com/jslib/paging/paging.js?v=0.1"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/laydate/laydate.js"></script>
+    <link href="http://webimg.mp12345.com/jslib/select2/select2.min.css" rel="stylesheet" />
+    <script src="http://webimg.mp12345.com/jslib/select2/select2.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
+
+</head>
+<style>
+    .qrcode{
+        width:68%;
+        margin:0 auto;
+        max-width:300px;
+    }
+    .qrcode img{
+        display: block;
+        width: 100%;
+    }
+    .cptips,.phonetips{
+        text-align: center;
+        font-size:14px;
+        display: none;
+    }
+    .phonetips{
+        display: block;
+    }
+    @media (min-width: 768px) {
+        .cptips{
+            display: block;
+        }
+        .phonetips{
+            display: none;
+        }
+    }
+</style>
+<body class="hastopout">
+<!--#include file="/ncov/headerback.html"-->
+<div class="innerout padtb10">
+    <div class="innerout" id="visitQrcode" class="tab-content padtb10" tyle="padding-top: 0;">
+
+    </div>
+</div>
+
+</body>
+<script type="text/html" id="v_qrcode">
+    <div class="qrcode">
+        <img src="https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket={{compMap.register}}" alt="">
+    </div>
+    <p class="cptips">
+        <a href="https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket={{compMap.register}}" target="_blank">
+            打开图片 右击保存发送给访客
+        </a>
+    </p>
+    <p class="phonetips">
+        长按二维码保存 发送给访客
+    </p>
+</script>
+</html>
+<script>
+    var title='考勤委托';
+    var openId=GetQueryValue('openId')?GetQueryValue('openId'):"";
+    /*-- 获取用户填写的信息 --*/
+    $.ajaxDom('body', {
+        type: "get",
+        url: '/ncov/isExist.json',
+        data: {openId: openId},
+        success: function (dataInfo) {
+            console.log(dataInfo)
+            if(dataInfo.data.compMap.register!==''){
+                var qrcode = template('v_qrcode', dataInfo.data);
+                $("#visitQrcode").empty().append(qrcode);
+            }
+        }
+    })
+</script>

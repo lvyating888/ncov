@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>访客</title>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/ncov/css/base.css">
+    <link rel="stylesheet" href="css/visitorIndex.css?v=0.1">
+    <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
+    <script src="/ncov/js/common.js?v=0.2"></script>
+    <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js"></script>
+</head>
+<body>
+    <div class="visitorIndexbg">
+        <div class="visitorIndexinner">
+            <a class="visitorReserve visitorli" href="javascript:;">
+                <div class="visitorli_top">
+                    <div class="visitor_liicon visitor_liicon_red">
+                        <span class="glyphicon glyphicon-log-in"></span>
+                    </div>
+                    <p class="visitor_bg_text_bot visitor_bg_text_red">
+                        访问预约
+                    </p>
+                </div>
+                <div class="visitorli_bot visitorli_botred"></div>
+            </a>
+            <a class="visitorHealthy visitorli" href="javascript:;">
+                <div class="visitorli_top">
+                    <div class="visitor_liicon visitor_liicon_blue">
+                        <span class="glyphicon glyphicon-user"></span>
+                    </div>
+                    <p class="visitor_bg_text_bot visitor_bg_text_blue">
+                        健康状况
+                    </p>
+                </div>
+                <div class="visitorli_bot visitorli_botblue"></div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    var openId=GetQueryValue('openId');
+    var type=GetQueryValue('type');
+    $(function () {
+        $('.visitorReserve').attr('href','appointVisit/editvisitMsg.html?openId='+openId+'&type='+type+'&pagedata=1')
+        $('.visitorHealthy').attr('href','appointVisit/editvisitMsg.html?openId='+openId+'&type='+type+'&pagedata=2')
+    })
+</script>

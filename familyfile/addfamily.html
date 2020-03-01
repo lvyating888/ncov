@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>家属考勤</title>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/diseaseRegister.css">
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/paging.css"/>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/pagingNcov.css"/>
+    <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
+    <script src="../js/common.js?v=0.4"></script>
+    <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/laydate/laydate.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/paging/paging.js?v=0.1"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js"></script>
+</head>
+<body class="hastopout">
+<div class="modal" id="myModal" tabindex="-1" role="dialog" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">修改家庭成员信息</h4>
+            </div>
+            <div id="editfrom">
+
+            </div>
+        </div>
+    </div>
+</div>
+<!--#include file="/ncov/headerback.html"-->
+<div class="innerout padtb10">
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active">
+            <a href="#addfamily" data-toggle="tab" aria-expanded="true">
+                新增用户
+            </a>
+        </li>
+        <li class="">
+            <a href="#familylist" data-toggle="tab" aria-expanded="false">
+                用户列表
+            </a>
+        </li>
+    </ul>
+    <div id="myTabContent" class="tab-content padtb10">
+        <div class="tab-pane fade in active" id="addfamily">
+            <form id="addhomeInfo">
+                <p class="linetitle">个人信息</p>
+                <div class="form-group clearfix">
+                    <input type="hidden" name="id" value="4">
+                    <label class="col-sm-3 col-xs-3 leftlabel">姓名<span class="red">*</span></label>
+                    <div class="col-sm-9 col-xs-9 ">
+                        <input class="form-control" name="name" type="text" placeholder="请输入姓名">
+                    </div>
+                </div>
+                <div class="form-group clearfix">
+                    <label class="col-sm-3 col-xs-3 leftlabel">性别</label>
+                    <div class="col-sm-9 col-xs-9 radioout">
+                        <div class="col-sm-6 col-xs-6">
+                            <label>
+                                <input type="radio" name="sex" value="1" class="rightradio">
+                                男
+                            </label>
+                        </div>
+                        <div class="col-sm-6 col-xs-6">
+                            <label>
+                                <input type="radio" name="sex" value="2" class="rightradio">
+                                女
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group clearfix">
+                    <label class="col-sm-3 col-xs-3 leftlabel" >身份证号<span class="red">*</span></label>
+                    <div  class="col-sm-9 col-xs-9 ">
+                        <input class="form-control" style="background-color: #fff" name="idCard" maxlength="18" type="text" placeholder="请填写身份证号"
+                        />
+                    </div>
+                </div>
+                <div class="form-group clearfix">
+                    <label class="col-sm-3 col-xs-3 leftlabel" >手机号</label>
+                    <div  class="col-sm-9 col-xs-9 ">
+                        <input class="form-control" name="phone" type="number" placeholder="请输入手机号"
+                               maxlength="11" oninput="if(value.length>11)value=value.slice(0,11)"
+                        />
+                    </div>
+                </div>
+                <div class="form-group clearfix">
+                    <label class="col-sm-3 col-xs-3 leftlabel">家属关系<span class="red">*</span></label>
+                    <div class="col-sm-9 col-xs-9 ">
+                        <input class="form-control" name="withRelation" type="text" placeholder="请填写家属关系">
+                    </div>
+                </div>
+                <div class="botbtn row">
+                    <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+                        <button type="button" class="btn btn-lg btn-success" style="width: 80%;" onclick="addhomeMsg()" >保存</button>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+                        <button type="button" class="btn btn-lg btn-danger" style="width:80%" onclick="clearfrom('#addhomeInfo')">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="tab-pane fade " id="familylist">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="familylisttab">
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/html" id="v_familydata">
+    {{if data.length>0}}
+    <thead>
+        <tr>
+            <th>
+                操作
+            </th>
+            <th>
+                姓名
+            </th>
+            <th>
+                性别
+            </th>
+            <th>
+                身份证号
+            </th>
+            <th>
+                手机号
+            </th>
+            <th>
+                家属关系
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    {{each data as item index }}
+        <tr>
+            <td>
+                <button type="button" class="btn btn-success" style="margin:6px 0;" onclick="editfamilymsg('{{item.id}}','{{item.wx_openid}}')" >修改</button>
+            </td>
+            <td>
+                {{item.name}}
+            </td>
+            <td>
+                {{item.sex==1?'男':item.sex==2?'女':''}}
+            </td>
+            <td>
+                {{item.id_card}}
+            </td>
+            <td>
+                {{item.phone}}
+            </td>
+            <td>
+                {{item.with_relation}}
+            </td>
+        </tr>
+    {{/each}}
+    </tbody>
+    {{else}}
+     <tbody>
+         <tr>
+             <td class="text-danger">
+                 暂无数据
+             </td>
+         </tr>
+     </tbody>
+    {{/if}}
+</script>
+<script type="text/html" id="v_editmsg">
+    <div class="modal-body">
+        <form id="modalBody">
+            <div class="form-group clearfix">
+                <input type="hidden" name="id" value="4">
+                <label class="col-sm-3 col-xs-3 leftlabel">姓名<span class="red">*</span></label>
+                <div class="col-sm-9 col-xs-9 ">
+                    <input class="form-control" name="name" type="text" placeholder="请输入姓名" value="{{data.name}}">
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <label class="col-sm-3 col-xs-3 leftlabel">性别</label>
+                <div class="col-sm-9 col-xs-9 radioout">
+                    <div class="col-sm-6 col-xs-6">
+                        <label>
+                            {{if data.sex==1}}
+                            <input type="radio" checked name="sex" value="1" class="rightradio">
+                            {{else}}
+                            <input type="radio" name="sex" value="1" class="rightradio">
+                            {{/if}}
+                            男
+                        </label>
+                    </div>
+                    <div class="col-sm-6 col-xs-6">
+                        <label>
+                            {{if data.sex==2}}
+                            <input type="radio" checked name="sex" value="2" class="rightradio">
+                            {{else}}
+                            <input type="radio" name="sex" value="2" class="rightradio">
+                            {{/if}}
+                            女
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <label class="col-sm-3 col-xs-3 leftlabel" >身份证号<span class="red">*</span></label>
+                <div  class="col-sm-9 col-xs-9 ">
+                    <input class="form-control" style="background-color: #fff" name="idCard" maxlength="18" type="text" placeholder="请填写身份证号"
+                           value="{{data.id_card}}"
+                    />
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <label class="col-sm-3 col-xs-3 leftlabel" >手机号</label>
+                <div  class="col-sm-9 col-xs-9 ">
+                    <input class="form-control" name="phone" type="number" placeholder="请输入手机号"
+                           maxlength="11" oninput="if(value.length>11)value=value.slice(0,11)"
+                           value="{{data.phone}}"
+                    />
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <label class="col-sm-3 col-xs-3 leftlabel">家属关系<span class="red">*</span></label>
+                <div class="col-sm-9 col-xs-9 ">
+                    <input class="form-control" name="withRelation" type="text" placeholder="请填写家属关系"
+                           value="{{data.with_relation}}"
+                    >
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="saveeditfamily('{{data.id}}')">
+            修改
+        </button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+            关闭
+        </button>
+    </div>
+</script>
+</html>
+<script>
+    var title='家庭考勤';
+    var backtitlebg='white';
+    function addhomeMsg() {
+        var dataInfo=getFormJson('#addhomeInfo');
+
+        if(!dataInfo.name || dataInfo.name==''){
+            layer.msg('请输入姓名');
+            $('#addhomeInfo').find('input[name="name"]').focus();
+        }else if(!dataInfo.idCard || dataInfo.idCard=='') {
+            layer.msg('请填写身份证号');
+            $('#addhomeInfo').find('input[name="idCard"]').focus();
+        }else if(dataInfo.idCard.length!==18) {
+            layer.msg('请填写正确的身份证号');
+            $('#addhomeInfo').find('input[name="idCard"]').focus();
+        }else if(!dataInfo.withRelation || dataInfo.withRelation==''){
+            layer.msg('请输入家庭住址');
+            $('#addhomeInfo').find('input[name="withRelation"]').focus();
+        } else{
+            if(!dataInfo.sex || dataInfo.sex==''){
+                dataInfo.sex='';
+            }
+            console.log(dataInfo);
+            $.ajaxDom('#addhomeInfo',{
+                type: "post",
+                headers:{'Content-Type':'application/json;charset=UTF-8'},
+                url: "/member/family.json",
+                data:JSON.stringify(dataInfo),
+                success: function(data) {
+                    console.log(data);
+                    console.log('==========')
+                    if(data.success){
+                        layer.msg('保存成功',function () {
+                            clearfrom('#addhomeInfo');
+                           /* window.location.href='/ncov/bodyMsg.html?openId='+openId;*/
+                            familydata()
+                        });
+
+                    }else{
+                        layer.msg(data.message);
+                        /*layer.msg('保存失败联系管理员')*/
+                    }
+                    /*console.log(data);*/
+                }
+            });
+        }
+    }
+    $(function () {
+        familydata()
+    })
+    function familydata() {
+        $('#myTab a[href="#familylist"]').tab('show');
+        $.ajaxDom('#familylist',{
+            type:'get',
+            url:"/member/family/list.json",
+            success: function(data) {
+                console.log(data);
+                console.log('------------');
+                var familydata = template('v_familydata', data);
+                $("#familylisttab").empty().append(familydata);
+            }
+        })
+    }
+    function editfamilymsg(id){
+        $.ajaxDom('#addhomeInfo',{
+            type: "get",
+            data:{id:id},
+            url: "/member/family.json",
+            success: function(data) {
+                /**/
+                $('#myModal').modal('show');
+                console.log(data);
+                var editmsg = template('v_editmsg', data);
+                $("#editfrom").empty().append(editmsg);
+            }
+        })
+    }
+    function saveeditfamily(id) {
+        var dataInfo=getFormJson('#modalBody');
+        dataInfo.id=id;
+        if(!dataInfo.id || dataInfo.id==''){
+            layer.msg('数据获取错误请重新修改');
+        }else if(!dataInfo.name || dataInfo.name==''){
+            layer.msg('请输入姓名');
+            $('#modalBody').find('input[name="name"]').focus();
+        }else if(!dataInfo.idCard || dataInfo.idCard=='') {
+            layer.msg('请填写身份证号');
+            $('#modalBody').find('input[name="idCard"]').focus();
+        }else if(dataInfo.idCard.length!==18) {
+            layer.msg('请填写正确的身份证号');
+            $('#modalBody').find('input[name="idCard"]').focus();
+        }else if(dataInfo.phone && dataInfo.phone!=='' && dataInfo.phone.length!==11) {
+            layer.msg('请填写正确的手机号');
+            $('#modalBody').find('input[name="phone"]').focus();
+        }else if(!dataInfo.withRelation || dataInfo.withRelation==''){
+            layer.msg('请输入家庭住址');
+            $('#modalBody').find('input[name="withRelation"]').focus();
+        } else{
+            if(!dataInfo.sex || dataInfo.sex==''){
+                dataInfo.sex='';
+            }
+            console.log(dataInfo);
+            $.ajaxDom('#modalBody',{
+                type: "put",
+                headers:{'Content-Type':'application/json;charset=UTF-8'},
+                url: "/member/family.json",
+                data:JSON.stringify(dataInfo),
+                success: function(data) {
+                    console.log(data);
+                    console.log('==========')
+                    if(data.success){
+                        layer.msg('修改成功',function () {
+                            clearfrom('#modalBody');
+                            $('#myModal').modal('hide');
+                            familydata()
+                        });
+                    }else{
+                        layer.msg(data.message);
+                    }
+                }
+            });
+        }
+    }
+</script>

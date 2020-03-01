@@ -231,6 +231,8 @@
                 {{if item.invite_code}}
                 {{if item.wx_openid}}
                 <span class="text-success">已验证</span>
+                <br>
+                <button type="button" class="btn btn-warning" style="margin:6px 0;" onclick="untyingbtn('{{item.id}}')" >解绑</button>
                 {{else}}
                 已推送未验证
                 {{/if}}
@@ -465,6 +467,33 @@
                 }
             }
         })
+    }
+
+    /*-- 已验证解绑微信 --*/
+    function untyingbtn(id) {
+        layer.confirm('确定解绑微信吗', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.ajax({
+                type:'get',
+                url:'/admin/member/infoRemove.json',
+                data:{
+                    id:id
+                },
+                success:function (data) {
+                    console.log(data);
+                    console.log('--------------');
+                    if(data.success){
+                        layer.msg('解绑成功');
+                        personalinit(1);
+                    }else{
+                        /*layer.msg('操作失败，联系管理员');*/
+                        layer.msg(data.message);
+                    }
+                }
+            })
+        })
+
     }
 </script>
 

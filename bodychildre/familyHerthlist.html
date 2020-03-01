@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>家人健康考勤</title>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/diseaseRegister.css">
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/paging.css"/>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/pagingNcov.css"/>
+    <link rel="stylesheet" href="../css/punchClock.css">
+    <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
+    <script src="../js/common.js?v=0.2"></script>
+    <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
+    <script src="../js/templateHelper.js?v=0.2"></script>
+    <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/paging/paging.js?v=0.1"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js"></script>
+</head>
+<body class="hastopout">
+<!--#include file="/ncov/headerback.html"-->
+    <div class="innerout padtb10">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="familydata">
+
+            </table>
+        </div>
+        <div id="pageTool" class="newpages"></div>
+    </div>
+
+</body>
+<script type="text/html" id="v_msgdata">
+
+    {{if data.length>0}}
+    <thead>
+    <tr>
+        <th>
+            姓名
+        </th>
+        <th>
+            体温
+        </th>
+        <th>
+            提交时间
+        </th>
+        <th>
+            联系方式
+        </th>
+        <th>
+            状态
+        </th>
+        <th>
+            是否接触过疫区人员、疑似病例或确诊病例
+        </th>
+        <th>
+            家属关系
+        </th>
+        <th>
+            申报地址
+        </th>
+        <th>
+            入院情况
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    {{each data as data index}}
+    <tr>
+        <td>
+            {{data.name}}
+        </td>
+        <td>
+            {{data.temperature}}
+        </td>
+        <td>
+            {{data.cdate | moment:'YYYY-MM-DD HH:mm:ss'}}
+        </td>
+        <td>
+            {{data.phone}}
+        </td>
+        <td>
+            {{data.state | getType}}
+        </td>
+        <td>
+            {{if data.hubei== 1}}
+            是
+            {{else if data.hubei== 2}}
+            否
+            {{/if}}
+        </td>
+        <td>{{data.with_relation}}</td>
+        <td>
+            {{data.recommend}}
+        </td>
+        <td>
+            {{data.content}}
+        </td>
+    </tr>
+    {{/each}}
+    </tbody>
+    {{else}}
+    <tr>
+        <td class="text-danger">
+            暂无数据
+        </td>
+    </tr>
+    {{/if}}
+</script>
+</html>
+<script>
+    var title='家庭考勤列表'
+    $(function () {
+        dataInfo();
+    })
+    var pageindexnow=1;
+    var pagesizeout=10;
+    function dataInfo(pageindex,pagesize) {
+        pagesize=pagesize?pagesize:pagesizeout;
+        if (pageindex == undefined || pageindex == null) {
+            pageindex = pageindexnow;
+        } else {
+            pageindexnow = pageindex;
+        }
+        var page = new Paging();
+        $.ajaxDom('#familydata',{
+            type:'get',
+            data:{
+                pageNumber: pageindexnow,
+                pageSize:pagesize
+            },
+            url:'/member/family/report/list.json',
+            success:function (data) {
+                console.log(data);
+                console.log('00000000000000')
+                var dataInfo=data.data;
+                if(dataInfo.data.length<1){
+                    $('#pageTool').hide();
+                }else{
+                    $('#pageTool').show();
+                }
+                var msgdata = template('v_msgdata', data.data);
+                $("#familydata").empty().append(msgdata);
+                pageSize(pageindexnow,pagesize)
+                function pageSize(pagenumber, pagesize) {
+                    page.init({
+                        target: $('#pageTool').empty(),
+                        pagesize: pagesize,
+                        count: data.data.totalCount,
+                        toolbar: true,
+                        current: pagenumber,
+                        //hash: true ,
+                        changePagesize: function (_psize, _pnumber) {
+                            pagesizeout=_psize;
+                            dataInfo(1,_psize)
+                        },
+                        callback: function (_pnumber, _psize, count) {
+                            pagesizeout=_psize;
+                            dataInfo(_pnumber,_psize)
+                        }
+                    });
+                }
+            }
+        })
+    }
+</script>

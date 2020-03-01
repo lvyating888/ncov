@@ -131,8 +131,35 @@
                 </p>
             </a>
         </li>
+        <li class="mycontlis" id="addfamilybtn">
+            <a href="familyfile/addfamily.html" >
+                <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+                <p>
+                    多人考勤
+                </p>
+            </a>
+        </li>
     </ul>
-
+    <ul  class="mycontul clearfix">
+        <li class="mycontlis is-admin " style="display:none;float: left;" id="addCheckbtn">
+            <a href="javascript:;" class="checkbtn" >
+                <span class="glyphicon glyphicon-info-sign" aria-hidden="true">
+                </span>
+                <p>
+                    考勤委托
+                </p>
+            </a>
+        </li>
+        <li class="mycontlis is-admin " style="display:none;float: left;">
+            <a href="javascript:;" class="setingbtn" >
+                <span class="glyphicon glyphicon-cog" aria-hidden="true">
+                </span>
+                <p>
+                    设置
+                </p>
+            </a>
+        </li>
+    </ul>
 
 </div>
 <!--#include file="/ncov/navBottom.html"-->
@@ -143,15 +170,17 @@
     var openId = GetQueryValue('openId');
     $(function () {
         $('.signbtn').attr('href','./sign/punchClock.html?openId='+openId);
-        $('.visitorbtn').attr('href','publicly/visitorManager.html?openId='+openId)
+        $('.visitorbtn').attr('href','publicly/visitorManager.html?openId='+openId);
+        $('.setingbtn').attr('href','mainseting.html?openId='+openId);
+        $('.checkbtn').attr('href','publicly/checkCode.html?openId='+openId)
     })
     /*-- 获取用户填写的信息 --*/
     $.ajaxDom('body',{
         type: "get",
         url: '/ncov/isExist.json',
         data: {openId: openId},
-        success: function (data) {
-            if (data.success) {
+        success: function (dataInfo) {
+            if (dataInfo.success) {
                 /*-- 获取注册的用户信息 --*/
                 $.ajaxDom('body',{
                     type: "get",
@@ -166,7 +195,22 @@
                             } else if (data.data.admin == 0) {
                                 $('.is-admin').hide();
                             }
-                            addVisitorfun();
+                            /*ticket 访客 register 考勤管理 family_add 多人考勤 */
+                            if(dataInfo.data.compMap.ticket!==''){
+                                $('#addVisitor').show();
+                            }else{
+                                $('#addVisitor').hide();
+                            }
+                            if(dataInfo.data.compMap.register!==''){
+                                $('#addCheckbtn').show();
+                            }else{
+                                $('#addCheckbtn').hide();
+                            }
+                            if(dataInfo.data.compMap.family_add){
+                                $('#addfamilybtn').show();
+                            }else{
+                                $('#addfamilybtn').hide();
+                            }
                         }
                     }
                 })
@@ -234,21 +278,5 @@
         })
     })
 
-    /*-- 获取是否有访客功能权限 addVisitor --*/
-    function addVisitorfun(){
-        $.ajaxDom('#addVisitor',{
-            type: 'get',
-            url: '/publish/master/isOpenVisitor.json',
-            success: function (data) {
-                console.log(data);
-                console.log('============')
-                if(data.success){
-                    $('#addVisitor').show();
-                }else{
-                    $('#addVisitor').hide();
-                }
-            }
-        })
-    }
 
 </script>
