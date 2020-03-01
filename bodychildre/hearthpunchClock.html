@@ -20,7 +20,7 @@
     <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
     <script src="../js/templateHelper.js?v=0.4"></script>
     <script src="http://webimg.mp12345.com/jslib/paging/paging.js?v=0.1"></script>
-    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.1"></script>
     <script src="http://webimg.mp12345.com/jslib/laydate/laydate.js"></script>
     <link href="http://webimg.mp12345.com/jslib/select2/select2.min.css" rel="stylesheet" />
     <script src="http://webimg.mp12345.com/jslib/select2/select2.min.js"></script>
@@ -227,7 +227,7 @@
                 datalistInfo=res;
                 if (res.success) {
                     res.data.dataInfo=[];
-                    for (let i in res.data.data) {
+                    for (var i in res.data.data) {
                         var info={};
                         var n=i.split("-");
                         info.day=n;
