@@ -126,7 +126,7 @@
     <div class="padtb10">
         <ul class="list-group listul">
             <li class="list-group-item list-item clearfix">
-                <span class="list_title">考勤委托</span>
+                <span class="list_title">员工自主注册</span>
                 <div class="testswitch list_right">
                     <input class="testswitch-checkbox" id="onoffswitchtwo" type="checkbox">
                     <label class="testswitch-label" for="onoffswitchtwo">
@@ -136,7 +136,7 @@
                 </div>
             </li>
             <li class="list-group-item list-item clearfix">
-                <span class="list_title">多人考勤</span>
+                <span class="list_title">家属考勤</span>
                 <div class="testswitch list_right">
                     <input class="testswitch-checkbox" id="onoffswitch" type="checkbox">
                     <label class="testswitch-label" for="onoffswitch">
@@ -198,7 +198,7 @@
         $("#onoffswitch").on('click', function(){
             var obj={
                 demo:'#onoffswitch',
-                title:'多人考勤',
+                title:'家属考勤',
                 openfun:function(){
                     openfunone(1)
                 },
@@ -210,7 +210,7 @@
         $('#onoffswitchtwo').on('click',function () {
             var obj={
                 demo:'#onoffswitchtwo',
-                title:'考勤委托',
+                title:'员工自主注册',
                 openfun:function(){
                     openfuntwo(1)
                 },

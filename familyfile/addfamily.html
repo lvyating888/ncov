@@ -137,6 +137,12 @@
                 手机号
             </th>
             <th>
+                认证码
+            </th>
+            <th>
+                状态
+            </th>
+            <th>
                 家属关系
             </th>
         </tr>
@@ -145,6 +151,8 @@
     {{each data as item index }}
         <tr>
             <td>
+                <a type="button" class="btn btn-warning" style="margin:6px 0;"  href="familymsg.html?id={{item.id}}">查看</a>
+                <br>
                 <button type="button" class="btn btn-success" style="margin:6px 0;" onclick="editfamilymsg('{{item.id}}','{{item.wx_openid}}')" >修改</button>
             </td>
             <td>
@@ -158,6 +166,16 @@
             </td>
             <td>
                 {{item.phone}}
+            </td>
+            <td>
+                {{item.invite_code}}
+            </td>
+            <td>
+                {{if item.wx_openid!==''}}
+                <span class="text-success">已认证</span>
+                {{else}}
+                <span class="text-warning">未认证</span>
+                {{/if}}
             </td>
             <td>
                 {{item.with_relation}}
@@ -248,7 +266,7 @@
 </script>
 </html>
 <script>
-    var title='家庭考勤';
+    var title='家属考勤';
     var backtitlebg='white';
     function addhomeMsg() {
         var dataInfo=getFormJson('#addhomeInfo');
@@ -281,8 +299,7 @@
                     if(data.success){
                         layer.msg('保存成功',function () {
                             clearfrom('#addhomeInfo');
-                           /* window.location.href='/ncov/bodyMsg.html?openId='+openId;*/
-                            familydata()
+                            window.location.href='familymsg.html?id='+data.data;
                         });
 
                     }else{

@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="../css/diseaseRegister.css">
     <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
     <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
-    <script src="../js/common.js?v=0.2"></script>
+    <script src="../js/common.js?v=0.3"></script>
     <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
     <script src="../js/templateHelper.js?v=0.1"></script>
     <script src="http://webimg.mp12345.com/jslib/paging/paging.js?v=0.1"></script>
@@ -224,9 +224,9 @@
     var compname=GetQueryValue('name')?GetQueryValue('name'):'';
     var admin=GetQueryValue('admin')?GetQueryValue('admin'):'';
     var urlone='',urltwo='',urlthree='';
-    urlone='/statis/member.json';
-    urltwo='/statis/memberState.json';
-    urlthree='/statis/memberInfo.json';
+    urlone='/admin/statis/member.json';
+    urltwo='/admin/statis/memberState.json';
+    urlthree='/admin/statis/memberInfo.json';
     /*-- 获取统计数 --*/
     $(function () {
         $.ajaxDom('#todynumber',{

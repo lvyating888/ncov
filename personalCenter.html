@@ -8,7 +8,7 @@
     <title>个人中心</title>
     <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/personalCenter.css?v=0.2">
+    <link rel="stylesheet" href="css/personalCenter.css?v=0.3">
     <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
     <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
     <script src="js/common.js?v=0.2"></script>
@@ -71,8 +71,6 @@
                 </p>
             </a>
         </li>
-    </ul>
-    <ul class="mycontul">
         <li class="mycontlis is-admin" style="display:none;">
             <a href="strators/tripRecord.html" id="tripRecord">
                 <span class="glyphicon glyphicon-leaf" aria-hidden="true"></span>
@@ -105,8 +103,6 @@
                 </p>
             </a>
         </li>
-    </ul>
-    <ul class="mycontul">
         <li class="mycontlis">
             <a href="./staffTravel.html" id="usergo">
                 <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
@@ -135,18 +131,16 @@
             <a href="familyfile/addfamily.html" >
                 <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
                 <p>
-                    多人考勤
+                    家属考勤
                 </p>
             </a>
         </li>
-    </ul>
-    <ul  class="mycontul clearfix">
         <li class="mycontlis is-admin " style="display:none;float: left;" id="addCheckbtn">
             <a href="javascript:;" class="checkbtn" >
                 <span class="glyphicon glyphicon-info-sign" aria-hidden="true">
                 </span>
                 <p>
-                    考勤委托
+                    自主注册
                 </p>
             </a>
         </li>
@@ -192,20 +186,22 @@
                             $('.compname').html(data.data.company);
                             if (data.data.admin == 1) {
                                 $('.is-admin').show();
+                                /*自主注册*/
+                                if(dataInfo.data.compMap.register!==''){
+                                    $('#addCheckbtn').show();
+                                }else{
+                                    $('#addCheckbtn').hide();
+                                }
+                                /*访客*/
+                                if(dataInfo.data.compMap.ticket!==''){
+                                    $('#addVisitor').show();
+                                }else{
+                                    $('#addVisitor').hide();
+                                }
                             } else if (data.data.admin == 0) {
                                 $('.is-admin').hide();
                             }
-                            /*ticket 访客 register 考勤管理 family_add 多人考勤 */
-                            if(dataInfo.data.compMap.ticket!==''){
-                                $('#addVisitor').show();
-                            }else{
-                                $('#addVisitor').hide();
-                            }
-                            if(dataInfo.data.compMap.register!==''){
-                                $('#addCheckbtn').show();
-                            }else{
-                                $('#addCheckbtn').hide();
-                            }
+                            /*ticket 访客 register 考勤管理 family_add 家属考勤 */
                             if(dataInfo.data.compMap.family_add){
                                 $('#addfamilybtn').show();
                             }else{
@@ -268,11 +264,17 @@
             type: 'get',
             url: '/publish/member/early/list.json',
             success: function (data) {
-                if (data.data.data.length > 0) {
-                    $('#onetips').show();
-                    $('#onetips').html(data.data.totalCount)
-                } else {
-                    $('#onetips').hide();
+                /*console.log(data);
+                console.log('---------')*/
+                if(data){
+                    if(data.data){
+                        if (data.data.data.length > 0) {
+                            $('#onetips').show();
+                            $('#onetips').html(data.data.totalCount)
+                        } else {
+                            $('#onetips').hide();
+                        }
+                    }
                 }
             }
         })

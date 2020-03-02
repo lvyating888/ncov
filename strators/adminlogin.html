@@ -7,11 +7,11 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>登录</title>
     <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/diseaseRegister.css">
+    <link rel="stylesheet" href="/ncov/css/base.css">
+    <link rel="stylesheet" href="/ncov/css/diseaseRegister.css">
     <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
     <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
-    <script src="js/common.js?v=0.2"></script>
+    <script src="/ncov/js/common.js?v=0.2"></script>
     <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
     <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.1"></script>
 </head>
@@ -77,16 +77,15 @@
     <form class="innerout padtb10" id="addInfo">
         <div class="innerlisout">
             <div class="form-group clearfix">
-                <input type="hidden" name="id">
-                <label class="col-sm-3 col-xs-3 leftlabel" >手机号<span class="red">*</span></label>
+                <label class="col-sm-3 col-xs-3 leftlabel" >用户名<span class="red">*</span></label>
                 <div  class="col-sm-9 col-xs-9 ">
-                    <input class="form-control" name="phone" type="number" placeholder="请输入手机号" style="min-width:100px;" maxlength="11" oninput="if(value.length>11)value=value.slice(0,11)"  />
+                    <input class="form-control" name="username" type="text" placeholder="请输入用户名"  />
                 </div>
             </div>
             <div class="form-group clearfix">
-                <label class="col-sm-3 col-xs-3 leftlabel" >认证码<span class="red">*</span></label>
+                <label class="col-sm-3 col-xs-3 leftlabel" >密码<span class="red">*</span></label>
                 <div  class="col-sm-9 col-xs-9 ">
-                    <input class="form-control" name="code" type="text" placeholder="请输入认证码"
+                    <input class="form-control" name="password" type="password" placeholder="请输入密码"
                     />
                 </div>
             </div>
@@ -95,7 +94,7 @@
     <div class="botbtn row" align="center">
         <div class="col-md-12 col-sm-12 col-xs-12" align="center">
             <button type="button" class="btn btn-lg btn-warning" style="width:80%"
-                    onclick="addMsg()" id="savebtn">点击进入</button>
+                    onclick="addMsg()" id="savebtn">登录</button>
         </div>
     </div>
 </div>
@@ -107,45 +106,29 @@
 </div>
 </body>
 </html>
+
 <script>
-    /*-- 获取openid 是否注册过 假设openId=001--*/
-    var openId=GetQueryValue('openId');
-    console.log(openId);
-</script>
-<script>
-    $.ajaxDom('#addInfo',{
-        type:'get',
-        url:'/ncov/isExist.json',
-        data:{openId:openId},
-        success:function (data) {
-            if(data.success){
-                window.location.href='bodyMsg.html?openId='+openId;
-            }
-        }
-    })
-    /*<!-- 新增 -->*/
+
     function addMsg(){
         var dataInfo=getFormJson('#addInfo');
-        console.log(dataInfo)
-        dataInfo.openId=openId;
-        if (!dataInfo.openId || dataInfo.openId==''){
-            layer.msg('请同意微信权限')
-        }else if(!dataInfo.phone || dataInfo.phone==''){
-            layer.msg('请输入手机号');
-            $('#addInfo').find('input[name="phone"]').focus();
-        }else if(!dataInfo.code || dataInfo.code=='') {
-            layer.msg('请输入认证码');
-            $('#addInfo').find('input[name="code"]').focus();
+        if(!dataInfo.username || dataInfo.username==''){
+            layer.msg('请输入用户名');
+            $('#addInfo').find('input[name="username"]').focus();
+        }else if(!dataInfo.password || dataInfo.password=='') {
+            layer.msg('请输入密码');
+            $('#addInfo').find('input[name="password"]').focus();
         }else{
             console.log(dataInfo);
+
             $.ajaxDom('#addInfo',{
-                type: "get",
-                url: "/ncov/register.json",
-                data:dataInfo,
+                type: "post",
+                url: "/ncov/managerLogin.json",
+                headers:{'Content-Type':'application/json;charset=UTF-8'},
+                data:JSON.stringify(dataInfo),
                 success: function(data) {
                     if(data.success){
-                        layer.msg('进入成功')
-                        window.location.href='bodyMsg.html?openId='+openId;
+                        layer.msg('登录成功')
+                        window.location.href='index.html'
                     }else{
                         layer.msg(data.message)
                         /*layer.msg('进入失败，联系管理员')*/

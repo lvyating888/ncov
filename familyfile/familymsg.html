@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>家属考勤</title>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/diseaseRegister.css">
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/paging.css"/>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/paging/pagingNcov.css"/>
+    <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
+    <script src="../js/common.js?v=0.4"></script>
+    <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/laydate/laydate.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/paging/paging.js?v=0.1"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.1"></script>
+</head>
+<style>
+    .showimgout{
+        margin: 0 auto;
+        max-width: 380px;
+    }
+    .showimg {
+        width: 68%;
+        margin: 0 auto;
+        max-width: 300px;
+    }
+    .showimg img{
+        display: block;
+        width: 100%;
+    }
+    .titletext{
+        font-size:16px;
+        color: #333;
+        padding:3px 0;
+        line-height:22px;
+        text-align: center;
+    }
+    .pcontent{
+        padding:3px 0;
+        font-size:16px;
+        color: #5e5e5e;
+    }
+</style>
+<body class="hastopout">
+<!--#include file="/ncov/headerback.html"-->
+    <div class="innerout padtb10">
+        <div id="showcode"></div>
+    </div>
+</body>
+<script type="text/html" id="v_familymsg">
+    <div class="showimgout">
+        <p class="titletext">手机号:{{data.phone}}</p>
+        <p class="titletext red" style="border-bottom:1px solid #ddd; padding:3px 0 12px;margin-bottom:6px;">认证码:{{data.invite_code}} </p>
+        <div class="showimg">
+            <img src="http://ncov.mp12345.com/qrcode.jpeg" alt="">
+        </div>
+        <p class="pcontent">
+            1、请家属扫描二维码关注煤婆服务号；
+        </p>
+        <p class="pcontent">
+            2、点击 <span class="text-primary">“健康考勤”入口</span> ，凭手机号和认证码进行注册
+        </p>
+    </div>
+
+</script>
+</html>
+<script>
+    var title='家属考勤';
+    var backtitlebg='white';
+    var id = GetQueryValue('id');
+    $(function () {
+        $.ajaxDom('body',{
+            type: "get",
+            url: '/member/family.json',
+            data: {id: id},
+            success: function (dataInfo) {
+                console.log(dataInfo)
+                var familydata = template('v_familymsg', dataInfo);
+                $('#showcode').empty().append(familydata)
+            }
+        })
+    })
+</script>

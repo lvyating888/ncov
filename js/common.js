@@ -149,7 +149,7 @@ function dividata(demo,type,fun) {
     if(type==''){
         url='/publish/statis/memberDivi.json'
     }else{
-        url='/statis/memberDivi.json'
+        url='/admin/statis/memberDivi.json'
     }
     $.ajax({
         type:'get',

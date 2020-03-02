@@ -21,7 +21,7 @@
 		var html=""
 		var sheetNames = workbook.SheetNames; // 工作表名称集合
 		var worksheet = workbook.Sheets[sheetNames[0]]; // wb.SheetNames[0]这里我们只读取第一张sheet
-
+        var sheetNamesone=sheetNames[0]
 		var table=table;
         if($('#'+table).attr('type')== 'json'){
             /* json写法 */
@@ -36,15 +36,18 @@
             });
             //console.log(length)
             var jsondata=JSON.stringify(result, 2, 2);
-            var jsondataone=result.Sheet1;
+            /*console.log(jsondata)*/
+            var jsondataone=result[sheetNames[0]];
             // var jsondataonelength=result.Sheet1.length;
-
+           /* console.log(jsondataone,sheetNames[0])*/
             if(jsondata.length > 0){
                 var start = Number($('#startnum').val()!='' ? $('#startnum').val() : 0);
                 var end = Number($('#endnum').val()!='' ? $('#endnum').val() : jsondata.length-1);
                 //console.log(start)
                 jsontable(obj,jsondataone,table);
                 obj.value = '';
+            }else{
+                $('#locationloading').hide();
             }
             return;
         }
@@ -58,8 +61,14 @@
         var end = end ? end : json.length-1;
 		if(!json){
 			alert('excal行列格式不规范,请重新选择');
+            $('#locationloading').hide();
 			return;
 		}
+		if(json.length==1){
+            alert('请填写信息');
+            $('#locationloading').hide();
+            return;
+        }
         for(var i=0;i<json.length;i++) {
             for (var j = 0; j < json[i].length; j++) {
                 if (!json[i][j]) {
@@ -68,6 +77,7 @@
                 json[i][j]=json[i][j].replace(/[\r\n]/g,""); //去掉回车换行
             }
         }
+
         // console.log(json)
         var floathtml='';
         floathtml+='<div class="labelouttwo">'
@@ -104,6 +114,7 @@
             floathtml+='</div>'
         }
         floathtml+='</div>'
+        $('#locationloading').hide();
         $('#floatmask .formoutinner').html(floathtml)
 
         for(var j=0;j<$('.labellis').length;j++){
@@ -145,17 +156,17 @@
                         if(tdinputs.children(':first').attr('listwo')){
                             // console.log(tdinputs.children(':first'))
                             var lis=tdinputs.children(':first').attr('listwo');
-                            // console.log(lisout,lis,json[lisout][lis])
-							// console.log(json[1][0])
-                            //console.log($.trim(json[lisout][lis]));
-                            if($.trim(json[lisout][lis])=='男'){
+                            console.log(lisout,lis,json[lisout])
+							console.log(json[1][0])
+                            console.log(json[lisout]);
+                            if(json[lisout] && $.trim(json[lisout][lis])=='男'){
                                 //console.log(tdinputs.children(':first').children('option').eq(1))
                                 tdinputs.children(':first').children('option').eq(1).prop('selected', true);
-                            } else if($.trim(json[lisout][lis])=='女'){
+                            } else if(json[lisout] && $.trim(json[lisout][lis])=='女'){
                                 tdinputs.children(':first').children('option').eq(2).prop('selected', true);
                                 // tdinputs.children(':first').find('input[name="sex"]').eq(1).attr("checked",'checked');
                             }
-                            else{
+                            else if(json[lisout]){
                                 tdinputs.children(':first').val(json[lisout][lis])
                             }
                         }
@@ -170,16 +181,20 @@
 	function importf(obj,table) {//导入
 		// obj 导入文件的input 
 		// table 导入到的table id
+        $('#locationloading').show();
  		if(!obj.files) {
-                return;
+            $('#locationloading').hide();
+            return;
         }
         f = obj.files[0];
 		
         if(!f){
+             $('#locationloading').hide();
         	 return;
         }
         if(!/\.xlsx|\.xls$/g.test(f.name)) {
 				alert('支持读取xlsx格式,xls格式！');
+                $('#locationloading').hide();
 				return;
 		}
 		var table=table;

@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>考勤委托</title>
+    <title>自主注册</title>
     <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/personalCenter.css">
@@ -69,16 +69,16 @@
     </div>
     <p class="cptips">
         <a href="https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket={{compMap.register}}" target="_blank">
-            打开图片 右击保存发送给访客
+            打开图片 右击保存发送给员工
         </a>
     </p>
     <p class="phonetips">
-        长按二维码保存 发送给访客
+        长按二维码保存 发送给员工
     </p>
 </script>
 </html>
 <script>
-    var title='考勤委托';
+    var title='自主注册';
     var openId=GetQueryValue('openId')?GetQueryValue('openId'):"";
     /*-- 获取用户填写的信息 --*/
     $.ajaxDom('body', {
