@@ -12,10 +12,10 @@
     <link rel="stylesheet" href="css/visitorMsg.css">
     <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
     <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
-    <script src="/ncov/js/common.js?v=0.2"></script>
+    <script src="/ncov/js/common.js?v=0.5"></script>
     <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
     <script src="http://webimg.mp12345.com/jslib/laydate/laydate.js"></script>
-    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.1"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.2"></script>
     <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
     <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
     <script src="/ncov/js/templateHelper.js?v=0.2"></script>
@@ -526,10 +526,7 @@
                     if(data.data.file.length>0){
                         for(var i=0;i<data.data.file.length;i++){
                             var msgInfo=data.data.file[i];
-                            $("#userfile").append(`
-                            <a href="/ncov/imgshow.html?href=${msgInfo.path}" filepath="${msgInfo.path}">
-                                   附件${i+1}
-                            </a>`)
+                            $("#userfile").append('<a href="/ncov/imgshow.html?href='+msgInfo.path+'" filepath="'+msgInfo.path+'">附件'+(i+1)+'</a> ')
                             datafile.push(msgInfo.path);
                         }
                     }

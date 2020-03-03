@@ -130,13 +130,9 @@ function companydata(demo,fun) {
         url:'/ncov/company/list.json',
         success: function (data) {
             /*  */
-            console.log(data,data.data.length);
-            console.log('=+++++')
             for (var i = 0; i < data.data.length; i++) {
                 var datainfo = data.data[i];
-                $(demo).append(`
-                        <option value='${datainfo.company}'>${datainfo.company}</option>
-                    `);
+                $(demo).append("<option value='"+datainfo.company+"'>"+datainfo.company+"</option>");
             }
             if(fun){
                 fun();
@@ -155,14 +151,9 @@ function dividata(demo,type,fun) {
         type:'get',
         url:url,
         success:function (res) {
-            console.log(res);
-            console.log('+++++++++++++')
             for (var i = 0; i <res.data.length; i++) {
                 var datainfo = res.data[i];
-                $(demo).append(`
-                        <option data-subtext="${datainfo.divi}" value="${datainfo.divi}">${datainfo.divi}</option>
-
-                    `);
+                $(demo).append('<option data-subtext="'+datainfo.divi+'" value="'+datainfo.divi+'">'+datainfo.divi+'</option>');
             }
             if(fun){
                 fun();

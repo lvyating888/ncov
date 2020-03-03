@@ -14,7 +14,7 @@
     <script src="js/common.js?v=0.2"></script>
     <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
     <script src="http://webimg.mp12345.com/jslib/laydate/laydate.js"></script>
-    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.1"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.2"></script>
 </head>
 <body class="hasbotout">
 <form class="innerout" id="addInfo">
@@ -209,9 +209,7 @@
                 console.log('=+++++')
                 for (var i = 0; i < data.data.length; i++) {
                     var datainfo = data.data[i];
-                    $("#company").append(`
-                        <option value='${datainfo.company}'>${datainfo.company}</option>
-                    `);
+                    $("#company").append("<option value='"+datainfo.company+"'>"+datainfo.company+"</option>");
                 }
             }
         })

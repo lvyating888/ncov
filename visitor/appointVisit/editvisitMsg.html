@@ -12,9 +12,9 @@
     <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/webuploader/webuploader.css">
     <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
     <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
-    <script src="/ncov/js/common.js?v=0.2"></script>
+    <script src="/ncov/js/common.js?v=0.5"></script>
     <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
-    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.1"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.2"></script>
     <script src="http://webimg.mp12345.com/jslib/webuploader/webuploader.js"></script>
 </head>
 <body>
@@ -135,11 +135,10 @@
         console.log(file,response);
         console.log(response.success)
         if(response.success){
-            var htmllist=`
-            <p style="word-wrap:break-word;word-break:normal;"><a href="javascript:;" filePath="${response.data.path}">${file.name}</a>
-                <button class="btn btn-default" onclick="deletefile(this)">删除</button>
-            </p>
-        `
+            var htmllist=""
+            htmllist+='<p style="word-wrap:break-word;word-break:normal;"><a href="javascript:;" filePath="'+response.data.path+'">'+file.name+'</a>'
+            htmllist+='<button class="btn btn-default" onclick="deletefile(this)">删除</button>'
+            htmllist+='</p>'
             $('#thelist #'+file.id).remove();
             $('#thelist').append(htmllist)
         }
@@ -191,13 +190,14 @@
                         if(data.data.file.length>0){
                             for(var i=0;i<data.data.file.length;i++){
                                 var msgInfo=data.data.file[i];
-                                $("#visitorInfo #thelist").append(`
-                            <p style="word-wrap:break-word;word-break:normal;">
-                                <a href="/ncov/imgshow.html?href=${msgInfo.path}" filepath="${msgInfo.path}">
-                                   附件${i+1}
-                                </a>
-                                <button class="btn btn-default" onclick="deletefile(this)">删除</button>
-                            </p>`)
+                                var listhtml='';
+                                listhtml+='<p style="word-wrap:break-word;word-break:normal;">'
+                                listhtml+='<a href="/ncov/imgshow.html?href='+msgInfo.path+'" filepath="'+msgInfo.path+'">'
+                                listhtml+='附件'+(i+1)+'</a> '
+                                listhtml+='<button class="btn btn-default" onclick="deletefile(this)">删除</button>'
+                                listhtml+='</p>'
+                                $("#visitorInfo #thelist").append(listhtml)
+
                             }
                         }
                     }

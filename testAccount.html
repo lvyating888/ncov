@@ -13,7 +13,7 @@
     <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
     <script src="js/common.js?v=0.2"></script>
     <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
-    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.1"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.2"></script>
 </head>
 <style>
     .W2_H {
@@ -130,13 +130,14 @@
         var dataInfo=getFormJson('#addInfo');
         console.log(dataInfo)
         dataInfo.openId=openId;
+        dataInfo.name=dataInfo.name.trim();
         if (!dataInfo.openId || dataInfo.openId==''){
             layer.msg('请同意微信权限')
         }else if(!dataInfo.phone || dataInfo.phone==''){
             layer.msg('请输入手机号');
             $('#addInfo').find('input[name="phone"]').focus();
         }else if(!dataInfo.name || dataInfo.name=='') {
-            layer.msg('请输入认证码');
+            layer.msg('请输入姓名');
             $('#addInfo').find('input[name="name"]').focus();
         }else{
             console.log(dataInfo);

@@ -14,12 +14,12 @@
     <link rel="stylesheet" href="css/diseaseRegister.css">
     <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
     <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
-    <script src="js/common.js?v=0.4"></script>
+    <script src="/ncov/js/common.js?v=0.5"></script>
     <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
     <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
     <script src="js/templateHelper.js?v=0.2"></script>
     <script src="http://webimg.mp12345.com/jslib/paging/paging.js?v=0.1"></script>
-    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.1"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.2"></script>
     <script src="http://webimg.mp12345.com/jslib/laydate/laydate.js"></script>
     <link href="http://webimg.mp12345.com/jslib/select2/select2.min.css" rel="stylesheet" />
     <script src="http://webimg.mp12345.com/jslib/select2/select2.min.js"></script>
@@ -137,6 +137,12 @@
                 提交时间
             </th>
             <th>
+                职位
+            </th>
+            <th>
+                部门
+            </th>
+            <th>
                 情况
             </th>
             <th>
@@ -162,6 +168,12 @@
             </td>
             <td>
                 {{item.cdatenow}}
+            </td>
+            <td>
+                {{item.job}}
+            </td>
+            <td>
+                {{item.divi}}
             </td>
             <td>
                 {{item.state | getType}}
@@ -317,7 +329,7 @@
         if(exporttime.trim()==''){
             layer.msg('请选择查询时间')
         }else{
-            $.ajaxDom('body',{
+            $.ajaxDom('#exportmyModal',{
                 type:'get',
                 url:'/publish/excelData/early.json',
                 data:{
@@ -331,7 +343,7 @@
                     /*json 导出*/
                     if(data.data.length>0){
                         var aoa = [
-                            ['姓名','提交时间', '情况', '体温', '联系电话', '登记地址','是否接触过疫区人员、疑似病例或确诊病例'],
+                            ['姓名','提交时间','职位','部门', '情况', '体温', '联系电话', '登记地址','是否接触过疫区人员、疑似病例或确诊病例'],
                         ];
                         // console.log(aoa)
                         for(var i=0;i<data.data.length;i++){
@@ -339,6 +351,8 @@
                             aoa.push([
                                 dataInfo.name,
                                 moment(dataInfo.cdate).format('YYYY-MM-DD HH:mm:ss'),
+                                dataInfo.job,
+                                dataInfo.divi,
                                 getType(dataInfo.state),
                                 dataInfo.temperature+'℃',
                                 dataInfo.phone,

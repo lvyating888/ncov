@@ -11,9 +11,9 @@
     <link rel="stylesheet" href="/ncov/css/diseaseRegister.css">
     <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
     <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
-    <script src="/ncov/js/common.js?v=0.2"></script>
+    <script src="/ncov/js/common.js?v=0.5"></script>
     <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
-    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.1"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.2"></script>
 </head>
 <style>
     .W2_H {
@@ -214,6 +214,12 @@
         console.log(dataInfo)
         dataInfo.type=type;
         dataInfo.wxOpenid=openId;
+        dataInfo.name=dataInfo.name.trim();
+        dataInfo.idCard=dataInfo.idCard.trim();
+        dataInfo.phone=dataInfo.phone.trim();
+        dataInfo.divi=dataInfo.divi.trim();
+        dataInfo.job=dataInfo.job.trim();
+        dataInfo.address=dataInfo.address.trim();
         if(!dataInfo.type || dataInfo.type==''){
             layer.msg('页面类型出错请重新扫码');
         }else if(!dataInfo.name || dataInfo.name==''){

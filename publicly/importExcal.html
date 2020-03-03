@@ -16,7 +16,7 @@
 
     <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
     <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
-    <script src="../js/common.js?v=0.3"></script>
+    <script src="/ncov/js/common.js?v=0.5"></script>
     <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
     <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
     <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="/ncov/js/importexcal/checkin.js"></script>
     <script src="http://webimg.mp12345.com/jslib/bootstrapSwitch/bootstrap-switch.min.js"></script>
     <script src="http://webimg.mp12345.com/jslib/paging/paging.js?v=0.1"></script>
-    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.1"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.2"></script>
     <link href="http://webimg.mp12345.com/jslib/select2/select2.min.css" rel="stylesheet" />
     <script src="http://webimg.mp12345.com/jslib/select2/select2.min.js"></script>
 </head>
@@ -66,6 +66,39 @@
     }
 </style>
 <body class="hastopout">
+<div class="modal" id="exportmyModal" tabindex="-1" role="dialog" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" >导出excel</h4>
+            </div>
+            <div id="">
+                <div class="modal-body">
+                    <form id="exportBody">
+                        <div class="form-group">
+                            <label>部门</label>
+                            <select name="divi" class="form-control addinputs" style="width:100%!important;">
+                                <option value="">选择部门</option>
+                            </select>
+                        </div>
+                    </form>
+                    <p class="text-danger" style="padding: 4px 0 8px;">
+                        若点击导出没有反应请打开电脑端下载
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="exportexcel()">
+                    确定导出
+                </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 <!--#include file="/ncov/statichtml/loading.html"-->
 <div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
@@ -252,6 +285,7 @@
             <p>
                 <button type="button" class="btn btn-lg btn-warning" style="margin:6px 0;"  onclick="allpush()">推送</button>
                 <button type="button" class="btn btn-lg btn-primary" style="margin:6px 0;"  onclick="allpersonalpush()">推送所有人</button>
+                <button type="button" class="btn btn-lg btn-success"  style="margin:6px 0;"  onclick="exportexcelout()">导出excal</button>
             </p>
 
             <div class="table-responsive">
@@ -597,37 +631,36 @@
         _$this.closest("tr").remove();
     }
     function addlis(obj){//添加产品行
-        var chapin_tr=`
-                    <tr>
-                                <td>
-                                    <a href="javascript:;" class="jyb_pdel" onclick="deltds(this)">
-                                        <span class="glyphicon glyphicon-minus"></span>
-                                    </a>
-                                </td>
-                                <td>
-                                    <input class="form-control addinputs" name="name" type="text" placeholder="姓名" style="min-width:80px;"/>
-                                </td>
-                                <td>
-                                    <input class="form-control addinputs" name="phone" type="number" placeholder="手机号" style="min-width:100px;" maxlength="11" oninput="if(value.length>11)value=value.slice(0,11)"/>
-                                </td>
-                                <td>
-                                    <select name="sex" class="form-control addinputs" style="min-width:100px;">
-                                        <option value="0">选择性别</option>
-                                        <option value="1">男</option>
-                                        <option value="2">女</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <input c lass="form-control addinputs" name="idCard" type="text" placeholder="身份证号" style="min-width:100px;"/>
-                                </td>
-                                <td>
-                                    <input class="form-control addinputs" name="job" type="text" placeholder="职务" style="min-width:100px;" />
-                                </td>
-                                <td>
-                                    <input class="form-control addinputs" name="divi" type="text" placeholder="部门" style="min-width:100px;" />
-                                </td>
-                            </tr>
-        `
+        var chapin_tr=""
+            chapin_tr+="<tr>"
+            chapin_tr+="<td>"
+            chapin_tr+='<a href="javascript:;" class="jyb_pdel" onclick="deltds(this)">'
+            chapin_tr+='<span class="glyphicon glyphicon-minus"></span>'
+            chapin_tr+='</a>'
+            chapin_tr+='</td>'
+            chapin_tr+='<td>'
+            chapin_tr+='<input class="form-control addinputs" name="name" type="text" placeholder="姓名" style="min-width:80px;"/>'
+            chapin_tr+='</td>'
+            chapin_tr+='<td>'
+            chapin_tr+='<input class="form-control addinputs" name="phone" type="number" placeholder="手机号" style="min-width:100px;" maxlength="11" oninput="if(value.length>11)value=value.slice(0,11)"/>'
+            chapin_tr+='</td>'
+            chapin_tr+='<td>'
+            chapin_tr+='<select name="sex" class="form-control addinputs" style="min-width:100px;">'
+            chapin_tr+='<option value="0">选择性别</option>'
+            chapin_tr+='<option value="1">男</option>'
+            chapin_tr+='<option value="2">女</option>'
+            chapin_tr+='</select>'
+            chapin_tr+='</td>'
+            chapin_tr+='<td>'
+            chapin_tr+='<input class="form-control addinputs" name="idCard" type="text" placeholder="身份证号" style="min-width:100px;"/>'
+            chapin_tr+='</td>'
+            chapin_tr+='<td>'
+            chapin_tr+='<input class="form-control addinputs" name="job" type="text" placeholder="职务" style="min-width:100px;" />'
+            chapin_tr+='</td>'
+            chapin_tr+='<td>'
+            chapin_tr+='<input class="form-control addinputs" name="divi" type="text" placeholder="部门" style="min-width:100px;" />'
+            chapin_tr+='</td>'
+            chapin_tr+='</tr>'
         $(obj).append(chapin_tr);
     }
 
@@ -809,6 +842,8 @@
     $(function () {
         dividata("#searchForm select[name='divi']")
         var selectorx = $("#searchForm select[name='divi']").select2();
+        dividata("#exportBody select[name='divi']")
+        var selectorx2 = $("#exportBody select[name='divi']").select2();
     })
     function selectclear() {
         $("#searchForm select[name='divi']").val("选择部门").select2();
@@ -892,6 +927,51 @@
                 }
             })
         })
+    }
+
+    /*-- 导出弹出框 --*/
+    function exportexcelout() {
+        $('#exportmyModal').modal('show');
+    }
+    /*-- 员工列表导出 --*/
+    function exportexcel() {
+
+            $.ajaxDom('#exportmyModal',{
+                type:'get',
+                url:'/publish/excelData/memberList.json',
+                data:{
+                    divi:$("#exportBody select[name='divi']").val(),
+                },
+                success:function (data) {
+                    console.log(data);
+                    console.log('--------------')
+                    /*-- 下载模板 --*/
+                    /*json 导出*/
+                    if(data.data.length>0){
+                        var aoa = [
+                            ['姓名','认证码', '联系方式', '性别','职位','部门'],
+                        ];
+                        // console.log(aoa)
+                        for(var i=0;i<data.data.length;i++){
+                            var dataInfo=data.data[i];
+                            aoa.push([
+                                dataInfo.name,
+                                dataInfo.invite_code,
+                                dataInfo.phone,
+                                dataInfo.sex==1?'男':dataInfo.sex==2?'女':'',
+                                dataInfo.job,
+                                dataInfo.divi
+                            ]);
+                        }
+                        var sheet = XLSX.utils.aoa_to_sheet(aoa);
+                        var df=moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
+                        openDownloadDialog(sheet2blob(sheet), '员工列表'+df+'.xls');
+                    }else{
+                        layer.msg('没有人员');
+                    }
+
+                }
+            })
 
     }
 </script>

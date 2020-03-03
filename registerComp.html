@@ -11,7 +11,7 @@
     <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
     <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
     <script src="js/common.js?v=0.2"></script>
-    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.1"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.2"></script>
 </head>
 
 <body>
@@ -37,9 +37,7 @@
                 $('#companyList').empty();
                 for (var i = 0; i < res.data.length; i++) {
                     var data = res.data[i];
-                    $('#companyList').append(`
-                        <li class="list-group-item ">${data.company}</li>
-                    `);
+                    $('#companyList').append('<li class="list-group-item ">'+data.company+'</li>');
                 }
             }
         })

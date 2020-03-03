@@ -18,7 +18,7 @@
     <script src="http://webimg.mp12345.com/jslib/laydate/laydate.js"></script>
     <script src="http://webimg.mp12345.com/jslib/webuploader/webuploader.js"></script>
     <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
-    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.1"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.2"></script>
 </head>
 <body class="hastopout">
 <!--#include file="/ncov/headerback.html"-->
@@ -212,11 +212,10 @@
         console.log(file,response);
         console.log(response.success)
         if(response.success){
-            var htmllist=`
-            <p><a href="javascript:;" filePath="${response.data.path}">${file.name}</a>
-                <button class="btn btn-default" onclick="deletefile(this)">删除</button>
-            </p>
-        `
+            var htmllist=""
+            htmllist+='<p><a href="javascript:;" filePath="'+response.data.path+'">'+file.name+'</a>'
+            htmllist+='<button class="btn btn-default" onclick="deletefile(this)">删除</button>'
+            htmllist+='</p>'
             $('#thelist .item').remove();
             $('#thelist').append(htmllist)
         }

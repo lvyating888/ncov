@@ -11,9 +11,9 @@
     <link rel="stylesheet" href="/ncov/css/diseaseRegister.css">
     <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
     <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
-    <script src="/ncov/js/common.js?v=0.2"></script>
+    <script src="/ncov/js/common.js?v=0.5"></script>
     <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
-    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.1"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.2"></script>
 </head>
 <style>
     .W2_H {
@@ -111,6 +111,8 @@
 
     function addMsg(){
         var dataInfo=getFormJson('#addInfo');
+        dataInfo.username=dataInfo.username.trim();
+        dataInfo.password=dataInfo.password.trim();
         if(!dataInfo.username || dataInfo.username==''){
             layer.msg('请输入用户名');
             $('#addInfo').find('input[name="username"]').focus();
