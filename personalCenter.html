@@ -140,7 +140,7 @@
                 <span class="glyphicon glyphicon-info-sign" aria-hidden="true">
                 </span>
                 <p>
-                    自主注册
+                    二维码
                 </p>
             </a>
         </li>
@@ -186,14 +186,14 @@
                             $('.compname').html(data.data.company);
                             if (data.data.admin == 1) {
                                 $('.is-admin').show();
-                                /*自主注册*/
-                                if(dataInfo.data.compMap.register!==''){
+                                /*二维码*/
+                                if(dataInfo.data.compMap.url !== ''){
                                     $('#addCheckbtn').show();
                                 }else{
                                     $('#addCheckbtn').hide();
                                 }
                                 /*访客*/
-                                if(dataInfo.data.compMap.ticket!==''){
+                                if(dataInfo.data.compMap.ticket){
                                     $('#addVisitor').show();
                                 }else{
                                     $('#addVisitor').hide();

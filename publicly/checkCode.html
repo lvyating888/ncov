@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>自主注册</title>
+    <title>二维码</title>
     <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/personalCenter.css">
@@ -65,10 +65,10 @@
 </body>
 <script type="text/html" id="v_qrcode">
     <div class="qrcode">
-        <img src="https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket={{compMap.register}}" alt="">
+        <img src="https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket={{compMap.url}}" alt="">
     </div>
     <p class="cptips">
-        <a href="https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket={{compMap.register}}" target="_blank">
+        <a href="https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket={{compMap.url}}" target="_blank">
             打开图片 右击保存发送给员工
         </a>
     </p>
@@ -78,7 +78,7 @@
 </script>
 </html>
 <script>
-    var title='自主注册';
+    var title='二维码';
     var openId=GetQueryValue('openId')?GetQueryValue('openId'):"";
     /*-- 获取用户填写的信息 --*/
     $.ajaxDom('body', {
@@ -87,7 +87,7 @@
         data: {openId: openId},
         success: function (dataInfo) {
             console.log(dataInfo)
-            if(dataInfo.data.compMap.register!==''){
+            if(dataInfo.data.compMap.url !== ''){
                 var qrcode = template('v_qrcode', dataInfo.data);
                 $("#visitQrcode").empty().append(qrcode);
             }

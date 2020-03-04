@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>员工通行证</title>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/indexnew.css">
+    <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
+    <script src="/ncov/js/common.js?v=0.5"></script>
+    <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.2"></script>
+    <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
+</head>
+<body>
+<div class="passbg">
+    <div class="welcomeinner">
+        <div class="fonthead">
+            <p class="passtitle" id="usercompany">
+            </p>
+            <p class="passtitle">
+                员工通行证
+            </p>
+            <p class="passtips">
+                扫码时间：<span id="nowdate"></span>
+            </p>
+        </div>
+        <form id="staffform">
+            <div class="form-group clearfix">
+                <label>姓名:</label>
+                <input type="text"
+                       name="name" class="form-control"  readonly>
+            </div>
+            <div class="form-group clearfix">
+                <label >科室:</label>
+                <input type="text"
+                       name="divi" class="form-control"  readonly>
+            </div>
+            <div class="form-group clearfix">
+                <label>电话:</label>
+                <input type="text"
+                       name="phone" class="form-control"
+                       maxlength="11" oninput="if(value.length>11)value=value.slice(0,11)"
+                       readonly
+                >
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 padlr0" align="center" style="padding:15% 0;">
+                <a type="button" class="btn btn-lg btn-warning"
+                        style="width:100%;background-color:#f29400;"
+                        href="javascript:;"
+                       id="hearthbtn"
+                >
+                    进入健康考勤
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    var openId=GetQueryValue('openId');
+    var type=GetQueryValue('type');
+    $(function () {
+        $.ajaxDom('#staffform', {
+            type: "get",
+            url: '/ncov/isExist.json',
+            data: {openId: openId},
+            success: function (res) {
+                console.log(res);
+                console.log('++++++++++++++')
+                $('#nowdate').html(moment(res.data.send_date).format('YYYY.MM.DD HH:mm:ss'))
+                $.ajaxDom('#staffform', {
+                    type: "get",
+                    url: '/member/info.json',
+                    data: {openId: openId},
+                    success: function (data) {
+                        /*console.log(data);
+                        console.log('++++++++++')*/
+                        $('#usercompany').html(data.data.company);
+                        $('#staffform input[name="name"]').val(data.data.name);
+                        $('#staffform input[name="divi"]').val(data.data.divi);
+                        $('#staffform input[name="phone"]').val(data.data.phone);
+
+                    }
+                })
+            }
+        })
+        $('#hearthbtn').attr('href','bodyMsg.html?openId='+openId+'&type='+type);
+
+
+    })
+</script>

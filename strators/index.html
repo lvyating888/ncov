@@ -71,7 +71,7 @@
                 查看统计
             </a>
             <br>
-            {{if item.ticket==''}}
+            {{if !item.ticket}}
             <a href="javascript:;" onclick="openVisitor('{{item.id}}')" class="btn btn-warning" style="margin:5px 0 0">
                 开通访客
             </a>
@@ -80,7 +80,7 @@
                 已开通访客
             </a>
             {{/if}}
-            {{if item.register==''}}
+            {{if !item.register}}
             <a href="javascript:;" onclick="openRegister('{{item.id}}')" class="btn btn-success" style="margin:5px 0 0">
                 开通注册
             </a>

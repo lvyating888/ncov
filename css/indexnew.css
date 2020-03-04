@@ -1,0 +1,163 @@
+.passbg{
+    background-color:#73adff ;
+    background-image: linear-gradient(#73adff, #85cfff);
+}
+.welcomebg{
+    background-color:#006fff ;
+    background-image: linear-gradient(#006afe, #20a8ff);
+}
+.visitorbg{
+    background-color: #efefef;
+}
+.welcomebg,.passbg,.visitorbg{
+   /* background-image:url("../img/visitor_bg.jpg");
+    background-size: cover;*/
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+.welcomeinner{
+    position:absolute;
+    top:50%;
+    left:50%;
+    -webkit-transform: translate(-50%,-50%);
+    -moz-transform: translate(-50%,-50%);
+    transform:translate(-50%,-50%);
+    width: 100%;
+}
+
+.tiptitle,.titleone{
+    color: #fff;
+    text-align: center;
+}
+.titleone{
+    font-size:50px;
+}
+.tiptitle{
+    font-size:12px;
+    padding:10px 0;
+}
+.fonthead{
+    width:96%;
+    margin: 0 auto 12%;
+}
+.usericon{
+    width: 98px;
+    height:98px;
+    border-radius:50%;
+    display: block;
+    margin:0 auto;
+    position: relative;
+}
+.usericon img{
+    display: block;
+    width:70px;
+    margin:0 auto;
+    position: absolute;
+    bottom:4px;
+    left:50%;
+    margin-left:-35px;
+}
+.usericonone{
+    background-color: #f29400;
+}
+.usericontwo{
+    background-color: #f3f3f3;
+}
+.fontlis{
+    font-size: 16px;
+    color: #fff;
+    text-align: center;
+    padding:8px 0;
+}
+.iconout{
+    margin:8% auto;
+    display: block;
+}
+.passtitle,.passtips{
+    text-align: center;
+    color: #fff;
+}
+.passtitle{
+    font-size:26px;
+}
+.passtips{
+    font-size:14px;
+    padding: 10px 0;
+}
+.visitorbg .passtitle{
+    color: #595757;
+}
+.visitorbg .passtips{
+    color: #898989;
+}
+#staffform{
+    width:70%;
+    margin:0 auto;
+}
+
+#staffform label{
+    float: left;
+    width: 20%;
+    line-height:34px;
+    color: #fff;
+    margin-bottom: 0;
+    font-size:18px;
+    font-weight: normal;
+}
+#staffform input,#staffform select{
+    float: right;
+    border: 0;
+    border-bottom:1px solid #fff;
+    width:78%;
+    background-color:transparent;
+    background-image: none;
+    outline: none;
+    box-shadow: none;
+    text-align: left;
+    color: #fff;
+    border-radius: 0;
+}
+.visitorbg #staffform label,.visitorbg #staffform input,.visitorbg #staffform select{
+    color: #f29400;
+}
+.visitorbg #staffform input,.visitorbg #staffform select{
+    border-bottom:1px solid #f29400;
+}
+#staffform input::-webkit-input-placeholder { /* WebKit browsers 适配谷歌 */
+    color: #fff;
+}
+#staffform input:-moz-placeholder { /* Mozilla Firefox 4 to 18 适配火狐 */
+    color: #fff;
+}
+#staffform input::-moz-placeholder { /* Mozilla Firefox 19+ 适配火狐 */
+    color: #fff;
+}
+#staffform input:-ms-input-placeholder { /* Internet Explorer 10+  适配ie*/
+    color: #fff;
+}
+.visitorbg #staffform input::-webkit-input-placeholder { /* WebKit browsers 适配谷歌 */
+    color: #f29400;
+}
+.visitorbg #staffform input:-moz-placeholder { /* Mozilla Firefox 4 to 18 适配火狐 */
+    color: #f29400;
+}
+.visitorbg #staffform input::-moz-placeholder { /* Mozilla Firefox 19+ 适配火狐 */
+    color: #f29400;
+}
+.visitorbg #staffform input:-ms-input-placeholder { /* Internet Explorer 10+  适配ie*/
+    color: #f29400;
+}
+@media (min-width: 768px) {
+    .welcomeinner{
+        top:10px;
+        left:0;
+        -webkit-transform: translate(0,0);
+        -moz-transform: translate(0,0);
+        transform: translate(0,0);
+    }
+    .iconout {
+        margin: 5% auto;
+        display: block;
+    }
+}

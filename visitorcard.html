@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>访客通行证</title>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/indexnew.css">
+    <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
+    <script src="/ncov/js/common.js?v=0.5"></script>
+    <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.2"></script>
+</head>
+<body>
+<div class="visitorbg">
+    <div class="welcomeinner">
+        <div class="fonthead">
+            <p class="passtitle">
+                晋煤集团赵庄二号井访客
+            </p>
+            <p class="passtips">
+                扫码时间：2020.03.01  12：00
+            </p>
+        </div>
+        <form id="staffform">
+            <div class="form-group clearfix">
+                <label>姓名:</label>
+                <input type="text"
+                       name="company" class="form-control"  placeholder="请输入姓名">
+            </div>
+            <div class="form-group clearfix">
+                <label >科室:</label>
+                <select name="divi" class="form-control addinputs" >
+                    <option value="">选择科室</option>
+                </select>
+            </div>
+            <div class="form-group clearfix">
+                <label>电话:</label>
+                <input type="text"
+                       name="phone" class="form-control"  placeholder="请输入电话"
+                       maxlength="11" oninput="if(value.length>11)value=value.slice(0,11)"
+                >
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 padlr0" align="center" style="padding:15% 0;">
+                <button type="button" class="btn btn-lg btn-warning"
+                        style="width:100%;background-color:#f29400;"
+                        onclick="addMsg()" id="savebtn">
+                    进入健康考勤
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

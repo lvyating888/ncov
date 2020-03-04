@@ -61,11 +61,6 @@
 <div class="innerout padtb10" style="padding-bottom: 0;">
     <ul id="myTab" class="nav nav-tabs">
         <li class="active">
-            <a href="#visitQrcode" data-toggle="tab" onclick="getData(3)">
-                二维码
-            </a>
-        </li>
-        <li>
             <a href="#visitAppoint" data-toggle="tab" onclick="getData(1)">
                 申请列表
             </a>
@@ -79,7 +74,7 @@
     </ul>
 </div>
 <div id="myTabContent" class="tab-content padtb10" tyle="padding-top: 0;">
-    <div class="tab-pane fade innerout" id="visitAppoint">
+    <div class="tab-pane fade in active innerout" id="visitAppoint">
         <form action="#" id="searchForm">
             <div class="input-group input-group-sm">
                 <span class="input-group-addon">访客姓名</span>
@@ -146,9 +141,6 @@
             </table>
         </div>
         <div id="pageTooltwo" class="newpages"></div>
-    </div>
-    <div class="tab-pane fade in active innerout" id="visitQrcode" class="tab-content padtb10" tyle="padding-top: 0;">
-
     </div>
 </div>
 
@@ -309,11 +301,10 @@
     })
     function getData(typedata) {
         if(type==''){
-            typedata=typedata?typedata:3;
+            typedata=typedata?typedata:1;
         }else{
             typedata=typedata?typedata:type;
         }
-        console.log(typedata);
         if(typedata==2){
             $('#myTab a[href="#visitHistorylist"]').tab('show');
             window.history.replaceState(null, null, "?openId="+openId+"&type=2");
@@ -322,11 +313,12 @@
             $('#myTab a[href="#visitAppoint"]').tab('show');
             window.history.replaceState(null, null, "?openId="+openId+"&type=1");
             getVisitordata();
-        }else if(typedata==3){
+        }
+       /* else if(typedata==3){
             $('#myTab a[href="#visitQrcode"]').tab('show');
             window.history.replaceState(null, null, "?openId="+openId+"&type=3");
             getQrcodedata();
-        }
+        }*/
     }
     function gethealthydata(pageindex,pagesize) {
         pagesize=pagesize?pagesize:pagesizeoutone;

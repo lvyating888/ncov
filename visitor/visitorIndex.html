@@ -5,32 +5,85 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>欢迎页</title>
+    <link rel="stylesheet" href="http://webimg.mp12345.com/jslib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/indexnew.css">
     <script src="http://webimg.mp12345.com/jslib/jquery/jquery.min.js"></script>
+    <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
     <script src="http://webimg.mp12345.com/jslib/bootstrap/bootstrap.js"></script>
     <script src="http://webimg.mp12345.com/jslib/ajaxDom.js?v=0.2"></script>
     <script src="/ncov/js/common.js?v=0.5"></script>
 </head>
 <body>
-
+<div class="welcomebg">
+    <div class="welcomeinner">
+        <div class="fonthead">
+            <p class="titleone">
+                健康考勤
+            </p>
+            <p class="tiptitle">
+                同心抗“疫”安心复工，为您守健康！
+            </p>
+        </div>
+        <div class="mainbtn">
+            <a href="javascript:;" class="iconout" id="userregister" style="display: none">
+                <div href="javascript:;" class="usericon usericonone">
+                    <img src="https://webimg.mp12345.com/static/ncov/user.png" alt="">
+                </div>
+                <p class="fontlis">员工注册</p>
+            </a>
+            <a href="javascript:;" class="iconout" id="visitorregister" style="display: none">
+                <div href="javascript:;" class="usericon usericontwo">
+                    <img src="https://webimg.mp12345.com/static/ncov/user.png" alt="">
+                </div>
+                <p class="fontlis">访问注册</p>
+            </a>
+        </div>
+    </div>
+</div>
 </body>
 </html>
 <script>
     var openId=GetQueryValue('openId');
     var type=GetQueryValue('type');
     $(function () {
-        $.ajaxDom('body',{
-            url:"/visitor/type.json",
-            type:'get',
-            data:{openId:openId,type:type},
-            success:function (data) {
-               console.log(data);
-               console.log('----------------')
-                if(data.data=='visitor'){
-                    window.location.href="visitortrue.html?openId="+openId+'&type='+type
-                }else if(data.data=='register'){
-                    window.location.href="addusers.html?openId="+openId+'&type='+type
+        $.ajaxDom('.welcomeinner',{
+            type: "get",
+            url:'/ncov/isExist.json',
+            data:{openId:openId},
+            success:function(res){
+                console.log(res);
+                console.log('----------------')
+                if(res.success){
+                    if(res.data.compMap.id == type){
+                        window.location.href='../passcard.html?openId='+openId+'&type='+type;
+                    }
+                    /*$('#userregister').attr('href','../passcard.html?openId='+openId+'&type='+type);
+                    $('#visitorregister').attr('href','visitortrue.html?openId='+openId+'&type='+type);*/
                 }
+                $.ajaxDom('.welcomeinner',{
+                    type:'get',
+                    url:'/visitor/register/info.json',
+                    data:{openId:openId,type:type},
+                    success:function (data) {
+                        console.log(data);
+                        console.log('++++++++++++++++')
+                        if(data.data.register){
+                           $('#userregister').show();
+                        }
+                        if(data.data.ticket){
+                           $('#visitorregister').show();
+                        }
+                        if(data.success){
+                            $('#userregister .fontlis').html('正在审核');
+                            $('#visitorregister').attr('href','visitortrue.html?openId='+openId+'&type='+type);
+                        }else{
+                            $('#userregister').attr('href','addusers.html?openId='+openId+'&type='+type);
+                            $('#visitorregister').attr('href','visitortrue.html?openId='+openId+'&type='+type);
+                        }
+                    }
+                })
             }
         })
     })

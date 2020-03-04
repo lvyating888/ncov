@@ -20,6 +20,7 @@
     <script src="http://webimg.mp12345.com/jslib/layer/layer.js"></script>
     <script src="http://webimg.mp12345.com/jslib/template/template.js"></script>
     <script src="http://webimg.mp12345.com/jslib/moment/moment.js"></script>
+    <script src="/ncov/js/templateHelper.js?v=0.2"></script>
     <script	type="text/javascript" src="https://webimg.mp12345.com/js/js-xlsx/xlsx.core.min.js"></script>
     <script type="text/javascript" src="../js/importexcal/xlsxjson.js?v=0.2"></script>
     <script type="text/javascript" src="/ncov/js/importexcal/checkin.js"></script>
@@ -129,6 +130,16 @@
                 用户列表
             </a>
         </li>
+        <li>
+            <a href="#toexaminelist" data-toggle="tab">
+                待审核列表
+            </a>
+        </li>
+        <li>
+            <a href="#diviManage" data-toggle="tab">
+                部门管理
+            </a>
+        </li>
     </ul>
     <div id="myTabContent" class="tab-content padtb10">
         <div class="tab-pane fade in active" id="notice">
@@ -217,7 +228,7 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade in active" id="noticelist">
+        <div class="tab-pane fade" id="noticelist">
             <p class="linetitle">员工信息</p>
             <div>
                 <div class="col-lg-12 padlr0">
@@ -232,7 +243,7 @@
                         </div>
                         <div class="input-group input-group-sm">
                             <span class="input-group-addon">部门</span>
-                            <select name="divi" class="form-control addinputs" style="min-width:100px;">
+                            <select name="divi" class="form-control addinputs" style="width:100%!important;">
                                 <option value="">选择部门</option>
                             </select>
                         </div>
@@ -296,11 +307,67 @@
             <!-- 分页 -->
             <div id="pageTool" class="newpages"></div>
         </div>
+        <div class="tab-pane fade" id="toexaminelist">
+            <div>
+                <div class="col-lg-12 padlr0">
+                    <form action="#" id="searchFormtwo">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon">员工姓名</span>
+                            <input type="text" name="name" class="form-control" >
+                        </div>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon">联系方式</span>
+                            <input class="form-control addinputs" name="phone" type="number" placeholder="手机号" style="min-width:100px;" maxlength="11" oninput="if(value.length>11)value=value.slice(0,11)"  />
+                        </div>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon">部门</span>
+                            <select name="divi" class="form-control addinputs" style="width:100%!important;">
+                                <option value="">选择部门</option>
+                            </select>
+                        </div>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon">职位</span>
+                            <input type="text" name="job" class="form-control" >
+                        </div>
+                        <div class="botbtn row">
+                            <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+                                <button type="button" class="btn btn-success" style="width:80%" onclick="showgetlist(1)">查询</button>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-6" align="center">
+                                <button type="button" class="btn btn-danger" style="width:80%" onclick="clearfrom('#searchFormtwo',selectcleartwo())">清空</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered" id="olddatatwo">
+
+                </table>
+            </div>
+            <!-- 分页 -->
+            <div id="pageTooltwo" class="newpages"></div>
+        </div>
+        <div class="tab-pane fade" id="diviManage">
+            <div class="input-group">
+                <input id="divi" class="form-control" placeholder="请填写部门名称"/>
+                <span class="input-group-addon btn btn-primary" onclick="adddivi()">新增</span>
+            </div>
+            <div>
+                <p class="linetitle">已存在部门</p>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="diviList">
+
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
 </div>
 </body>
 <script type="text/html" id="v_olddata">
+    {{if data.length>0}}
     <thead>
     <tr>
         <th>
@@ -338,7 +405,7 @@
         </th>
     </tr>
     </thead>
-    {{if data.length>0}}
+
     <tbody>
 
     {{each data as item index}}
@@ -403,7 +470,79 @@
     {{/each}}
     </tbody>
     {{else}}
+    <tbody>
     <tr><td class="red">暂无数据</td></tr>
+    </tbody>
+    {{/if}}
+</script>
+<script type="text/html" id="v_olddatatwo">
+    {{if data.length>0}}
+    <thead>
+    <tr>
+        <th>
+            操作
+        </th>
+        <th>
+            姓名
+        </th>
+        <th>
+            认证码
+        </th>
+        <th>
+            联系方式
+        </th>
+        <th>
+            性别
+        </th>
+        <th>
+            职位
+        </th>
+        <th>
+            部门
+        </th>
+        <th>
+            创建时间
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    {{each data as item index}}
+    <tr>
+        <td>
+            <button type="button" class="btn btn-success" style="margin:6px 0;" onclick="agreefun('{{item.id}}')" >通过审核</button>
+
+            <button type="button" class="btn btn-danger" style="margin:6px 0;" onclick="refusefun('{{item.id}}')" >删除</button>
+        </td>
+        <td>
+            {{item.name}}
+        </td>
+        <td>{{item.invite_code}}</td>
+        <td>
+            {{item.phone}}
+        </td>
+        <td>
+            {{if item.sex==1}}
+            男
+            {{else if item.sex==2}}
+            女
+            {{/if}}
+        </td>
+        <td>
+            {{item.job}}
+        </td>
+        <td>
+            {{item.divi}}
+        </td>
+        <td>
+            {{item.cdate | moment:'YYYY-MM-DD HH:mm:ss'}}
+        </td>
+    </tr>
+    {{/each}}
+    </tbody>
+    {{else}}
+    <tbody>
+    <tr><td class="red">暂无数据</td></tr>
+    </tbody>
     {{/if}}
 </script>
 <script type="text/html" id="v_staffMsg">
@@ -494,10 +633,42 @@
         </button>
     </div>
 </script>
+<script type="text/html" id="v_diviMsg">
+    {{if data.length>0}}
+    <thead>
+    <tr>
+        <th>
+            操作
+        </th>
+        <th>
+            部门
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    {{each data as item index}}
+    <tr>
+        <td>
+            <button type="button" class="btn btn-danger" style="margin:6px 0;" onclick="deletedivi('{{item.id}}')" >删除</button>
+        </td>
+        <td>
+            {{item.divi}}
+        </td>
+    </tr>
+    {{/each}}
+    </tbody>
+    {{else}}
+    <tbody>
+    <tr><td class="red">暂无数据</td></tr>
+    </tbody>
+    {{/if}}
+</script>
 </html>
 <script>
     $(function () {
         showgetlist(1);
+        showUncertainlist(1);
+        dividataInfo();
     })
     var push_arr_id=[];
     /*-- 推送的数组 --*/
@@ -511,7 +682,6 @@
             pageindexnow = pageindex;
         }
         var page = new Paging();
-        $('#myTab a[href="#noticelist"]').tab('show');
         $.ajaxDom('#noticelist',{
             type: "get",
             url: "/publish/importMember/list.json",
@@ -526,8 +696,6 @@
                 pageSize:pagesize,
             },
             success: function(data) {
-                console.log(data);
-                console.log('=ddas=dad=asd=sad-a=')
                 if(data.data){
                     if(data.data.data.length>0){
                         $('#zjnumber').html(data.data.data.length);
@@ -619,6 +787,110 @@
                 }
 
             }
+        })
+    }
+    /*--待审核列表--*/
+    var pageindexnowtwo=1;
+    var pagesizeouttwo=10;
+    var waitlist={};
+    function showUncertainlist(pageindex,pagesize){
+        pagesize=pagesize?pagesize:pagesizeouttwo;
+        if (pageindex == undefined || pageindex == null) {
+            pageindex = pageindexnowtwo;
+        } else {
+            pageindexnowtwo = pageindex;
+        }
+        var page = new Paging();
+
+        $.ajaxDom('body',{
+            type: "get",
+            url: "/publish/audit/member/list.json",
+            data:{
+                name: $('#searchFormtwo input[name="name"]').val(),
+                phone : $('#searchFormtwo input[name="phone"]').val(),
+                divi : $('#searchFormtwo select[name="divi"]').val(),
+                job: $('#searchFormtwo input[name="job"]').val(),
+                pageNumber:pageindexnowtwo,
+                pageSize:pagesize,
+            },
+            success: function(data) {
+                waitlist=data;
+                /*console.log(data);
+                console.log('=ddas=dad=asd=sad-a=')*/
+                if(data.data){
+                    var olddatatwo = template('v_olddatatwo', data.data);
+                    $("#olddatatwo").empty().append(olddatatwo);
+                    if(data.data.totalCount>0){
+                        $('#myTab a[href="#toexaminelist"]').tab('show');
+                        pageSize(pageindexnowtwo,pagesize)
+                    }
+                    function pageSize(pagenumber, pagesize) {
+                        page.init({
+                            target: $('#pageTooltwo').empty(),
+                            pagesize: pagesize,
+                            count: data.data.totalCount,
+                            toolbar: true,
+                            current: pagenumber,
+                            //hash: true ,
+                            changePagesize: function (_psize, _pnumber) {
+                                pagesizeout=_psize;
+                                showgetlist(1,_psize)
+                            },
+                            callback: function (_pnumber, _psize, count) {
+                                pagesizeout=_psize;
+                                showgetlist(_pnumber,_psize)
+                            }
+                        });
+                    }
+                }else{
+                    layer.msg(data.message)
+                }
+
+            }
+        })
+    }
+    /*--通过审核--*/
+    function agreefun(id) {
+        layer.confirm('确定通过审核吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.ajaxDom('body',{
+                type: "get",
+                url: "/publish/audit/member.json",
+                data:{
+                    id:id
+                },
+                success:function (data) {
+                    if(data.success){
+                        layer.msg('通过审核');
+                        showUncertainlist(1);
+                    }else{
+                        layer.msg(data.message);
+                    }
+                }
+            })
+        })
+    }
+    /*--删除审核--*/
+    function refusefun(id) {
+        layer.confirm('确定删除吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.ajaxDom('body',{
+                type: "get",
+                url: "/publish/audit/member.json",
+                data:{
+                    id:id
+                },
+                success:function (data) {
+                    if(data.success){
+                        layer.msg('删除成功');
+                        showUncertainlist(1);
+                    }else{
+                        layer.msg(data.message);
+                    }
+                }
+            })
         })
     }
 </script>
@@ -755,8 +1027,6 @@
                         /*selectorxtwo.select2();*/
                     })
 
-
-
                 }else{
                     layer.msg(data.message)
                 }
@@ -844,9 +1114,13 @@
         var selectorx = $("#searchForm select[name='divi']").select2();
         dividata("#exportBody select[name='divi']")
         var selectorx2 = $("#exportBody select[name='divi']").select2();
+
     })
     function selectclear() {
-        $("#searchForm select[name='divi']").val("选择部门").select2();
+        $("#searchForm select[name='divi']").val("").select2();
+    }
+    function selectcleartwo() {
+        $("#searchFormtwo select[name='divi']").val("").select2();
     }
     /*-- 删除用户信息 彻底删除,包括用户记录 --*/
     function deletefrom(id){
@@ -972,6 +1246,73 @@
 
                 }
             })
-
+    }
+    /*--获取科室列表--*/
+    function dividataInfo(){
+        $.ajax({
+            type: 'get',
+            url: '/publish/divi/list.json',
+            success: function (res) {
+                console.log(res);
+                console.log('+_________________')
+                var diviListdata = template('v_diviMsg', res);
+                $("#diviList").empty().append(diviListdata);
+                 var dividatawait=function (demo,fun) {
+                     for (var i = 0; i <res.data.length; i++) {
+                         var datainfo = res.data[i];
+                         $(demo).append('<option data-subtext="'+datainfo.divi+'" value="'+datainfo.divi+'">'+datainfo.divi+'</option>');
+                     }
+                     if(fun){
+                         fun();
+                     }
+                 }
+                dividatawait("#searchFormtwo select[name='divi']")
+                var selectorx3 = $("#searchFormtwo select[name='divi']").select2();
+            }
+        })
+    }
+    /*--添加科室--*/
+    function adddivi() {
+        var divi = $('#divi').val();
+        if (!$.trim(divi)) {
+            layer.msg('添加科室不能为空')
+            return;
+        }
+        $.ajaxDom('body',{
+            url: '/publish/divi.json',
+            type: 'post',
+            headers: {'Content-Type': 'application/json;charset=UTF-8'},
+            data: JSON.stringify({divi: divi}),
+            success: function (res) {
+                if (res.success) {
+                    $('#divi').val('');
+                    dividataInfo();
+                    alert('保存成功');
+                } else {
+                    alert(res.message);
+                }
+            }
+        })
+    }
+    /*--删除科室--*/
+    function deletedivi(id) {
+        layer.confirm('确定要删除部门吗', {
+            btn: ['确定','取消']
+        }, function(){
+            $.ajaxDom('body',{
+                url: '/publish/divi.json',
+                type: 'delete',
+                data: {id: id},
+                success: function (res) {
+                    if (res.success) {
+                        $('#divi').val('');
+                        init();
+                        alert('保存成功');
+                    } else {
+                        alert(res.message);
+                    }
+                }
+            })
+        })
     }
 </script>
